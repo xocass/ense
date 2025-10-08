@@ -22,10 +22,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.session:spring-session-data-mongodb")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
     implementation ("org.mongodb:mongodb-driver-sync")
+    implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation ("org.springframework.boot:spring-boot-starter-webflux")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 tasks.withType<Test> {

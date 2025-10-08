@@ -12,7 +12,7 @@ import org.bson.Document;
 
 public class Connection {
     public static void main(String[] args) {
-        String connectionString = "mongodb+srv://user:qLT5OYbIpE0JKFQ1@sharecloud.b57dn98.mongodb.net/?retryWrites=true&w=majority&appName=ShareCloud";
+        String connectionString = "mongodb+srv://user:OtQ9oEmYVYq6RwbR@sharecloud.b57dn98.mongodb.net/?retryWrites=true&w=majority&appName=ShareCloud";
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
@@ -24,7 +24,7 @@ public class Connection {
         try (MongoClient mongoClient = MongoClients.create(settings)) {
             try {
                 // Send a ping to confirm a successful connection
-                MongoDatabase database = mongoClient.getDatabase("admin");
+                MongoDatabase database = mongoClient.getDatabase("root");
                 database.runCommand(new Document("ping", 1));
                 System.out.println("Pinged your deployment. You successfully connected to MongoDB!");
             } catch (MongoException e) {

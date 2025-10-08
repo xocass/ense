@@ -24,6 +24,8 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
+    implementation ("org.mongodb:mongodb-driver-sync")
 }
 
 tasks.withType<Test> {

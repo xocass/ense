@@ -28,6 +28,12 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation ("org.springframework.boot:spring-boot-starter-webflux")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    implementation("com.github.java-json-tools:json-patch:1.13")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 }
 
 tasks.withType<Test> {

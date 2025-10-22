@@ -38,6 +38,19 @@ public class UserService {
     }
 
 
+    // Se obten o user que posúa ese email. Se o atopa, devolve o user.
+    // Se non hai usuarios con ese email, devolve null
+    public User getUser(String email) {
+        User userFilter = new User();
+        userFilter.setEmail(email);
+        Example<User> filter = Example.of(userFilter);
+
+        List<User> usersFiltered = users.findAll(filter);
+        if (usersFiltered.isEmpty()) {
+            return null;
+        }
+        return usersFiltered.getFirst();
+    }
 
     public User signUpUser(@NonNull User user) throws UserAlreadyExistsException {
         Example<User> filter = Example.of(user);
@@ -49,18 +62,20 @@ public class UserService {
         }
     }
 
+    public List<User> getFriends(@NonNull String email) {
+
+    }
+
+
     public User updateUser(String email, List<JsonPatchOperation> changes) {
-        User userFilter= new User();
-        userFilter.setEmail(email);
-        Example<User> filter = Example.of(userFilter);
-        User user = users.findAll(filter).getFirst();
+        User user = getUser(email);
 
         JsonNode patched = JsonPatch.apply(changes, mapper.convertValue(user, JsonNode.class));
         User updatedUser = mapper.convertValue(patched, User.class);
         return users.save(updatedUser);
     }
 
-    //Mongo
+    // Ejemplo uso MongoTemplate
     public List<User> findUserByCriteria(String email, Integer age){
         // Creamos un obxecto Criteria
         Criteria criteria = new Criteria();

@@ -1,11 +1,11 @@
 package gal.usc.etse.sharecloud.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-    private String id;
     private String username;
-    private String email;
+    private String email;       // O email funcionan como PK
     private String password;
     private Integer age;
     private String country;
@@ -13,20 +13,23 @@ public class User {
 
     private String spotifyId;
     private String description;
-    private List<String> friendsIds;
+    private List<String> friendsIds; // Os IDs son os emails
 
-    public User(String id, String name, String email, String password, Integer age, String country, String city) {
-        this.id = id;
+    public User(){
+        this.friendsIds = new ArrayList<>();
+    }
+
+    public User(String name, String email, String password, Integer age, String country, String city) {
         this.username = name;
         this.email = email;
         this.password = password;
         this.age = age;
         this.country = country;
         this.city = city;
+        this.friendsIds = new ArrayList<>();
     }
 
     // GETTERS
-    public String getId() { return id;}
     public String getUsername() { return username;}
     public String getEmail() { return email; }
     public String getPassword() { return password; }
@@ -38,7 +41,6 @@ public class User {
     public List<String> getFriendsIds() { return friendsIds; }
 
     // SETTERS
-    public void setId(String id) { this.id = id;}
     public void setUsername(String username) { this.username = username;}
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }

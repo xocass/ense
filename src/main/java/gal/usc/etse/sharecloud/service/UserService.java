@@ -10,8 +10,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.json.JsonMapper;
+//import tools.jackson.databind.JsonNode;
+//import tools.jackson.databind.json.JsonMapper;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jsonpatch.JsonPatch;
@@ -21,14 +21,15 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private final UserRepository users;
-    private final JsonMapper mapper;
-    private final MongoTemplate mongoTemplate;
+    private UserRepository users;
+    private JsonMapper mapper;
+    private MongoTemplate mongoTemplate;
 
     //@Autowired
     public UserService(UserRepository usuarios, JsonMapper mapper){
         this.users = usuarios;
         this.mapper = mapper;
+
     }
 
     // Inxecta MongoTemplate no constructor
@@ -62,18 +63,18 @@ public class UserService {
         }
     }
 
-    public List<User> getFriends(@NonNull String email) {
+    /*public List<User> getFriends(@NonNull String email) {
 
-    }
+    }*/
 
 
-    public User updateUser(String email, List<JsonPatchOperation> changes) {
+    /*public User updateUser(String email, List<JsonPatchOperation> changes) {
         User user = getUser(email);
 
         JsonNode patched = JsonPatch.apply(changes, mapper.convertValue(user, JsonNode.class));
         User updatedUser = mapper.convertValue(patched, User.class);
         return users.save(updatedUser);
-    }
+    }*/
 
     // Ejemplo uso MongoTemplate
     public List<User> findUserByCriteria(String email, Integer age){

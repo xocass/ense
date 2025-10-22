@@ -40,8 +40,8 @@ import java.util.List;
     }
 
     // Servizo para obter a lista de amigos do user aportado
-    @GetMapping("/{email}")
+    /*@GetMapping("/{email}")
     public List<User> getFriends(@PathVariable String email) {
         return userService.getFriends(email);
-    }
+    }*/
 }

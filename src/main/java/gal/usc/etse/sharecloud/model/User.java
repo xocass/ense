@@ -1,11 +1,19 @@
 package gal.usc.etse.sharecloud.model;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Document(collection = "user")
 public class User {
+
+    // O email funcionan como PK
+    @Id
+    private String email;
+
     private String username;
-    private String email;       // O email funcionan como PK
     private String password;
     private Integer age;
     private String country;

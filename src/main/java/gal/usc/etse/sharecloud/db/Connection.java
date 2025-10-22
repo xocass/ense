@@ -11,7 +11,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 public class Connection {
-    public static void main(String[] args) {
+    public Connection() {
         String connectionString = "mongodb+srv://user:OtQ9oEmYVYq6RwbR@sharecloud.b57dn98.mongodb.net/?retryWrites=true&w=majority&appName=ShareCloud";
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)

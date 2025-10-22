@@ -1,17 +1,14 @@
 package gal.usc.etse.sharecloud.repository;
-import com.mongodb.lang.NonNull;
-import gal.usc.etse.sharecloud.model.User;
 
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import org.jspecify.annotations.NonNull;
+import gal.usc.etse.sharecloud.model.User;
 
 import java.util.List;
 
 @Repository
-public interface UserRepository extends CrudRepository<@NonNull User, @NonNull String> {
-    @NonNull
-    List<User> findAll(Example<@NonNull User> example);
+public interface UserRepository extends MongoRepository<User, String> {
+    List<User> findByUsername(String Username);
+    List<User> findByEmail(String Email);
+
 }

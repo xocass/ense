@@ -4,6 +4,7 @@ import gal.usc.etse.sharecloud.model.User;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.mongodb.lang.NonNull;
 import gal.usc.etse.sharecloud.repository.UserRepository;
+import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -55,7 +56,7 @@ public class UserService {
 
     public User signUpUser(@NonNull User user) throws UserAlreadyExistsException {
         Example<User> filter = Example.of(user);
-        if(users.findAll(filter).isEmpty()){
+        if(users.findByEmail(user.getEmail()).isEmpty()){
             users.save(user);
             return user;
         }else{

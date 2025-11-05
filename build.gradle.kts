@@ -62,6 +62,8 @@ application {
     mainModule.set("ShareCloud.main")
 }
 
+
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

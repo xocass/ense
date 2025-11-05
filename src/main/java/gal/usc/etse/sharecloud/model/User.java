@@ -23,6 +23,10 @@ public class User {
     private String description;
     private List<String> friendsIds; // Os IDs son os emails
 
+    private List<Song> favSongs;
+    private List<Album> favAlbums;
+    private List<Artist> favArtists;
+
     public User(){
         this.friendsIds = new ArrayList<>();
     }
@@ -35,6 +39,9 @@ public class User {
         this.country = country;
         this.city = city;
         this.friendsIds = new ArrayList<>();
+        this.favSongs = new ArrayList<>();
+        this.favAlbums = new ArrayList<>();
+        this.favArtists = new ArrayList<>();
     }
 
     // GETTERS
@@ -47,6 +54,9 @@ public class User {
     public String getSpotifyId() { return spotifyId; }
     public String getDescription() { return description; }
     public List<String> getFriendsIds() { return friendsIds; }
+    public List<Song> getFavSongs() { return favSongs; }
+    public List<Album> getFavAlbums() { return favAlbums; }
+    public List<Artist> getFavArtists() { return favArtists; }
 
     // SETTERS
     public void setUsername(String username) { this.username = username;}
@@ -58,5 +68,7 @@ public class User {
     public void setSpotifyId(String spotifyId) { this.spotifyId = spotifyId; }
     public void setDescription(String description) { this.description = description; }
     public void setFriendsIds(List<String> friendsIds) { this.friendsIds = friendsIds; }
-
+    public void setFavSongs(List<Song> favSongs) { this.favSongs = favSongs; }
+    public void setFavAlbums(List<Album> favAlbums) { this.favAlbums = favAlbums; }
+    public void setFavArtists(List<Artist> favArtists) { this.favArtists = favArtists; }
 }

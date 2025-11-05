@@ -62,6 +62,8 @@ application {
     mainModule.set("gal.usc.etse.sharecloud")
 }
 
+
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

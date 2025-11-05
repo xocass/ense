@@ -26,7 +26,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.session:spring-session-data-mongodb")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    //developmentOnly("org.springframework.boot:spring-boot-devtools")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
     implementation ("org.mongodb:mongodb-driver-sync")
@@ -53,13 +53,13 @@ javafx {
 jlink {
     options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages"))
     launcher {
-        name = "ShareCloudApplication"
+        name = "Boot"
     }
 }
 
 application {
-    mainClass.set("gal.usc.etse.sharecloud.ShareCloudApplication")
-    mainModule.set("gal.usc.etse.sharecloud")
+    mainClass.set("gal.usc.etse.sharecloud.Boot")
+    mainModule.set("ShareCloud.main")
 }
 
 tasks.withType<Test> {

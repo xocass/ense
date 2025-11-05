@@ -17,4 +17,9 @@ module ShareCloud.main {
     requires javafx.fxml;
 
     opens gal.usc.etse.sharecloud to javafx.fxml;
+    opens gal.usc.etse.sharecloud.gui_controller to javafx.fxml;
+    opens gal.usc.etse.sharecloud.model;
+    opens gal.usc.etse.sharecloud.service;
+    opens gal.usc.etse.sharecloud.controller;
+    exports gal.usc.etse.sharecloud;
 }

@@ -35,7 +35,7 @@ public class Boot extends Application {
                             "gal/usc/etse/sharecloud/layouts/vLog.fxml"
                     )
             );
-            Scene scene = new Scene(fxmlLoader.load(), 1440, 1024);
+            Scene scene = new Scene(fxmlLoader.load(), 450, 550);
             cLog controller = fxmlLoader.getController();
             controller.setFachadas(this);
             controller.setHostServices(getHostServices());

@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "user")
+@Document(collection = "users")
 public class User {
 
     // O email funcionan como PK
@@ -20,6 +20,9 @@ public class User {
     private String city;
 
     private String spotifyId;
+    private String spotifyAccessToken;
+    private String spotifyRefreshToken;
+
     private String description;
     private List<String> friendsIds; // Os IDs son os emails
 

@@ -1,56 +1,67 @@
 package gal.usc.etse.sharecloud;
 
+import gal.usc.etse.sharecloud.controller.UserController;
 import gal.usc.etse.sharecloud.db.Connection;
-import gal.usc.etse.sharecloud.gui_controller.cLog;
+import gal.usc.etse.sharecloud.model.entity.Role;
+import gal.usc.etse.sharecloud.repository.RoleRepository;
+import gal.usc.etse.sharecloud.service.AuthService;
+import gal.usc.etse.sharecloud.service.UserService;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 
-import java.io.IOException;
+import java.util.Set;
 
+//@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
+//@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 @SpringBootApplication
-public class Boot extends Application {
-    private Stage entrarStage;
+public class Boot {
 
-    @Override
-    public void start(Stage stage){
-        entrarStage=stage;
-        entrarStage.setResizable(false);
-
-        iniciarSesion();
-    }
-
-    /* Función que muestra la pantalla de inicio de sesión */
-    public void iniciarSesion() {
-        try {
-            System.out.println("CL Resource = " +
-                    Thread.currentThread().getContextClassLoader().getResource(
-                            "gal/usc/etse/sharecloud/layouts/vLog.fxml"));
-
-            FXMLLoader fxmlLoader = new FXMLLoader(
-                    Thread.currentThread().getContextClassLoader().getResource(
-                            "gal/usc/etse/sharecloud/layouts/vLog.fxml"
-                    )
-            );
-            Scene scene = new Scene(fxmlLoader.load(), 450, 550);
-            cLog controller = fxmlLoader.getController();
-            controller.setFachadas(this);
-            controller.setHostServices(getHostServices());
-
-            entrarStage.setTitle("Iniciar sesión");
-            entrarStage.setScene(scene);
-            entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
-    }
+    /*  LANZAR DESDE CONSOLA:
+    *   OLLO! Asegurarse de ter instalado jdk-21
+    *   Declarar:
+    *       $env:JAVA_HOME="C:\Program Files\Java\jdk-21"
+    *       $env:Path="$env:JAVA_HOME\bin;" + $env:Path
+    *
+    *   Build desde / do proxecto: ./gradlew clean build
+    *   Run: java --add-opens java.base/java.lang=ALL-UNNAMED -jar build/libs/ShareCloud-0.0.1-SNAPSHOT.jar
+    *
+    */
 
     public static void main(String[] args) {
         Connection db= new Connection();
-        SpringApplication.run(Boot.class, args);
-        Application.launch(args);
+
+        ConfigurableApplicationContext context = SpringApplication.run(Boot.class, args); // Spring Boot + Security
+        UserService userService = context.getBean(UserService.class);
+        AuthService authService = context.getBean(AuthService.class);
+        UserController userController = context.getBean(UserController.class);
+
+        // Pasar los beans a JavaFX
+        FachadaGUI.setUserService(userService);
+        FachadaGUI.setAuthService(authService);
+        FachadaGUI.setUserController(userController);
+
+        Application.launch(FachadaGUI.class, args); // JavaFX GUI
     }
 
+    @Bean
+    public CommandLineRunner initRoles(RoleRepository roleRepository) {
+        return args -> {
+            if (roleRepository.findByRolename("USER") == null) {
+                Role r = new Role();
+                r.setRolename("USER");
+                r.setPermissions(Set.of());
+                r.setIncludes(Set.of());
+                roleRepository.save(r);
+
+                System.out.println(">>> Role USER creado automáticamente.");
+            } else {
+                System.out.println(">>> Role USER ya existe.");
+            }
+        };
+    }
 
 }

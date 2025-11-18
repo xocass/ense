@@ -26,23 +26,32 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.session:spring-session-data-mongodb")
-    //developmentOnly("org.springframework.boot:spring-boot-devtools")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
-    implementation ("org.mongodb:mongodb-driver-sync")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation ("org.springframework.boot:spring-boot-starter-webflux")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+    implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
+    implementation ("org.mongodb:mongodb-driver-sync")
+    /*implementation("com.github.java-json-tools:json-patch:1.13") {
+        exclude(group = "org.json", module = "json")
+    }*/
+    implementation("org.json:json:20210307")
 
     //JAVAFX
     implementation ("org.openjfx:javafx-controls:21.0.2")
     implementation ("org.openjfx:javafx-fxml:21.0.2")
 
-    implementation("com.github.java-json-tools:json-patch:1.13")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    //testImplementation("org.springframework.boot:spring-boot-starter-test")
+    //testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+    //developmentOnly("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
 }
 
 javafx {

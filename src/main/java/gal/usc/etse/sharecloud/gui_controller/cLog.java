@@ -17,22 +17,6 @@ public class cLog {
     private TextField fieldEmail;
     @FXML
     private PasswordField fieldPassword;
-    @FXML
-    private Label labelOk;
-    @FXML
-    private Label labelNope;
-    @FXML
-    private TextField fieldNombre;
-    @FXML
-    private TextField fieldEdad;
-    @FXML
-    private TextField fieldCiudad;
-    @FXML
-    private TextField fieldPais;
-    @FXML
-    private Label labelOkReg;
-    @FXML
-    private Label labelNopeReg;
 
     private String email;
     private FachadaGUI fgui;
@@ -71,7 +55,7 @@ public class cLog {
     }
 
     @FXML
-    public void clickSignUp(){
+    public void clickSignUp() {
         String email = fieldEmail.getText();
         String password = fieldPassword.getText();
 
@@ -103,35 +87,6 @@ public class cLog {
                 labelNopeReg.setVisible(true);
                 e.printStackTrace();
             }
-        }
-    }
-
-    @FXML
-    public void clickUpdateInfo(){
-        String username= fieldNombre.getText();
-        String edad= fieldEdad.getText();
-        String ciudad= fieldCiudad.getText();
-        String pais= fieldPais.getText();
-
-        try {
-            gal.usc.etse.sharecloud.model.entity.User entity = fgui.getUserService().loadUserByUsername(email);
-            entity.setUsername(username);
-            entity.setAge(Integer.parseInt(edad));
-            entity.setCity(ciudad);
-            entity.setCountry(pais);
-
-            fgui.getUserService().update(entity); // Necesitas exponer un metodo save en UserService que haga userRepository.save(entity)
-
-            labelOkReg.setVisible(true);
-            labelNopeReg.setVisible(false);
-
-        } catch (DuplicateUserException e) {
-            labelOkReg.setVisible(false);
-            labelNopeReg.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            labelOkReg.setVisible(false);
-            labelNopeReg.setVisible(true);
         }
     }
 }

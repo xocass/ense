@@ -59,8 +59,6 @@ public class cLog {
                 labelOk.setVisible(true);
                 labelNope.setVisible(false);
 
-                // Aquí podrías abrir la siguiente ventana, o guardar info de sesión, etc.
-                // Ejemplo: fgui.showMainDashboard(loggedUser);
                 fgui.entrarSesion(loggedUser);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -103,35 +101,6 @@ public class cLog {
                 labelNopeReg.setVisible(true);
                 e.printStackTrace();
             }
-        }
-    }
-
-    @FXML
-    public void clickUpdateInfo(){
-        String username= fieldNombre.getText();
-        String edad= fieldEdad.getText();
-        String ciudad= fieldCiudad.getText();
-        String pais= fieldPais.getText();
-
-        try {
-            gal.usc.etse.sharecloud.model.entity.User entity = fgui.getUserService().loadUserByUsername(email);
-            entity.setUsername(username);
-            entity.setAge(Integer.parseInt(edad));
-            entity.setCity(ciudad);
-            entity.setCountry(pais);
-
-            fgui.getUserService().update(entity); // Necesitas exponer un metodo save en UserService que haga userRepository.save(entity)
-
-            labelOkReg.setVisible(true);
-            labelNopeReg.setVisible(false);
-
-        } catch (DuplicateUserException e) {
-            labelOkReg.setVisible(false);
-            labelNopeReg.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            labelOkReg.setVisible(false);
-            labelNopeReg.setVisible(true);
         }
     }
 }

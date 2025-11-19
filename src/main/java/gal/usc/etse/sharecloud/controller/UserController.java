@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -72,12 +73,17 @@ import java.util.List;
         }
     }
     // Spotify OAuth: completar enlace con callback
-    @GetMapping("/spotify/callback")
+    @GetMapping("/api/auth/callback")
     public ResponseEntity<Void> spotifyCallback(@RequestParam String code,
                                                 @RequestParam String state,
                                                 @RequestParam String email) throws Exception {
         userService.completeSpotifyLink(email, code, state);
         return ResponseEntity.ok().build();
+    }
+    // Obtener ultima cancion escuchada
+    @GetMapping("/{email}/spotify/last-track")
+    public ResponseEntity<Map<String, Object>> getLastTrack(@PathVariable String email) {
+        return ResponseEntity.ok(userService.getLastPlayedTrack(email));
     }
 
 

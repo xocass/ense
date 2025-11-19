@@ -1,5 +1,6 @@
 package gal.usc.etse.sharecloud.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gal.usc.etse.sharecloud.exception.DuplicateUserException;
 import gal.usc.etse.sharecloud.model.entity.Role;
 import gal.usc.etse.sharecloud.model.dto.User;
@@ -8,12 +9,19 @@ import gal.usc.etse.sharecloud.repository.UserRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.w3c.dom.css.Counter;
+
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -22,6 +30,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -29,6 +38,8 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     // Atributos para Spotify
     private static final String SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
@@ -92,11 +103,6 @@ public class UserService implements UserDetailsService {
         return gal.usc.etse.sharecloud.model.dto.User.from(saved);
     }
 
-    public gal.usc.etse.sharecloud.model.dto.User update(gal.usc.etse.sharecloud.model.entity.User user) {
-        var saved = userRepository.save(user);
-        return gal.usc.etse.sharecloud.model.dto.User.from(saved);
-    }
-
 
     // >>>>>>>>>>>>>    SPOTIFY
     public String startSpotifyLink(String email) throws Exception {
@@ -111,10 +117,11 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
 
         //Construir URL Spotify
+        String scope = "user-read-private user-read-email user-read-recently-played";
         return SPOTIFY_AUTH_URL + "?client_id=" + clientId
                 + "&response_type=code"
                 + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
-                + "&scope=" + URLEncoder.encode("user-read-private user-read-email", StandardCharsets.UTF_8)
+                + "&scope=" + URLEncoder.encode(scope, StandardCharsets.UTF_8)
                 + "&state=" + state
                 + "&code_challenge_method=S256"
                 + "&code_challenge=" + codeChallenge;
@@ -164,34 +171,35 @@ public class UserService implements UserDetailsService {
         tokens.put("expires_in", String.valueOf(json.getInt("expires_in"))); // opcional
         return tokens;
     }
+    // Obtener ultima cancion escuchada
+    public Map<String, Object> getLastPlayedTrack(String email) {
+        gal.usc.etse.sharecloud.model.entity.User user = loadUserByUsername(email);
 
-    /*public void processSpotifyCallback(String code, String state) throws Exception {
-        gal.usc.etse.sharecloud.model.entity.User user = userRepository.findBySpotifyState(state).orElseThrow(() -> new RuntimeException("Invalid state"));
-        String codeVerifier = user.getSpotifyCodeVerifier();
+        if (user.getSpotifyAccessToken() == null) {
+            throw new IllegalStateException("Usuario sin Spotify vinculado.");
+        }
 
-        // TOKEN EXCHANGE
+        String url = "https://api.spotify.com/v1/me/player/recently-played?limit=1";
         HttpClient client = HttpClient.newHttpClient();
-
-        String body = "client_id=" + clientId
-                + "&grant_type=authorization_code"
-                + "&code=" + code
-                + "&redirect_uri=" + redirectUri
-                + "&code_verifier=" + codeVerifier;
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(SPOTIFY_TOKEN_URL))
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .uri(URI.create(url))
+                .header("Authorization", "Bearer " + user.getSpotifyAccessToken())
+                .GET()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        try {
+            HttpResponse<String> response = client.send(
+                    request, HttpResponse.BodyHandlers.ofString()
+            );
+            if (response.statusCode() != 200)
+                throw new RuntimeException("Spotify error: " + response.body());
 
-        JSONObject json = new JSONObject(response.body());
-        user.setSpotifyAccessToken(json.getString("access_token"));
-        user.setSpotifyRefreshToken(json.getString("refresh_token"));
-        user.setSpotifyState(null);
-        user.setSpotifyCodeVerifier(null);
-        userRepository.save(user);
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(response.body(), Map.class);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error llamando a Spotify", e);
+        }
     }
-    */
 
     // >>>>>>>>>>>    MÉTODOS AUXILIARES PKCE OAuth 2.0
     private String generateCodeVerifier() {

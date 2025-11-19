@@ -45,6 +45,7 @@ dependencies {
     //JAVAFX
     implementation ("org.openjfx:javafx-controls:21.0.2")
     implementation ("org.openjfx:javafx-fxml:21.0.2")
+    implementation("org.openjfx:javafx-web:21.0.2")
 
     //testImplementation("org.springframework.boot:spring-boot-starter-test")
     //testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -56,7 +57,7 @@ dependencies {
 
 javafx {
     version = "21.0.2"
-    modules = listOf("javafx.controls", "javafx.fxml")
+    modules = listOf("javafx.controls", "javafx.fxml", "javafx.web")
 }
 
 jlink {

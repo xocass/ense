@@ -16,6 +16,7 @@ module ShareCloud.main {
 
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.web;
     requires spring.security.crypto;
     requires spring.security.core;
     requires spring.security.web;
@@ -33,6 +34,7 @@ module ShareCloud.main {
     requires org.json;
     requires spring.boot.actuator;
     requires java.desktop;
+    requires jdk.xml.dom;
     //requires ShareCloud.main;
 
     opens gal.usc.etse.sharecloud to javafx.fxml;

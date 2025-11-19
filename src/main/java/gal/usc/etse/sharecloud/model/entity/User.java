@@ -4,7 +4,8 @@ import com.mongodb.lang.NonNull;
 import gal.usc.etse.sharecloud.model.Album;
 import gal.usc.etse.sharecloud.model.Artist;
 import gal.usc.etse.sharecloud.model.Song;
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//@Entity
 @SuppressWarnings("unused")
-@Entity
 @Document(collection = "users")
 public class User implements UserDetails{
     @Id
@@ -40,12 +41,12 @@ public class User implements UserDetails{
     private List<Album> favAlbums;
     private List<Artist> favArtists;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    /*@ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "email"),
             inverseJoinColumns = @JoinColumn(name = "role"))
-    private Set<Role> roles;
-
+    private Set<Role> roles;*/
+    private Set<Role> roles = new HashSet<>();
 
     public static User from(gal.usc.etse.sharecloud.model.dto.User user, PasswordEncoder passwordEncoder) {
         return new User(user.email(), passwordEncoder.encode(user.password()), null);
@@ -61,20 +62,12 @@ public class User implements UserDetails{
         this.email = email;
         this.password = password;
         this.roles = roles;
-    }
-
-    public User(String name, String email, String password, Integer age, String country, String city) {
-        this.username = name;
-        this.email = email;
-        this.password = password;
-        this.age = age;
-        this.country = country;
-        this.city = city;
         this.friendsIds = new ArrayList<>();
         this.favSongs = new ArrayList<>();
         this.favAlbums = new ArrayList<>();
         this.favArtists = new ArrayList<>();
     }
+
 
     // GETTERS
     @Override
@@ -106,6 +99,7 @@ public class User implements UserDetails{
     public String getSpotifyCodeVerifier() { return spotifyCodeVerifier; }
 
     // SETTERS
+
     public void setUsername(String username) { this.username = username;}
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }
@@ -133,6 +127,11 @@ public class User implements UserDetails{
         }
         this.roles.add(role);
         return this;
+    }
+
+    public boolean isSpotifyLinked() {
+        return spotifyAccessToken != null
+                && spotifyRefreshToken != null;
     }
 
 }

@@ -17,22 +17,6 @@ public class cLog {
     private TextField fieldEmail;
     @FXML
     private PasswordField fieldPassword;
-    @FXML
-    private Label labelOk;
-    @FXML
-    private Label labelNope;
-    @FXML
-    private TextField fieldNombre;
-    @FXML
-    private TextField fieldEdad;
-    @FXML
-    private TextField fieldCiudad;
-    @FXML
-    private TextField fieldPais;
-    @FXML
-    private Label labelOkReg;
-    @FXML
-    private Label labelNopeReg;
 
     private String email;
     private FachadaGUI fgui;
@@ -69,7 +53,7 @@ public class cLog {
     }
 
     @FXML
-    public void clickSignUp(){
+    public void clickSignUp() {
         String email = fieldEmail.getText();
         String password = fieldPassword.getText();
 

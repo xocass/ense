@@ -5,130 +5,68 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<Pane fx:controller="gal.usc.etse.sharecloud.gui_controller.cLog" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="450.0" style="-fx-background-color: #343434;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="340.0" prefWidth="744.0" stylesheets="../styles/log.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.gui_controller.cLog">
    <children>
-      <AnchorPane layoutX="504.0" layoutY="241.0" prefHeight="550.0" prefWidth="450.0" />
-      <VBox layoutX="7.0" layoutY="3.0" prefHeight="542.0" prefWidth="433.0" style="-fx-background-color: #FFFFFF;">
+      <AnchorPane layoutY="-7.0" prefHeight="348.0" prefWidth="436.0" styleClass="login-background" stylesheets="@../styles/log.css">
          <children>
-            <AnchorPane prefHeight="193.0" prefWidth="434.0">
+            <VBox prefHeight="190.0" prefWidth="434.0" spacing="20.0">
                <children>
-                  <VBox prefHeight="194.0" prefWidth="434.0">
+                  <AnchorPane prefHeight="100.0" prefWidth="365.0">
                      <children>
-                        <AnchorPane prefHeight="103.0" prefWidth="434.0">
-                           <children>
-                              <Label layoutX="31.0" layoutY="45.0" text="Correo usuario">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="fieldEmail" layoutX="31.0" layoutY="73.0" prefHeight="26.0" prefWidth="371.0" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="70.0" prefWidth="434.0">
-                           <children>
-                              <PasswordField fx:id="fieldPassword" layoutX="31.0" layoutY="27.0" prefHeight="26.0" prefWidth="371.0" />
-                              <Label layoutX="36.0" text="Contraseña">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="66.0" prefWidth="434.0">
-                           <children>
-                              <Button fx:id="btnIniciarSesion" layoutX="154.0" layoutY="13.0" mnemonicParsing="false" onAction="#clickLogIn" text="Iniciar sesión">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Button>
-                              <Label fx:id="labelOk" layoutX="314.0" layoutY="19.0" text="OK!" textFill="#0e7316" visible="false">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="labelNope" layoutX="68.0" layoutY="19.0" text="NOPE!" textFill="#cf5239" visible="false">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </AnchorPane>
+                        <Label layoutX="31.0" layoutY="44.0" prefHeight="13.0" prefWidth="118.0" text="Correo usuario">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="fieldEmail" layoutX="31.0" layoutY="63.0" prefHeight="26.0" prefWidth="371.0" />
                      </children>
-                  </VBox>
+                  </AnchorPane>
+                  <AnchorPane prefHeight="70.0" prefWidth="434.0">
+                     <children>
+                        <PasswordField fx:id="fieldPassword" layoutX="31.0" layoutY="19.0" prefHeight="26.0" prefWidth="371.0" />
+                        <Label layoutX="31.0" text="Contraseña">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
                </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="337.0" prefWidth="434.0">
+            </VBox>
+            <VBox layoutX="32.0" layoutY="232.0" prefHeight="91.0" prefWidth="371.0" spacing="20.0">
                <children>
-                  <VBox prefHeight="336.0" prefWidth="434.0">
-                     <children>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <TextField fx:id="fieldNombre" layoutX="33.0" layoutY="40.0" prefHeight="26.0" prefWidth="371.0" />
-                              <Label layoutX="33.0" layoutY="14.0" text="Nombre usuario">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Label layoutX="31.0" layoutY="14.0" text="Edad">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="fieldEdad" layoutX="31.0" layoutY="40.0" prefHeight="26.0" prefWidth="371.0" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Label layoutX="31.0" layoutY="6.0" text="Ciudad">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="fieldCiudad" layoutX="31.0" layoutY="34.0" prefHeight="26.0" prefWidth="371.0" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Label layoutX="33.0" text="País">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="fieldPais" layoutX="33.0" layoutY="27.0" prefHeight="26.0" prefWidth="371.0" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                           <children>
-                              <Label fx:id="labelOkReg" layoutX="316.0" layoutY="20.0" text="OK!" textFill="#4fb73a" visible="false">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                              <Button fx:id="btnRegistrarse" layoutX="161.0" layoutY="14.0" mnemonicParsing="false" onAction="#clickSignUp" text="Registrarse">
-                                 <font>
-                                    <Font size="18.0" />
-                                 </font>
-                              </Button>
-                              <Label fx:id="labelNopeReg" layoutX="72.0" layoutY="20.0" text="NOPE!" textFill="#cf5239" visible="false">
-                                 <font>
-                                    <Font name="System Bold" size="18.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </VBox>
+                  <Button fx:id="btnIniciarSesion" mnemonicParsing="false" onAction="#clickSignUp" prefHeight="22.0" prefWidth="371.0" styleClass="button-login" stylesheets="@../styles/log.css" text="Iniciar sesión">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnRegistrarse" mnemonicParsing="false" onAction="#clickLogIn" prefHeight="32.0" prefWidth="371.0" styleClass="button-register" stylesheets="@../styles/log.css" text="Registrarse">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Button>
                </children>
-            </AnchorPane>
+            </VBox>
+            <HBox alignment="CENTER" layoutX="32.0" layoutY="174.0" prefHeight="42.0" prefWidth="371.0">
+               <children>
+                  <Text fx:id="errorText" strokeType="OUTSIDE" strokeWidth="0.0" text="ardasd" wrappingWidth="230.80736684799194">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="¿Has olvidado tu contraseña?">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Text>
+               </children>
+            </HBox>
          </children>
-      </VBox>
+      </AnchorPane>
    </children>
-</Pane>
+</AnchorPane>

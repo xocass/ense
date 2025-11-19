@@ -2,10 +2,11 @@
     -fx-background-color: #260842 ;
     -fx-text-fill: white;
     -fx-border-width: 1;
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
     -fx-padding: 5 0;
     -fx-cursor: hand;
-    -fx-pref-width: 434;
+    -fx-pref-width: 371;
+    -fx-pref-height: 40;
 }
 .button-login:hover {
     -fx-background-color: #222222;
@@ -18,10 +19,11 @@
     -fx-border-color: #260842;
     -fx-border-width: 1;
     -fx-text-fill: #260842 ;
-    -fx-font-size: 12px;
+    -fx-font-size: 13px;
     -fx-padding: 5 0;
     -fx-cursor: hand;
-    -fx-pref-width: 434;
+    -fx-pref-width: 371;
+    -fx-pref-height: 40;
 }
 .button-register:hover {
     -fx-background-color: #f5f5f5;

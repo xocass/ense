@@ -40,12 +40,12 @@
             </VBox>
             <VBox layoutX="32.0" layoutY="232.0" prefHeight="91.0" prefWidth="371.0" spacing="20.0">
                <children>
-                  <Button fx:id="btnIniciarSesion" mnemonicParsing="false" onAction="#clickSignUp" prefHeight="22.0" prefWidth="371.0" styleClass="button-login" stylesheets="@../styles/log.css" text="Iniciar sesión">
+                  <Button fx:id="btnIniciarSesion" mnemonicParsing="false" onAction="#clickLogIn" prefHeight="22.0" prefWidth="371.0" styleClass="button-login" stylesheets="@../styles/log.css" text="Iniciar sesión">
                      <font>
                         <Font size="10.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnRegistrarse" mnemonicParsing="false" onAction="#clickLogIn" prefHeight="32.0" prefWidth="371.0" styleClass="button-register" stylesheets="@../styles/log.css" text="Registrarse">
+                  <Button fx:id="btnRegistrarse" mnemonicParsing="false" onAction="#clickSignUp" prefHeight="32.0" prefWidth="371.0" styleClass="button-register" stylesheets="@../styles/log.css" text="Registrarse">
                      <font>
                         <Font size="10.0" />
                      </font>

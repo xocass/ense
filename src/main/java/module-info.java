@@ -35,22 +35,25 @@ module ShareCloud.main {
     requires spring.boot.actuator;
     requires java.desktop;
     requires jdk.xml.dom;
+    requires ShareCloud.main;
     //requires ShareCloud.main;
 
-    opens gal.usc.etse.sharecloud to javafx.fxml;
-    opens gal.usc.etse.sharecloud.gui_controller to javafx.fxml;
-    //opens gal.usc.etse.sharecloud.configuration to spring.core, spring.beans;
-    //exports gal.usc.etse.sharecloud.configuration;
-    //opens gal.usc.etse.sharecloud.repository to spring.core, spring.beans;
-    //exports gal.usc.etse.sharecloud.repository;
-    opens gal.usc.etse.sharecloud.configuration;
-    opens gal.usc.etse.sharecloud.controller;
-    opens gal.usc.etse.sharecloud.exception;
-    opens gal.usc.etse.sharecloud.filter;
-    opens gal.usc.etse.sharecloud.model;
-    opens gal.usc.etse.sharecloud.repository;
-    opens gal.usc.etse.sharecloud.service;
-    exports gal.usc.etse.sharecloud;
-    opens gal.usc.etse.sharecloud.model.entity;
+    opens gal.usc.etse.sharecloud.client to javafx.fxml;
+    opens gal.usc.etse.sharecloud.client.gui_controller to javafx.fxml;
+    //opens gal.usc.etse.sharecloud.server.configuration to spring.core, spring.beans;
+    //exports gal.usc.etse.sharecloud.server.configuration;
+    //opens gal.usc.etse.sharecloud.server.repository to spring.core, spring.beans;
+    //exports gal.usc.etse.sharecloud.server.repository;
+    opens gal.usc.etse.sharecloud.server.configuration;
+    opens gal.usc.etse.sharecloud.server.controller;
+    opens gal.usc.etse.sharecloud.server.exception;
+    opens gal.usc.etse.sharecloud.server.filter;
+    opens gal.usc.etse.sharecloud.server.model;
+    opens gal.usc.etse.sharecloud.server.repository;
+    opens gal.usc.etse.sharecloud.server.service;
+    exports gal.usc.etse.sharecloud.server;
+    opens gal.usc.etse.sharecloud.server.model.entity;
+    opens gal.usc.etse.sharecloud.client.clientModel;
+    exports gal.usc.etse.sharecloud.client;
 
 }

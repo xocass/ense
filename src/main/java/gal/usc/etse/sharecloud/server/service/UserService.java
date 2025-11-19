@@ -1,0 +1,253 @@
+package gal.usc.etse.sharecloud.server.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gal.usc.etse.sharecloud.server.exception.DuplicateUserException;
+import gal.usc.etse.sharecloud.server.model.entity.Role;
+import gal.usc.etse.sharecloud.server.model.dto.User;
+import gal.usc.etse.sharecloud.server.repository.RoleRepository;
+import gal.usc.etse.sharecloud.server.repository.UserRepository;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.*;
+
+@Service
+public class UserService implements UserDetailsService {
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    // Atributos para Spotify
+    private static final String SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize";
+    private static final String SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token";
+    @Value("${spotify.clientId}")
+    private String clientId;
+    @Value("${spotify.clientSecret}")
+    private String clientSecret;
+    @Value("${spotify.redirectUri}")
+    private String redirectUri;
+
+
+    @Autowired
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    // >>>>>>>>>>>>>    USUARIO
+    @Override
+    public gal.usc.etse.sharecloud.server.model.entity.User loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+    }
+
+    public List<User> get() {
+        return userRepository.findAll().stream().map(User::from).toList();
+    }
+    public Page<User> get(PageRequest page) {
+        return userRepository.findAll(page).map(User::from);
+    }
+    public User get(String email){
+        return User.from(loadUserByUsername(email));
+    }
+    public User create(gal.usc.etse.sharecloud.server.model.dto.User userDto) throws DuplicateUserException {
+        if (userDto == null || userDto.email() == null || userDto.email().isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (userDto.password() == null || userDto.password().isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        // Comprobación de duplicados
+        if (userRepository.existsByEmail(userDto.email())) {
+            var existing = userRepository.findByEmail(userDto.email()).orElse(null);
+            throw new DuplicateUserException(existing);
+        }
+
+        // Comprobación de que Role USER exista
+        Role userRole = roleRepository.findByRolename("USER");
+        if (userRole == null) {
+            throw new IllegalStateException("Role USER does not exist in the database");
+        }
+
+        // Crear entidad correctamente
+        gal.usc.etse.sharecloud.server.model.entity.User entity =
+                gal.usc.etse.sharecloud.server.model.entity.User.from(userDto, passwordEncoder)
+                        .addRole(userRole);
+
+        var saved = userRepository.save(entity);
+        return gal.usc.etse.sharecloud.server.model.dto.User.from(saved);
+    }
+
+
+    // >>>>>>>>>>>>>    SPOTIFY
+    public String startSpotifyLink(String email) throws Exception {
+        gal.usc.etse.sharecloud.server.model.entity.User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        String codeVerifier = generateCodeVerifier();
+        String codeChallenge = generateCodeChallenge(codeVerifier);
+        String state = UUID.randomUUID().toString();
+
+        user.setSpotifyCodeVerifier(codeVerifier);
+        user.setSpotifyState(state);
+        userRepository.save(user);
+
+        //Construir URL Spotify
+        String scope = "user-read-private user-read-email user-read-recently-played";
+        return SPOTIFY_AUTH_URL + "?client_id=" + clientId
+                + "&response_type=code"
+                + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
+                + "&scope=" + URLEncoder.encode(scope, StandardCharsets.UTF_8)
+                + "&state=" + state
+                + "&code_challenge_method=S256"
+                + "&code_challenge=" + codeChallenge;
+    }
+
+    // Completa el linking de Spotify
+    public void completeSpotifyLink(String email, String code, String state) throws Exception {
+        gal.usc.etse.sharecloud.server.model.entity.User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!state.equals(user.getSpotifyState())) {
+            throw new RuntimeException("Invalid Spotify state");
+        }
+
+        // Intercambiar código por tokens
+        Map<String, String> tokens = exchangeCodeForTokens(code, user.getSpotifyCodeVerifier());
+
+        user.setSpotifyAccessToken(tokens.get("access_token"));
+        user.setSpotifyRefreshToken(tokens.get("refresh_token"));
+        userRepository.save(user);
+    }
+
+    private Map<String, String> exchangeCodeForTokens(String code, String codeVerifier) throws Exception {
+        HttpClient http = HttpClient.newHttpClient();
+        String form = new StringBuilder()
+                .append("grant_type=authorization_code")
+                .append("&code=").append(URLEncoder.encode(code, StandardCharsets.UTF_8))
+                .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, StandardCharsets.UTF_8))
+                .append("&client_id=").append(URLEncoder.encode(clientId, StandardCharsets.UTF_8))
+                .append("&client_secret=").append(URLEncoder.encode(clientSecret, StandardCharsets.UTF_8))
+                .append("&code_verifier=").append(URLEncoder.encode(codeVerifier, StandardCharsets.UTF_8))
+                .toString();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://accounts.spotify.com/api/token"))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(form))
+                .build();
+        HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error exchanging code for tokens: " + response.body());
+        }
+
+        JSONObject json = new JSONObject(response.body());
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access_token", json.getString("access_token"));
+        tokens.put("refresh_token", json.getString("refresh_token"));
+        tokens.put("expires_in", String.valueOf(json.getInt("expires_in"))); // opcional
+        return tokens;
+    }
+    // Obtener ultima cancion escuchada
+    public Map<String, Object> getLastPlayedTrack(String email) {
+        gal.usc.etse.sharecloud.server.model.entity.User user = loadUserByUsername(email);
+
+        if (user.getSpotifyAccessToken() == null) {
+            throw new IllegalStateException("Usuario sin Spotify vinculado.");
+        }
+
+        String url = "https://api.spotify.com/v1/me/player/recently-played?limit=1";
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Authorization", "Bearer " + user.getSpotifyAccessToken())
+                .GET()
+                .build();
+        try {
+            HttpResponse<String> response = client.send(
+                    request, HttpResponse.BodyHandlers.ofString()
+            );
+            if (response.statusCode() != 200)
+                throw new RuntimeException("Spotify error: " + response.body());
+
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(response.body(), Map.class);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error llamando a Spotify", e);
+        }
+    }
+
+    // >>>>>>>>>>>    MÉTODOS AUXILIARES PKCE OAuth 2.0
+    private String generateCodeVerifier() {
+        byte[] bytes = new byte[64];
+        new SecureRandom().nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
+    private String generateCodeChallenge(String codeVerifier) throws Exception {
+        MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+        byte[] hashed = sha256.digest(codeVerifier.getBytes(StandardCharsets.US_ASCII));
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashed);
+    }
+
+
+    /*public void linkSpotify(String email, String clientId, String clientSecret, String redirectUri, String authCode) throws Exception {
+        var user = loadUserByUsername(email);
+
+        // Construir la petición para obtener tokens de Spotify
+        HttpClient client = HttpClient.newHttpClient();
+        String body = "grant_type=authorization_code" +
+                "&code=" + URLEncoder.encode(authCode, StandardCharsets.UTF_8) +
+                "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8) +
+                "&client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8) +
+                "&client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://accounts.spotify.com/api/token"))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new IllegalStateException("No se pudo vincular Spotify: " + response.body());
+        }
+
+        // Parsear JSON de la respuesta
+        JSONObject json = new JSONObject(response.body());
+        String accessToken = json.getString("access_token");
+        String refreshToken = json.getString("refresh_token");
+
+        // Guardar en la base de datos del usuario
+        user.setSpotifyId(clientId);
+        user.setSpotifySecret(clientSecret);
+        user.setSpotifyRedirectUri(redirectUri);
+        user.setSpotifyAccessToken(accessToken);
+        user.setSpotifyRefreshToken(refreshToken);
+
+        userRepository.save(user);
+    }
+
+     */
+}
+
+

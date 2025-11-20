@@ -25,7 +25,6 @@ public class FachadaGUI extends Application {
     public UserService getUserService() { return userService; }
     public AuthService getAuthService() { return authService; }
     public UserController getUserController() { return userController; }
-    //public static HostServices getHostServicesInstance() {return hostServices;}
 
     @Override
     public void start(Stage stage){
@@ -44,7 +43,7 @@ public class FachadaGUI extends Application {
                             "gal/usc/etse/sharecloud/layouts/vLog.fxml"
                     )
             );
-            Scene scene = new Scene(fxmlLoader.load(), 744, 340);
+            Scene scene = new Scene(fxmlLoader.load(), 878, 415);
             cLog controller = fxmlLoader.getController();
             controller.setFachadas(this);
             controller.setHostServices(getHostServices());

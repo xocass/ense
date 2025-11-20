@@ -8,12 +8,6 @@
     -fx-pref-width: 371;
     -fx-pref-height: 40;
 }
-.button-login:hover {
-    -fx-background-color: #222222;
-}
-.button-login:pressed {
-    -fx-background-color: #333333;
-}
 .button-register {
     -fx-background-color: #FFF9FE;
     -fx-border-color: #260842;
@@ -25,13 +19,25 @@
     -fx-pref-width: 371;
     -fx-pref-height: 40;
 }
+.button-login:hover {
+    -fx-background-color: #222222;
+}
+.button-login:pressed {
+    -fx-background-color: #333333;
+}
+
 .button-register:hover {
     -fx-background-color: #f5f5f5;
+}
+.image-logo{
+    -fx-image: url("../imgs/logo_vertical.png");
+}
+.background-image {
+    -fx-background-image: url("../imgs/logBackgroud01.jpg");
 }
 .login-background {
     -fx-background-color: #FFF9FE;
 }
-
 .text-field, .password-field {
     -fx-background-color: transparent;
     -fx-border-color: #cccccc;

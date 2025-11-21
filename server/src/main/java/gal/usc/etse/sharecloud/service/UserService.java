@@ -1,12 +1,13 @@
 package gal.usc.etse.sharecloud.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import gal.usc.etse.sharecloud.exception.DuplicateUserException;
 import gal.usc.etse.sharecloud.model.entity.Role;
 import gal.usc.etse.sharecloud.model.dto.UserAuth;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.RoleRepository;
 import gal.usc.etse.sharecloud.repository.UserRepository;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -310,47 +310,6 @@ public class UserService implements UserDetailsService {
         byte[] hashed = sha256.digest(codeVerifier.getBytes(StandardCharsets.US_ASCII));
         return Base64.getUrlEncoder().withoutPadding().encodeToString(hashed);
     }
-
-
-    /*public void linkSpotify(String email, String clientId, String clientSecret, String redirectUri, String authCode) throws Exception {
-        var user = loadUserByUsername(email);
-
-        // Construir la petición para obtener tokens de Spotify
-        HttpClient client = HttpClient.newHttpClient();
-        String body = "grant_type=authorization_code" +
-                "&code=" + URLEncoder.encode(authCode, StandardCharsets.UTF_8) +
-                "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8) +
-                "&client_id=" + URLEncoder.encode(clientId, StandardCharsets.UTF_8) +
-                "&client_secret=" + URLEncoder.encode(clientSecret, StandardCharsets.UTF_8);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://accounts.spotify.com/api/token"))
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString(body))
-                .build();
-
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new IllegalStateException("No se pudo vincular Spotify: " + response.body());
-        }
-
-        // Parsear JSON de la respuesta
-        JSONObject json = new JSONObject(response.body());
-        String accessToken = json.getString("access_token");
-        String refreshToken = json.getString("refresh_token");
-
-        // Guardar en la base de datos del usuario
-        user.setSpotifyId(clientId);
-        user.setSpotifySecret(clientSecret);
-        user.setSpotifyRedirectUri(redirectUri);
-        user.setSpotifyAccessToken(accessToken);
-        user.setSpotifyRefreshToken(refreshToken);
-
-        userRepository.save(user);
-    }
-
-     */
 }
 
 

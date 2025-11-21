@@ -8,7 +8,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import gal.usc.etse.sharecloud.clientModel.User;
 
-
 public class cLog {
     @FXML
     private TextField fieldEmail;
@@ -19,6 +18,7 @@ public class cLog {
     private FachadaGUI fgui;
 
     public void setFachadas(FachadaGUI fgui){this.fgui=fgui;}
+
 
     @FXML
     public void clickLogIn(){

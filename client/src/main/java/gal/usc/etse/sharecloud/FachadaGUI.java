@@ -10,6 +10,18 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 
+/*
+     ¡OLLO! Antes de nada:
+             - Ter instalado jdk-21
+             - Declarar en terminales a emplear:
+                        $env:JAVA_HOME="C:\Program Files\Java\jdk-21"
+                        $env:Path="$env:JAVA_HOME\bin;" + $env:Path
+     Como runnear:
+     1. Buildear desde root / do proxecto:          ./gradlew clean build
+     2. Runnear en 1 terminal servidor primetro:    ./gradlew :server:bootRun
+     3. Runnear en outra terminal cliente:          ./gradlew :client:run
+ */
+
 public class FachadaGUI extends Application {
     private Stage entrarStage;
 
@@ -52,6 +64,7 @@ public class FachadaGUI extends Application {
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
             cSession controller = fxmlLoader.getController();
             controller.setFachadas(this, loggedUser);
+            controller.initSpotifyApi(loggedUser.getEmail(), loggedUser.getAccessToken());
 
             entrarStage.setTitle("Session");
             entrarStage.setScene(scene);

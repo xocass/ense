@@ -2,6 +2,7 @@ package gal.usc.etse.sharecloud.configuration;
 
 import gal.usc.etse.sharecloud.filter.JWTFilter;
 import gal.usc.etse.sharecloud.service.AuthService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/auth/**").permitAll()
+                        authorize.requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/user/spotify/callback").permitAll()
                                 .requestMatchers("/api/user/spotify/link").authenticated() // o permitAll(), según flujo
                                 .anyRequest().authenticated()

@@ -1,8 +1,9 @@
 package gal.usc.etse.sharecloud.filter;
 
-import com.mongodb.lang.NonNull;
 import gal.usc.etse.sharecloud.model.dto.UserAuth;
 import gal.usc.etse.sharecloud.service.AuthService;
+
+import com.mongodb.lang.NonNull;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

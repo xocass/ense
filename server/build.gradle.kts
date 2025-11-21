@@ -23,7 +23,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.session:spring-session-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation ("org.springframework.boot:spring-boot-starter-webflux")

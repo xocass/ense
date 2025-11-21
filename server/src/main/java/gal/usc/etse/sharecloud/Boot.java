@@ -15,15 +15,16 @@ import java.util.Set;
 @SpringBootApplication
 public class Boot {
 
-    /*  LANZAR DESDE CONSOLA:
-    *   OLLO! Asegurarse de ter instalado jdk-21
-    *   Declarar:
-    *       $env:JAVA_HOME="C:\Program Files\Java\jdk-21"
-    *       $env:Path="$env:JAVA_HOME\bin;" + $env:Path
-    *
-    *   Build desde / do proxecto: ./gradlew clean build
-    *   Run: java --add-opens java.base/java.lang=ALL-UNNAMED -jar build/libs/ShareCloud-0.0.1-SNAPSHOT.jar
-    *
+    /*
+         ¡OLLO! Antes de nada:
+                 - Ter instalado jdk-21
+                 - Declarar en terminales a emplear:
+                            $env:JAVA_HOME="C:\Program Files\Java\jdk-21"
+                            $env:Path="$env:JAVA_HOME\bin;" + $env:Path
+         Como runnear:
+         1. Buildear desde root / do proxecto:          ./gradlew clean build
+         2. Runnear en 1 terminal servidor primetro:    ./gradlew :server:bootRun
+         3. Runnear en outra terminal cliente:          ./gradlew :client:run
     */
 
     public static void main(String[] args) {

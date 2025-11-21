@@ -12,12 +12,12 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class cSession {
     private FachadaGUI fgui;
     private User loggedUser;
 
     private SpotifyApi spotifyApi;
+
 
     public void initSpotifyApi(String email, String jwtToken) {spotifyApi = new SpotifyApi(email, jwtToken);}
     public void setFachadas(FachadaGUI fgui, User loggedUser){this.fgui=fgui; this.loggedUser=loggedUser;}

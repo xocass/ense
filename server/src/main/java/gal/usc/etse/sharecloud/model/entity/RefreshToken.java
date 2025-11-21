@@ -1,52 +1,38 @@
 package gal.usc.etse.sharecloud.model.entity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.data.redis.core.TimeToLive;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
+import java.util.Date;
 
 
 @SuppressWarnings("unused")
-@RedisHash()
+@Document(collection = "refresh_tokens")
 public class RefreshToken {
     @Id
     private String token;
     private String user;
-    @TimeToLive
-    private long ttl;
+    @Indexed(name = "expires_idx", expireAfter = "0s")
+    private Date expiresAt;
 
     public RefreshToken() { }
 
-    public RefreshToken(String token, String user, long ttl) {
+    public RefreshToken(String token, String user, long ttlSeconds) {
         this.token = token;
         this.user = user;
-        this.ttl = ttl;
+        // se convierte a Date para que TTL funcione
+        this.expiresAt = Date.from(Instant.now().plusSeconds(ttlSeconds));
     }
 
-    public String getToken() {
-        return token;
-    }
+    public String getToken() { return token; }
+    public void setToken(String token) { this.token = token; }
 
-    public RefreshToken setToken(String token) {
-        this.token = token;
-        return this;
-    }
+    public String getUser() { return user; }
+    public void setUser(String user) { this.user = user; }
 
-    public String getUser() {
-        return user;
-    }
-
-    public RefreshToken setUser(String user) {
-        this.user = user;
-        return this;
-    }
-
-    public long getTtl() {
-        return ttl;
-    }
-
-    public RefreshToken setTtl(long ttl) {
-        this.ttl = ttl;
-        return this;
-    }
+    public Date getExpiresAt() { return expiresAt; }
+    public void setExpiresAt(Date expiresAt) { this.expiresAt = expiresAt; }
 
 }

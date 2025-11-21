@@ -8,6 +8,7 @@ import gal.usc.etse.sharecloud.model.dto.UserAuth;
 import gal.usc.etse.sharecloud.model.entity.Role;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.*;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import io.jsonwebtoken.Jwts;
 import java.security.KeyPair;
 import java.time.Duration;

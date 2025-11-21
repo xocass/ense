@@ -1,8 +1,9 @@
 package gal.usc.etse.sharecloud.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import gal.usc.etse.sharecloud.service.UserService;
 import gal.usc.etse.sharecloud.model.dto.UserAuth;
+
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

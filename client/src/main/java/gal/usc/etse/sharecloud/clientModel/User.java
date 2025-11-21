@@ -46,4 +46,13 @@ public class User {
                 user.user().email(), user.user().username(), user.user().birthdate(), user.user().country(), user.user().city(),
                 user.user().image(), user.accessToken(), user.refreshToken());
     }
+
+    public String getEmail() {return this.email;}
+    public String getUsername() {return this.username;}
+    public Date getBirthDate() {return this.birthDate;}
+    public String getCountry() {return this.country;}
+    public String getCity() {return this.city;}
+    public String getImage() {return this.image;}
+    public String getAccessToken() {return this.accessToken;}
+    public String getRefreshToken() {return this.refreshToken;}
 }

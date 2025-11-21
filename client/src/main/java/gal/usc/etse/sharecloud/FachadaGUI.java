@@ -24,7 +24,6 @@ import java.io.IOException;
 
 public class FachadaGUI extends Application {
     private Stage entrarStage;
-
     private static HostServices hostServices;
 
     public static void main(String[] args){

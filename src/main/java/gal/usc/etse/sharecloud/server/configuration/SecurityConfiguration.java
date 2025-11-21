@@ -29,9 +29,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http.authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/api/auth/callback").permitAll() // <-- Spotify callback
+                                .requestMatchers("/api/user/spotify/callback").permitAll()
+                                .requestMatchers("/api/user/spotify/link").authenticated() // o permitAll(), según flujo
                                 .anyRequest().authenticated()
-
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterAfter(jwtFilter, BasicAuthenticationFilter.class)

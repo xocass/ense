@@ -5,6 +5,7 @@ import gal.usc.etse.sharecloud.server.model.Album;
 import gal.usc.etse.sharecloud.server.model.Artist;
 import gal.usc.etse.sharecloud.server.model.Song;
 //import jakarta.persistence.*;
+import gal.usc.etse.sharecloud.server.model.dto.UserAuth;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,24 +19,28 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 @Document(collection = "users")
 public class User implements UserDetails{
+    // Auth
     @Id
     private String email;
-
-    private String username;
     private String password;
-    private Integer age;
+    private Set<Role> roles = new HashSet<>();
+
+    // Profile
+    private String username;
+    private Date birthdate;
     private String country;
     private String city;
+    private String image;
 
     // Atributos para Spotify
-    private String spotifyId;
     private String spotifyAccessToken;
     private String spotifyRefreshToken;
     private String spotifyState;
     private String spotifyCodeVerifier;
+    private Long spotifyAccessTokenExpiresAt;
 
     private String description;
-    private List<String> friendsIds; // Os IDs son os emails
+    private List<String> friendsIds;
 
     private List<Song> favSongs;
     private List<Album> favAlbums;
@@ -46,13 +51,13 @@ public class User implements UserDetails{
             joinColumns = @JoinColumn(name = "email"),
             inverseJoinColumns = @JoinColumn(name = "role"))
     private Set<Role> roles;*/
-    private Set<Role> roles = new HashSet<>();
+    //private Set<Role> roles = new HashSet<>();
 
-    public static User from(gal.usc.etse.sharecloud.server.model.dto.User user, PasswordEncoder passwordEncoder) {
+    public static User from(UserAuth user, PasswordEncoder passwordEncoder) {
         return new User(user.email(), passwordEncoder.encode(user.password()), null);
     }
 
-    public static User from(gal.usc.etse.sharecloud.server.model.dto.User user) {
+    public static User from(UserAuth user) {
         return new User(user.email(), user.password(), user.roles().stream().map(role -> new Role(role, null, null)).collect(Collectors.toSet()));
     }
 
@@ -84,10 +89,10 @@ public class User implements UserDetails{
     @NonNull
     public String getPassword() { return password;}
     public String getEmail() { return email; }
-    public Integer getAge() { return age; }
+    public Date getBirthdate() { return birthdate; }
     public String getCountry() { return country; }
     public String getCity() { return city; }
-    public String getSpotifyId() { return spotifyId; }
+    public String getImage() { return image; }
     public String getDescription() { return description; }
     public List<String> getFriendsIds() { return friendsIds; }
     public List<Song> getFavSongs() { return favSongs; }
@@ -97,20 +102,22 @@ public class User implements UserDetails{
     public String getSpotifyRefreshToken() { return spotifyRefreshToken; }
     public String getSpotifyState() { return spotifyState; }
     public String getSpotifyCodeVerifier() { return spotifyCodeVerifier; }
+    public Long getSpotifyAccessTokenExpiresAt() { return spotifyAccessTokenExpiresAt; }
 
     // SETTERS
 
     public void setUsername(String username) { this.username = username;}
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }
-    public void setAge(Integer age) { this.age = age; }
+    public void setBirthday(Date birthday) { this.birthdate = birthday; }
     public void setCountry(String country) { this.country = country; }
     public void setCity(String city) { this.city = city; }
-    public void setSpotifyId(String spotifyId) { this.spotifyId = spotifyId; }
+    public void setImage(String image) { this.image = image; }
     public void setSpotifyAccessToken(String accessToken) { this.spotifyAccessToken = accessToken; }
     public void setSpotifyState(String spotifyState) { this.spotifyState = spotifyState; }
     public void setSpotifyRefreshToken(String refreshToken) { this.spotifyRefreshToken = refreshToken; }
     public void setSpotifyCodeVerifier(String codeVerifier) { this.spotifyCodeVerifier = codeVerifier; }
+    public void setSpotifyAccessTokenExpiresAt(Long expiresAt) { this.spotifyAccessTokenExpiresAt = expiresAt; }
     public void setDescription(String description) { this.description = description; }
     public void setFriendsIds(List<String> friendsIds) { this.friendsIds = friendsIds; }
     public void setFavSongs(List<Song> favSongs) { this.favSongs = favSongs; }

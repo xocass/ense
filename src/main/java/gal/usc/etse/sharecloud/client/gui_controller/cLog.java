@@ -1,12 +1,12 @@
 package gal.usc.etse.sharecloud.client.gui_controller;
 
 import gal.usc.etse.sharecloud.client.FachadaGUI;
-import javafx.application.HostServices;
+import gal.usc.etse.sharecloud.client.clientModel.dto.AuthResponse;
+import gal.usc.etse.sharecloud.client.http.AuthApi;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
-import java.util.Set;
 import gal.usc.etse.sharecloud.client.clientModel.User;
 
 @Component
@@ -16,13 +16,10 @@ public class cLog {
     @FXML
     private PasswordField fieldPassword;
 
-    private String email;
+    private final AuthApi authApi = new AuthApi();
     private FachadaGUI fgui;
-    private HostServices hostServices;
 
     public void setFachadas(FachadaGUI fgui){this.fgui=fgui;}
-    public void setHostServices(HostServices hostServices) {this.hostServices = hostServices;}
-    public HostServices getHostServices(){return this.hostServices;}
 
     @FXML
     public void clickLogIn(){
@@ -31,16 +28,11 @@ public class cLog {
 
         if (!email.isBlank() || !password.isBlank()) {
             try {
-                User tempUser =
-                        new User(email, password);
-
-                User loggedUser = fgui.getAuthService().login(tempUser);
-
-
+                AuthResponse user = authApi.login(email, password);
+                User loggedUser= User.from(user);
                 fgui.entrarSesion(loggedUser);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
+            } catch (Exception e) {e.printStackTrace();}
         }
     }
 
@@ -51,15 +43,11 @@ public class cLog {
 
         if (!email.isBlank() || !password.isBlank()) {
             try {
-                gal.usc.etse.sharecloud.server.model.dto.User newUser =
-                        new gal.usc.etse.sharecloud.server.model.dto.User(email, password, Set.of("USER"));
-
-                fgui.getUserService().create(newUser);
-                this.email = email;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                Integer code= authApi.register(email, password);
+                if(code != 201){
+                    System.out.println("Register failed");
+                }
+            } catch (Exception e) {e.printStackTrace();}
         }
     }
 }

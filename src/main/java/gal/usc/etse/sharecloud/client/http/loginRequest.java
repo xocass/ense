@@ -1,12 +1,6 @@
-package gal.usc.etse.sharecloud.client.httpRequest;
+package gal.usc.etse.sharecloud.client.http;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import gal.usc.etse.sharecloud.client.clientModel.User;
-
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -14,7 +8,8 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 public class loginRequest {
-
+    private final HttpClient client = HttpClient.newHttpClient();
+    private final String baseUrl = "http://localhost:8080";
 
     public boolean authLogin(String email, String password) throws Exception {
         HttpClient client = HttpClient.newHttpClient();

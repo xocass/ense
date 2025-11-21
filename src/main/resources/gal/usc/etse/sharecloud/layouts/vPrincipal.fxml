@@ -4,9 +4,9 @@
 <?import javafx.scene.layout.Pane?>
 
 
-<Pane fx:controller="gal.usc.etse.sharecloud.gui_controller.cSession" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Pane fx:controller="gal.usc.etse.sharecloud.client.gui_controller.cSession" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Button fx:id="btnLinkSpotify" layoutX="29.0" layoutY="23.0" mnemonicParsing="false"  onAction="#clickLinkSpotify" text="Spotify" />
-      <Button fx:id="btnSearchFriends" layoutX="101.0" layoutY="23.0" mnemonicParsing="false" onAction="#clickSearchFriends" text="SearchFriends" />
+      <Button  layoutX="29.0" layoutY="23.0" mnemonicParsing="false"  onAction="#clickLinkSpotify" text="Spotify" />
+      <Button  layoutX="101.0" layoutY="23.0" mnemonicParsing="false" onAction="#clickSearchFriends" text="SearchFriends" />
    </children>
 </Pane>

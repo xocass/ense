@@ -1,7 +1,7 @@
 package gal.usc.etse.sharecloud.server.filter;
 
 import com.mongodb.lang.NonNull;
-import gal.usc.etse.sharecloud.server.model.dto.User;
+import gal.usc.etse.sharecloud.server.model.dto.UserAuth;
 import gal.usc.etse.sharecloud.server.service.AuthService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -40,7 +40,7 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        User user = authenticationService.parseJWT(token.replaceFirst("^Bearer ", ""));
+        UserAuth user = authenticationService.parseJWT(token.replaceFirst("^Bearer ", ""));
 
         UsernamePasswordAuthenticationToken authentication = UsernamePasswordAuthenticationToken.authenticated(
                 user.email(),

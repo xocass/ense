@@ -54,7 +54,6 @@ public class FachadaGUI extends Application {
             Scene scene = new Scene(fxmlLoader.load(), 878, 415);
             cLog controller = fxmlLoader.getController();
             controller.setFachadas(this);
-            controller.setHostServices(getHostServices());
 
             entrarStage.setTitle("Iniciar sesión");
             entrarStage.setScene(scene);

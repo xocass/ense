@@ -5,7 +5,7 @@ import gal.usc.etse.sharecloud.server.model.entity.Role;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record User (
+public record UserAuth(
         @JsonView(Views.Public.class)
         String email,
         @JsonView(Views.Private.class)
@@ -14,8 +14,8 @@ public record User (
         Set<String> roles
 
 ) {
-    public static User from(gal.usc.etse.sharecloud.server.model.entity.User user) {
-        return new User(user.getEmail(), user.getPassword(), user.getRoles().stream().map(Role::getRolename).collect(Collectors.toSet()));
+    public static UserAuth from(gal.usc.etse.sharecloud.server.model.entity.User user) {
+        return new UserAuth(user.getEmail(), user.getPassword(), user.getRoles().stream().map(Role::getRolename).collect(Collectors.toSet()));
     }
 
 

@@ -1,8 +1,12 @@
 package gal.usc.etse.sharecloud.server.service;
 
 import gal.usc.etse.sharecloud.server.exception.InvalidRefreshTokenException;
+import gal.usc.etse.sharecloud.server.model.dto.AuthResponse;
+import gal.usc.etse.sharecloud.server.model.dto.UserProfile;
 import gal.usc.etse.sharecloud.server.model.entity.RefreshToken;
-import gal.usc.etse.sharecloud.server.model.dto.User;
+import gal.usc.etse.sharecloud.server.model.dto.UserAuth;
+import gal.usc.etse.sharecloud.server.model.entity.Role;
+import gal.usc.etse.sharecloud.server.model.entity.User;
 import gal.usc.etse.sharecloud.server.repository.*;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -14,9 +18,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import io.jsonwebtoken.Jwts;
@@ -54,40 +56,58 @@ public class AuthService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public User login(User user) throws AuthenticationException {
-        Authentication auth = authenticationManager.authenticate(UsernamePasswordAuthenticationToken.unauthenticated(user.email(), user.password()));
+    public AuthResponse login(UserAuth user) {
+        Authentication auth = authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken.unauthenticated(user.email(), user.password()));
 
-        List<String> roles = auth.getAuthorities()
-                .stream()
-                .filter(authority -> authority instanceof SimpleGrantedAuthority)
+        List<String> roles = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
-        String token = Jwts.builder()
-                .subject(auth.getName())
+        String accessToken = generateAccessToken(user.email(), roles);
+        String refreshToken = regenerateRefreshToken(user);
+
+        User entity = userRepository.findByEmail(user.email()).orElseThrow();
+
+        return new AuthResponse(
+                accessToken,
+                refreshToken,
+                UserProfile.from(entity)
+        );
+    }
+    public AuthResponse login(String refreshToken) {
+        RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new InvalidRefreshTokenException(refreshToken));
+        User user = userRepository.findByEmail(token.getUser())
+                .orElseThrow(() -> new UsernameNotFoundException(token.getUser()));
+        List<String> roles = user.getRoles().stream()
+                .map(Role::getRolename)
+                .toList();
+        String accessToken = generateAccessToken(user.getEmail(), roles);
+        String newRefreshToken = regenerateRefreshToken(UserAuth.from(user));
+
+        return new AuthResponse(
+                accessToken,
+                newRefreshToken,
+                UserProfile.from(user)
+        );
+    }
+
+
+    // Métodos auxiliares
+
+    private String generateAccessToken(String email, List<String> roles) {
+        return Jwts.builder()
+                .subject(email)
                 .issuedAt(Date.from(Instant.now()))
                 .expiration(Date.from(Instant.now().plus(tokenTTL)))
                 .notBefore(Date.from(Instant.now()))
                 .claim("roles", roles)
                 .signWith(keyPair.getPrivate())
                 .compact();
-
-        return new User(user.email(), token, new HashSet<>(roles));
     }
 
-    public User login(String refreshToken) throws AuthenticationException {
-        Optional<RefreshToken> token = refreshTokenRepository.findByToken(refreshToken);
-
-        if (token.isPresent()) {
-            var user = userRepository.findByEmail(token.get().getUser()).orElseThrow(() -> new UsernameNotFoundException(token.get().getUser()));
-
-            return login(User.from(user));
-        }
-
-        throw new InvalidRefreshTokenException(refreshToken);
-    }
-
-    public String regenerateRefreshToken(User user) {
+    public String regenerateRefreshToken(UserAuth user) {
         UUID uuid = UUID.randomUUID();
         RefreshToken refreshToken = new RefreshToken(uuid.toString(), user.email(), refreshTTL.toSeconds());
         refreshTokenRepository.deleteAllByUser(user.email());
@@ -100,7 +120,7 @@ public class AuthService {
         refreshTokenRepository.deleteAllByUser(email);
     }
 
-    public User parseJWT(String token) throws JwtException {
+    public UserAuth parseJWT(String token) throws JwtException {
         Claims claims = Jwts.parser()
                 .verifyWith(keyPair.getPublic())
                 .build()
@@ -111,7 +131,7 @@ public class AuthService {
         var user = userRepository.findByEmail(email);
 
         if (user.isPresent()) {
-            return User.from(user.get());
+            return UserAuth.from(user.get());
         } else {
             throw new UsernameNotFoundException("User (email) not found");
         }

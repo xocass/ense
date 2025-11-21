@@ -1,17 +1,20 @@
 package gal.usc.etse.sharecloud.client.clientModel;
 
-
-
+import gal.usc.etse.sharecloud.client.clientModel.dto.AuthResponse;
+import java.util.Date;
 import java.util.List;
+
 
 public class User {
     private String email;
+    private String accessToken;
+    private String refreshToken;
 
     private String username;
-    private String password;
-    private Integer age;
+    private Date birthDate;
     private String country;
     private String city;
+    private String image;
 
     // Atributos para Spotify
     private String spotifyId;
@@ -27,31 +30,20 @@ public class User {
     private List<Album> favAlbums;
     private List<Artist> favArtists;
 
-    public User(String email, String username, String password, Integer age, String country, String city,
-                String spotifyId, String spotifyAccessToken, String spotifyRefreshToken, String spotifyState,
-                String spotifyCodeVerifier, String description, List<String> friendsIds, List<Song> favSongs,
-                List<Album> favAlbums, List<Artist> favArtists)
-    {
+    public User(String email, String username, Date birthDate, String country, String city, String image, String accessToken, String refreshToken){
         this.email = email;
         this.username = username;
-        this.password = password;
-        this.age = age;
+        this.birthDate = birthDate;
         this.country = country;
         this.city = city;
-        this.spotifyId = spotifyId;
-        this.spotifyAccessToken = spotifyAccessToken;
-        this.spotifyRefreshToken = spotifyRefreshToken;
-        this.spotifyState = spotifyState;
-        this.spotifyCodeVerifier = spotifyCodeVerifier;
-        this.description = description;
-        this.friendsIds = friendsIds;
-        this.favSongs = favSongs;
-        this.favAlbums = favAlbums;
-        this.favArtists = favArtists;
+        this.image = image;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 
-    public User(String email, String password){
-        this.email = email;
-        this.password = password;
+    public static gal.usc.etse.sharecloud.client.clientModel.User from(AuthResponse user) {
+        return new gal.usc.etse.sharecloud.client.clientModel.User(
+                user.user().email(), user.user().username(), user.user().birthdate(), user.user().country(), user.user().city(),
+                user.user().image(), user.accessToken(), user.refreshToken());
     }
 }

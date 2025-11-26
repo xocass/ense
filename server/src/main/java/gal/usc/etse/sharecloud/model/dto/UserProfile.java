@@ -12,13 +12,12 @@ public record UserProfile (
         Date birthdate,
         @JsonView(Views.Public.class)
         String country,
-        @JsonView(Views.Public.class)
-        String city,
+
         @JsonView(Views.Public.class)
         String image
 ){
     public static UserProfile from(gal.usc.etse.sharecloud.model.entity.User user) {
-        return new UserProfile(user.getEmail(), user.getUsername(), user.getBirthdate(), user.getCountry(), user.getCity(), user.getImage());
+        return new UserProfile(user.getEmail(), user.getUsername(), user.getBirthdate(), user.getCountry(), user.getImage());
     }
 
 

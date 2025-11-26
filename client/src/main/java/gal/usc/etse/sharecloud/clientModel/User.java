@@ -13,7 +13,6 @@ public class User {
     private String username;
     private Date birthDate;
     private String country;
-    private String city;
     private String image;
 
     // Atributos para Spotify
@@ -30,12 +29,11 @@ public class User {
     private List<Album> favAlbums;
     private List<Artist> favArtists;
 
-    public User(String email, String username, Date birthDate, String country, String city, String image, String accessToken, String refreshToken){
+    public User(String email, String username, Date birthDate, String country, String image, String accessToken, String refreshToken){
         this.email = email;
         this.username = username;
         this.birthDate = birthDate;
         this.country = country;
-        this.city = city;
         this.image = image;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -43,7 +41,7 @@ public class User {
 
     public static gal.usc.etse.sharecloud.clientModel.User from(AuthResponse user) {
         return new gal.usc.etse.sharecloud.clientModel.User(
-                user.user().email(), user.user().username(), user.user().birthdate(), user.user().country(), user.user().city(),
+                user.user().email(), user.user().username(), user.user().birthdate(), user.user().country(),
                 user.user().image(), user.accessToken(), user.refreshToken());
     }
 
@@ -51,7 +49,6 @@ public class User {
     public String getUsername() {return this.username;}
     public Date getBirthDate() {return this.birthDate;}
     public String getCountry() {return this.country;}
-    public String getCity() {return this.city;}
     public String getImage() {return this.image;}
     public String getAccessToken() {return this.accessToken;}
     public String getRefreshToken() {return this.refreshToken;}

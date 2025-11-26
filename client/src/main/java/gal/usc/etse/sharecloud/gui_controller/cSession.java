@@ -4,12 +4,18 @@ import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.clientModel.User;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
+
+import javafx.scene.image.Image;
+
+import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class cSession {
@@ -82,9 +88,30 @@ public class cSession {
 
     }
 
-    private void clickGetProfile() throws Exception {
+    //CAMBIAR ESTO EN CUANTO PODAMOS NO GUARDAR TOKENS DE USUARIOS QUE NO SOMOS Y LA FECHA RECUPERARLA
+    private User clickGetProfile() throws Exception {
         Map<String, Object> profile = spotifyApi.getProfile();
-        System.out.println("Perfil Spotify: " + profile);
+
+        List<Map<String, Object>> images = (List<Map<String, Object>>) profile.get("images");
+        String imageUrl = new String("");
+        if (images != null && !images.isEmpty()) {
+            imageUrl = (String) images.getFirst().get("url");
+        }
+
+        return new User(
+                (String)profile.get("email"),
+                (String)profile.get("display_name"),
+                null,
+                (String)profile.get("country"),
+                imageUrl,
+                loggedUser.getAccessToken(),
+                loggedUser.getRefreshToken()
+                );
+    }
+
+    @FXML
+    public void clickProfile() throws Exception{
+        fgui.entrarPerfil(loggedUser,clickGetProfile());
     }
 
 }

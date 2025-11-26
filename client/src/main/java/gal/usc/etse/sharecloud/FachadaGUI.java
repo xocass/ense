@@ -47,7 +47,7 @@ public class FachadaGUI extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(
                     FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vLog.fxml")
             );
-            Scene scene = new Scene(fxmlLoader.load(), 878, 415);
+            Scene scene = new Scene(fxmlLoader.load(), 878, 422);
             cLog controller = fxmlLoader.getController();
             controller.setFachadas(this);
 

@@ -3,6 +3,8 @@ package gal.usc.etse.sharecloud.controller;
 import gal.usc.etse.sharecloud.model.dto.AuthRequest;
 import gal.usc.etse.sharecloud.model.dto.LoginResponse;
 import gal.usc.etse.sharecloud.model.dto.SessionTokens;
+import gal.usc.etse.sharecloud.model.entity.User;
+import gal.usc.etse.sharecloud.repository.UserRepository;
 import gal.usc.etse.sharecloud.service.AuthService;
 
 import gal.usc.etse.sharecloud.service.UserService;
@@ -28,11 +30,13 @@ public class AuthController {
     private static final String REFRESH_TOKEN_COOKIE_NAME = "__Secure-RefreshToken";
     private final AuthService authService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public AuthController(AuthService authService,  UserService userService) {
+    public AuthController(AuthService authService, UserService userService, UserRepository userRepository) {
         this.authService = authService;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
 
@@ -62,7 +66,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new LoginResponse(tokens.accessToken()));
+                .body(new LoginResponse(tokens.accessToken(), tokens.userId()));
     }
 
 
@@ -118,7 +122,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new LoginResponse(result.accessToken()));
+                .body(new LoginResponse(result.accessToken(), result.userId()));
     }
 
 
@@ -129,8 +133,10 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(Authentication auth) {
-        String email = auth.getName();
-        authService.invalidateTokens(email);
+        String userId = auth.getName();
+        User user = userRepository.findById(userId).orElseThrow();
+
+        authService.invalidateTokens(user.getEmail());
 
         ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, "")
                 .httpOnly(true)

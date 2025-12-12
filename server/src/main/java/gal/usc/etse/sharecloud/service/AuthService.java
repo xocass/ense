@@ -56,25 +56,26 @@ public class AuthService {
                 )
         );
 
-        String email = auth.getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new UsernameNotFoundException(request.email()));
 
-        String accessToken = generateAccessToken(email, user.getRoles());
+        String userId= user.getId();
+        String accessToken = generateAccessToken(userId, user.getRoles());
         String refreshToken = UUID.randomUUID().toString();
 
         redis.opsForValue().set(
-                "refresh:" + email,
+                "refresh:" + user.getEmail(),
                 refreshToken,
                 refreshTokenTTL
         );
 
-        return new SessionTokens(accessToken, refreshToken);
+        return new SessionTokens(userId, accessToken, refreshToken);
     }
 
 
-    public String generateAccessToken(String email, Set<String> roles) {
+    public String generateAccessToken(String userId, Set<String> roles) {
         return Jwts.builder()
-                .subject(email)
+                .subject(userId)
                 .issuedAt(Date.from(Instant.now()))
                 .expiration(Date.from(Instant.now().plus(accessTokenTTL)))
                 .notBefore(Date.from(Instant.now()))
@@ -93,7 +94,7 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
 
-        String newAccessToken = generateAccessToken(email, user.getRoles());
+        String newAccessToken = generateAccessToken(user.getId(), user.getRoles());
         String newRefreshToken = UUID.randomUUID().toString();
 
         // Borrar viejo y guardar nuevo
@@ -104,7 +105,7 @@ public class AuthService {
                 refreshTokenTTL
         );
 
-        return new SessionTokens(newAccessToken, newRefreshToken);
+        return new SessionTokens(user.getId(), newAccessToken, newRefreshToken);
     }
 
     public void invalidateTokens(String email) {
@@ -119,10 +120,10 @@ public class AuthService {
                     .parseSignedClaims(token)
                     .getPayload();
 
-            String email = claims.getSubject();
+            String userId = claims.getSubject();
             Set<String> roles = new HashSet<>(claims.get("roles", List.class));
 
-            return new AuthenticatedUser(email, roles);
+            return new AuthenticatedUser(userId, roles);
 
         } catch (Exception e) {
             throw new JwtException("Invalid token");

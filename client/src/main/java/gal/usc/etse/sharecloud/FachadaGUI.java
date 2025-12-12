@@ -25,12 +25,10 @@ import java.io.IOException;
 public class FachadaGUI extends Application {
     private Stage entrarStage;
     private static HostServices hostServices;
-    private static String userID;
 
 
     public Stage getEntrarStage() {return entrarStage;}
     public void setEntrarStage(Stage entrarStage) {this.entrarStage = entrarStage;}
-    public static void setUserId(String id){userID=id;}
 
     public static void main(String[] args){
         launch();

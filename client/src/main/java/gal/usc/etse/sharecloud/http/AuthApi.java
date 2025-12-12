@@ -1,7 +1,6 @@
 package gal.usc.etse.sharecloud.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.model.dto.AuthRequest;
 import gal.usc.etse.sharecloud.model.dto.LoginResponse;
 
@@ -30,7 +29,7 @@ public class AuthApi {
         if (response.statusCode() == 200) {
             LoginResponse dto = mapper.readValue(response.body(), LoginResponse.class);
             TokenManager.setAccessToken(dto.accessToken());
-            FachadaGUI.setUserId(dto.userID());
+            TokenManager.setUserID(dto.userID());
         }
 
         return response.statusCode();

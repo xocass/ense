@@ -13,11 +13,16 @@ package gal.usc.etse.sharecloud;
  */
 
 import gal.usc.etse.sharecloud.guiController.cLog;
+import gal.usc.etse.sharecloud.guiController.cProfile;
 import gal.usc.etse.sharecloud.guiController.cSession;
+import gal.usc.etse.sharecloud.http.SpotifyApi;
+import gal.usc.etse.sharecloud.http.TokenManager;
+import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -74,5 +79,27 @@ public class FachadaGUI extends Application {
             entrarStage.setScene(scene);
             entrarStage.show();
         }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+    }
+
+    public void verCurrPerfil(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfile.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+            cProfile controller = fxmlLoader.getController();
+
+            SpotifyProfile profileView = SpotifyApi.getSpotifyProfile(TokenManager.getUserID());
+            Image pfp = new Image(profileView.getImage());
+            controller.pfpView.setImage(pfp);
+            controller.usernameLabel.setText(profileView.getDisplayName());
+            controller.countryLabel.setText(profileView.getCountry());
+            controller.setFachadas(this,profileView);
+
+            entrarStage.setTitle(profileView.getDisplayName());
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        }catch(IOException e){System.err.println("IOException: "+e.getMessage());
+        }catch(Exception e){System.err.println("Exception(getUser): "+e.getMessage());}
     }
 }

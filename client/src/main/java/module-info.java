@@ -20,6 +20,8 @@ module ShareCloud.client.main {
 
     exports gal.usc.etse.sharecloud.model.dto to com.fasterxml.jackson.databind;
     opens gal.usc.etse.sharecloud.model.dto to com.fasterxml.jackson.databind;
+    exports gal.usc.etse.sharecloud.model.entity to com.fasterxml.jackson.databind;
+    opens gal.usc.etse.sharecloud.model.entity to com.fasterxml.jackson.databind;
     opens gal.usc.etse.sharecloud to javafx.fxml;
     opens gal.usc.etse.sharecloud.guiController to javafx.fxml;
     exports gal.usc.etse.sharecloud;

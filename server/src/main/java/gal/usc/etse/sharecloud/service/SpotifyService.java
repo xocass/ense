@@ -131,8 +131,8 @@ public class SpotifyService {
         userRepo.save(user);
     }
 
-    public SpotifyProfile getSpotifyUserProfile(String email) throws Exception {
-        User user = userRepo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
+    public SpotifyProfile getSpotifyUserProfile(String idRequest) throws Exception {
+        User user = userRepo.findById(idRequest).orElseThrow(() -> new UsernameNotFoundException(idRequest));
 
         // Si el token caducó, refrescar
         if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {
@@ -174,7 +174,13 @@ public class SpotifyService {
         String country = json.path("country").asText(null);
         String profileURL = json.path("external-urls").asText(null);
 
-
+        System.out.println("user {");
+        System.out.println(id);
+        System.out.println(displayName);
+        System.out.println(emailResp);
+        System.out.println(country);
+        System.out.println(profileURL);
+        System.out.println("}");
         // primera imagen (si existe)
         String image = null;
         JsonNode images = json.get("images");

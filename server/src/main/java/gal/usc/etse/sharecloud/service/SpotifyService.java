@@ -172,7 +172,11 @@ public class SpotifyService {
         String displayName = json.path("display_name").asText(null);
         String emailResp = json.path("email").asText(null);
         String country = json.path("country").asText(null);
-        String profileURL = json.path("external-urls").asText(null);
+        String profileURL=null;
+        JsonNode externalURLs = json.path("external_urls");
+        if(!externalURLs.isMissingNode()){
+            profileURL=externalURLs.get("spotify").asText(null);
+        }
 
         System.out.println("user {");
         System.out.println(id);

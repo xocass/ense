@@ -1,6 +1,7 @@
 package gal.usc.etse.sharecloud.controller;
 
 import gal.usc.etse.sharecloud.model.dto.SpotifyTokenResponse;
+import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.service.SpotifyService;
 /*import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -81,7 +82,8 @@ public class SpotifyController {
     public ResponseEntity<String> completeLink(@RequestParam String code,
                                                @RequestParam String state) throws Exception {
         SpotifyTokenResponse tokens = spotifyService.exchangeCodeForTokens(code);
-        spotifyService.updateUserSpotifyTokens(state, tokens);
+        User user= spotifyService.updateUserSpotifyTokens(state, tokens);
+        spotifyService.fetchSpotifyId(user);
 
         return ResponseEntity.ok("Spotify linked successfully. You may return to the application.");
     }

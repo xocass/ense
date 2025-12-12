@@ -45,9 +45,9 @@ public class SpotifyApi {
         }
     }
 
-    public static void getSpotifyProfile(String email) throws Exception {
+    public static void getSpotifyProfile(String userID) throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8080/api/user/" + email + "/spotify/me"))
+                .uri(URI.create("http://127.0.0.1:8080/api/user/" + userID + "/spotify/me"))
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .GET()
                 .build();

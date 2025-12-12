@@ -43,7 +43,6 @@ public class SpotifyService {
     }
 
     public String generateLinkUrl(String email) {
-
         String encodedRedirect = URLEncoder.encode(redirectUri, StandardCharsets.UTF_8);
         String encodedScope = URLEncoder.encode(scope, StandardCharsets.UTF_8);
 
@@ -82,7 +81,7 @@ public class SpotifyService {
         return mapper.readValue(response.body(), SpotifyTokenResponse.class);
     }
 
-    public void updateUserSpotifyTokens(String email, SpotifyTokenResponse tokens) {
+    public User updateUserSpotifyTokens(String email, SpotifyTokenResponse tokens) {
         User user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
 
@@ -93,6 +92,42 @@ public class SpotifyService {
         );
         user.setSpotifyLinked(true);
 
+        return user;
+    }
+
+    public void fetchSpotifyId(User user) throws Exception{
+        String spotifyAccessToken = user.getSpotifyAccessToken();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.spotify.com/v1/me"))
+                .header("Authorization", "Bearer " + spotifyAccessToken)
+                .GET()
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 401) {
+            // token inválido, refrescar
+            refreshSpotifyAccessToken(user);
+            spotifyAccessToken = user.getSpotifyAccessToken();
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.spotify.com/v1/me"))
+                    .header("Authorization", "Bearer " + spotifyAccessToken)
+                    .GET()
+                    .build();
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        }
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error retrieving Spotify profile: " + response.body());
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode json = mapper.readTree(response.body());
+
+        String id = json.get("id").asText();
+
+        user.getSpotifyProfile().setSpotifyID(id);
         userRepo.save(user);
     }
 

@@ -1,6 +1,5 @@
 package gal.usc.etse.sharecloud.model.entity;
 
-
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.*;
@@ -16,7 +15,6 @@ public class User {
     private String email;
 
     private SpotifyProfile spotifyProfile;
-    private String username;
     private String password;
     private Set<String> roles;
 
@@ -29,11 +27,11 @@ public class User {
         this.email = email;
         this.password = password;
         this.roles = roles;
+        this.spotifyProfile = new SpotifyProfile();
     }
 
     public String getId() {return id;}
     public String getEmail() {return this.email;}
-    public String getUsername() {return this.username;}
     public String getPassword() {return this.password;}
     public Set<String> getRoles() {return this.roles;}
     public String getSpotifyAccessToken() {return this.spotifyAccessToken;}
@@ -42,7 +40,6 @@ public class User {
     public SpotifyProfile getSpotifyProfile() {return this.spotifyProfile;}
 
     public void setEmail(String email) {this.email = email;}
-    public void setUsername(String username) {this.username = username;}
     public void setPassword(String password) {this.password = password;}
     public void setRoles(Set<String> roles) {this.roles = roles;}
     public void setSpotifyAccessToken(String accessToken) {this.spotifyAccessToken = accessToken;}

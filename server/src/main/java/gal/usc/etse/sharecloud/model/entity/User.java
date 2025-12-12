@@ -15,12 +15,12 @@ public class User {
     @Indexed(unique = true)
     private String email;
 
+    private SpotifyProfile spotifyProfile;
     private String username;
     private String password;
     private Set<String> roles;
 
     private boolean spotifyLinked = false;
-    private String spotifyId;
     private String spotifyAccessToken;
     private String spotifyRefreshToken;
     private Instant spotifyAccessTokenExpiresAt;
@@ -39,7 +39,7 @@ public class User {
     public String getSpotifyAccessToken() {return this.spotifyAccessToken;}
     public String getSpotifyRefreshToken() {return this.spotifyRefreshToken;}
     public Instant getSpotifyAccessTokenExpiresAt() {return this.spotifyAccessTokenExpiresAt;}
-    public String getSpotifyId() {return this.spotifyId;}
+    public SpotifyProfile getSpotifyProfile() {return this.spotifyProfile;}
 
     public void setEmail(String email) {this.email = email;}
     public void setUsername(String username) {this.username = username;}
@@ -49,7 +49,7 @@ public class User {
     public void setSpotifyRefreshToken(String refreshToken) {this.spotifyRefreshToken = refreshToken;}
     public void setSpotifyAccessTokenExpiresAt(Instant expiresAt) {this.spotifyAccessTokenExpiresAt = expiresAt;}
     public void setSpotifyLinked(boolean spotifyLinked) {this.spotifyLinked = spotifyLinked;}
-    public void setSpotifyId(String spotifyId) {this.spotifyId = spotifyId;}
+    public void setSpotifyProfile(SpotifyProfile spotifyProfile) {this.spotifyProfile = spotifyProfile;}
 
     public boolean isSpotifyLinked() {return this.spotifyLinked;}
 }

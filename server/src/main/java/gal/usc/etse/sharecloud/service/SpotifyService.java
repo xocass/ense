@@ -137,6 +137,7 @@ public class SpotifyService {
         String displayName = json.path("display_name").asText(null);
         String emailResp = json.path("email").asText(null);
         String country = json.path("country").asText(null);
+        String profileURL = json.path("external-urls").asText(null);
 
 
         // primera imagen (si existe)
@@ -146,12 +147,24 @@ public class SpotifyService {
             image = images.get(0).get("url").asText();
         }
 
+        //recuperar número de seguidores
+        Integer nFollowers = null;
+
+        JsonNode followersNode = json.path("followers");
+        if (!followersNode.isMissingNode()) {
+            nFollowers = followersNode.path("total").isInt()
+                    ? followersNode.get("total").asInt()
+                    : null;
+        }
+
         return new SpotifyProfile(
                 id,
                 displayName,
                 emailResp,
                 country,
-                image
+                image,
+                nFollowers,
+                profileURL
         );
     }
 

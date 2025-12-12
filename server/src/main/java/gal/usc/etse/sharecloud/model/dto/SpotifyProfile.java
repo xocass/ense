@@ -7,5 +7,7 @@ public record SpotifyProfile(
         String displayName,
         String email,
         String country,
-        String image
+        String image,
+        Integer nFollowers,
+        String profileURL
 ) {}

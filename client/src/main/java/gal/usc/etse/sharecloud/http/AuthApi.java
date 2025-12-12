@@ -30,6 +30,7 @@ public class AuthApi {
             LoginResponse dto = mapper.readValue(response.body(), LoginResponse.class);
             TokenManager.setAccessToken(dto.accessToken());
             TokenManager.setUserID(dto.userID());
+            //System.out.print("userID: "+TokenManager.getUserID());
         }
 
         return response.statusCode();

@@ -138,8 +138,6 @@ public class SpotifyService {
         String emailResp = json.path("email").asText(null);
         String country = json.path("country").asText(null);
 
-        // birthdate (si existe)
-        String birthdate = json.has("birthdate") ? json.get("birthdate").asText() : null;
 
         // primera imagen (si existe)
         String image = null;
@@ -153,7 +151,6 @@ public class SpotifyService {
                 displayName,
                 emailResp,
                 country,
-                birthdate,
                 image
         );
     }

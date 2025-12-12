@@ -33,7 +33,7 @@ public class cLog {
             return;
         }
 
-        new Thread(() -> {
+
             try {
                 int status = AuthApi.login(email, password);
 
@@ -50,7 +50,7 @@ public class cLog {
             } catch (Exception e) {
                 updateStatus("Error de conexión: " + e.getMessage());
             }
-        }).start();
+
     }
 
     @FXML

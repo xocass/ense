@@ -7,6 +7,5 @@ public record SpotifyProfile(
         String displayName,
         String email,
         String country,
-        String birthdate,
         String image
 ) {}

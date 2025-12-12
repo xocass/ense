@@ -1,95 +1,59 @@
 package gal.usc.etse.sharecloud.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.net.URI;
 import java.net.URLEncoder;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SpotifyApi {
     private final ObjectMapper mapper = new ObjectMapper();
-    private final String email;
-    private final String jwtToken;
+    private final static String serverSpotifyUrl = "http://127.0.0.1:8080/api/spotify";
 
-    private final HttpClient client = HttpClient.newHttpClient();
-    private final String serverUrl = "http://127.0.0.1:8080/api/user";
-
-    public SpotifyApi(String email, String jwtToken){this.email=email;this.jwtToken=jwtToken;}
-
-
-    // Genera URL para iniciar el linking de Spotify
-    public String startSpotifyLink() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(serverUrl + "/spotify/link?email=" + URLEncoder.encode(email, StandardCharsets.UTF_8)))
-                .header("Authorization", "Bearer " + jwtToken)
+    public static String startSpotifyLink(String email) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(serverSpotifyUrl + "/start-link?email=" + email))
                 .GET()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> res =
+                ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Error obteniendo URL de Spotify: " + response.body());
+        if (res.statusCode() == 200) {
+            return res.body();
         }
-        return response.body();
+
+        throw new RuntimeException("Error obtaining Spotify link URL");
     }
 
-    // Completa el linking de Spotify con code y state de callback
-    public void completeSpotifyLink(String code, String state) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(serverUrl + "/spotify/callback?code=" + code + "&state=" + state))
-                .header("Authorization", "Bearer " + jwtToken)
+    public static void completeSpotifyLink(String code, String state) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create(serverSpotifyUrl + "/complete-link"))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        "code=" + URLEncoder.encode(code, StandardCharsets.UTF_8)
+                                + "&state=" + URLEncoder.encode(state, StandardCharsets.UTF_8)
+                ))
+                .build();
+        HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
+
+        System.out.println("STATUS = " + res.statusCode());
+        System.out.println("BODY = " + res.body());
+        if (res.statusCode() != 200) {
+            throw new RuntimeException("Error linking Spotify account");
+        }
+    }
+
+    public static void getSpotifyProfile(String email) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:8080/api/user/" + email + "/spotify/me"))
+                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .GET()
                 .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Error vinculando Spotify: " + response.body());
-        }
-    }
+        HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
 
-    // Obtiene perfil de Spotify del usuario
-    public Map<String, Object> getProfile() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(serverUrl + "/" + URLEncoder.encode(email, StandardCharsets.UTF_8) + "/spotify/profile"))
-                .header("Authorization", "Bearer " + jwtToken)
-                .GET()
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Error obteniendo perfil Spotify: " + response.body());
-        }
-
-        return mapper.readValue(response.body(), Map.class);
-    }
-
-    // Obtiene última canción reproducida
-    public Map<String, Object> getLastPlayedTrack() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(serverUrl + "/" + URLEncoder.encode(email, StandardCharsets.UTF_8) + "/spotify/last-track"))
-                .header("Authorization", "Bearer " + jwtToken)
-                .GET()
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Error obteniendo última canción: " + response.body());
-        }
-
-        return mapper.readValue(response.body(), Map.class);
-    }
-
-    // Extrae información legible de la última canción
-    public String formatLastTrack(Map<String, Object> trackData) {
-        List<Map<String, Object>> items = (List<Map<String, Object>>) trackData.get("items");
-        if (items != null && !items.isEmpty()) {
-            Map<String, Object> track = (Map<String, Object>) items.get(0).get("track");
-            String trackName = (String) track.get("name");
-            List<Map<String, Object>> artists = (List<Map<String, Object>>) track.get("artists");
-            String artistNames = artists.stream().map(a -> (String) a.get("name")).collect(Collectors.joining(", "));
-            return trackName + " — " + artistNames;
-        }
-        return "No hay canciones recientes";
+        System.out.println("STATUS = " + res.statusCode());
+        System.out.println("BODY = " + res.body());
     }
 }

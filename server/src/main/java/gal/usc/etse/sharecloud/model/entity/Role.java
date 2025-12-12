@@ -1,29 +1,18 @@
 package gal.usc.etse.sharecloud.model.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
 
-@SuppressWarnings("unused")
-@Entity
+
 @Document(collection = "roles")
 public class Role {
     @Id
     private String rolename;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "role_hierarchy",
-            joinColumns = @JoinColumn(name = "role"),
-            inverseJoinColumns = @JoinColumn(name = "includes"))
-    private Set<Role> includes;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "role_permissions",
-            joinColumns = @JoinColumn(name = "role"),
-            inverseJoinColumns = @JoinColumn(name = "permission"))
+    private Set<Role> includes;
     private Set<Permission> permissions;
 
     public Role() { }

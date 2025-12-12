@@ -1,20 +1,18 @@
 package gal.usc.etse.sharecloud;
 
-import gal.usc.etse.sharecloud.db.Connection;
+import gal.usc.etse.sharecloud.db.MongoConnection;
 import gal.usc.etse.sharecloud.model.entity.Role;
 import gal.usc.etse.sharecloud.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
 import java.util.Set;
 
-//@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
-//@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 @SpringBootApplication
 public class Boot {
-
-    /*
+/*
          ¡OLLO! Antes de nada:
                  - Ter instalado jdk-21
                  - Declarar en terminales a emplear:
@@ -27,7 +25,7 @@ public class Boot {
     */
 
     public static void main(String[] args) {
-        Connection db= new Connection();
+        MongoConnection db= new MongoConnection();
 
         SpringApplication.run(Boot.class, args);
     }
@@ -48,5 +46,4 @@ public class Boot {
             }
         };
     }
-
 }

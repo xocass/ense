@@ -1,4 +1,4 @@
-module ShareCloud.client {
+module ShareCloud.client.main {
     requires org.mongodb.bson;
     requires org.mongodb.driver.core;
     requires org.mongodb.driver.sync.client;
@@ -18,11 +18,10 @@ module ShareCloud.client {
     requires com.fasterxml.jackson.core;
     //requires ShareCloud.main;
 
-    exports gal.usc.etse.sharecloud.clientModel.dto to com.fasterxml.jackson.databind;
-    opens gal.usc.etse.sharecloud.clientModel.dto to com.fasterxml.jackson.databind;
-    opens gal.usc.etse.sharecloud.clientModel;
+    exports gal.usc.etse.sharecloud.model.dto to com.fasterxml.jackson.databind;
+    opens gal.usc.etse.sharecloud.model.dto to com.fasterxml.jackson.databind;
     opens gal.usc.etse.sharecloud to javafx.fxml;
-    opens gal.usc.etse.sharecloud.gui_controller to javafx.fxml;
+    opens gal.usc.etse.sharecloud.guiController to javafx.fxml;
     exports gal.usc.etse.sharecloud;
 
 }

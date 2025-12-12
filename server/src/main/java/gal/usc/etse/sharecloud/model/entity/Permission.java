@@ -1,10 +1,9 @@
 package gal.usc.etse.sharecloud.model.entity;
 
-import jakarta.persistence.*;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.*;
 
-@SuppressWarnings("unused")
-@Entity
-@Table(name = "permissions")
+@Document(collection = "permissions")
 public class Permission {
     @Id
     private String id;

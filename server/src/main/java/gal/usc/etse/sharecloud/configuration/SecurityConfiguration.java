@@ -1,8 +1,7 @@
 package gal.usc.etse.sharecloud.configuration;
 
-import gal.usc.etse.sharecloud.filter.JWTFilter;
+import gal.usc.etse.sharecloud.filter.JwtFilter;
 import gal.usc.etse.sharecloud.service.AuthService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,24 +14,34 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity(proxyTargetClass = true)
+@EnableMethodSecurity()
 public class SecurityConfiguration {
-    JWTFilter jwtFilter;
+    JwtFilter jwtFilter;
     AuthService authenticationService;
 
     @Autowired
-    public SecurityConfiguration(JWTFilter jwtFilter, AuthService authenticationService) {
+    public SecurityConfiguration(JwtFilter jwtFilter, AuthService authenticationService) {
         this.jwtFilter = jwtFilter;
         this.authenticationService = authenticationService;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/api/auth/**").permitAll()
-                                .requestMatchers("/api/user/spotify/callback").permitAll()
-                                .requestMatchers("/api/user/spotify/link").authenticated() // o permitAll(), según flujo
-                                .anyRequest().authenticated()
+                        authorize.requestMatchers(
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/v3/api-docs/**",
+                                        "/swagger-resources/**",
+                                        "/webjars/**",
+                                        "/api/auth/register",
+                                        "/api/auth/login",
+                                        "/api/auth/refresh",
+                                        "/api/spotify/start-link",
+                                        "/api/spotify/callback",
+                                        "/api/spotify/complete-link").permitAll()
+                        .requestMatchers("/api/auth/logout").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterAfter(jwtFilter, BasicAuthenticationFilter.class)
@@ -44,6 +53,4 @@ public class SecurityConfiguration {
     public RoleHierarchy roleHierarchy() {
         return authenticationService.loadRoleHierarchy();
     }
-
 }
-

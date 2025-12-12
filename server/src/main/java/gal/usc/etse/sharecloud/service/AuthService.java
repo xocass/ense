@@ -1,27 +1,24 @@
 package gal.usc.etse.sharecloud.service;
 
-import gal.usc.etse.sharecloud.exception.InvalidRefreshTokenException;
-import gal.usc.etse.sharecloud.model.dto.AuthResponse;
-import gal.usc.etse.sharecloud.model.dto.UserProfile;
-import gal.usc.etse.sharecloud.model.entity.RefreshToken;
-import gal.usc.etse.sharecloud.model.dto.UserAuth;
-import gal.usc.etse.sharecloud.model.entity.Role;
+import gal.usc.etse.sharecloud.model.dto.AuthRequest;
+import gal.usc.etse.sharecloud.model.dto.AuthenticatedUser;
+import gal.usc.etse.sharecloud.model.dto.SessionTokens;
 import gal.usc.etse.sharecloud.model.entity.User;
-import gal.usc.etse.sharecloud.repository.*;
-
+import gal.usc.etse.sharecloud.repository.RoleRepository;
+import gal.usc.etse.sharecloud.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import io.jsonwebtoken.Jwts;
+import org.springframework.stereotype.Service;
+
 import java.security.KeyPair;
 import java.time.Duration;
 import java.time.Instant;
@@ -31,113 +28,107 @@ import java.util.*;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final KeyPair keyPair;
+    private final StringRedisTemplate redis;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
+    private final String SECRET = "__SECRET:_VERY_SECRETY_SECRET";
     @Value("${auth.jwt.ttl:PT15M}")
-    private Duration tokenTTL;
+    private Duration accessTokenTTL;
     @Value("${auth.refresh.ttl:PT72H}")
-    private Duration refreshTTL;
+    private Duration refreshTokenTTL;
 
 
     @Autowired
-    public AuthService(
-            AuthenticationManager authenticationManager,
-            KeyPair keyPair,
-            UserRepository userRepository,
-            RoleRepository roleRepository,
-            RefreshTokenRepository refreshTokenRepository
-    ) {
+    public AuthService(AuthenticationManager authenticationManager, KeyPair keyPair, StringRedisTemplate redis,
+                       UserRepository userRepository, RoleRepository roleRepository) {
         this.authenticationManager = authenticationManager;
         this.keyPair = keyPair;
+        this.redis = redis;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public AuthResponse login(UserAuth user) {
-        Authentication auth = authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken.unauthenticated(user.email(), user.password()));
+    public SessionTokens login(AuthRequest request) {
+        Authentication auth = authenticationManager.authenticate(UsernamePasswordAuthenticationToken.unauthenticated(
+                        request.email(),
+                        request.password()
+                )
+        );
 
-        List<String> roles = auth.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
-        String accessToken = generateAccessToken(user.email(), roles);
-        String refreshToken = regenerateRefreshToken(user);
+        String accessToken = generateAccessToken(email, user.getRoles());
+        String refreshToken = UUID.randomUUID().toString();
 
-        User entity = userRepository.findByEmail(user.email()).orElseThrow();
-
-        return new AuthResponse(
-                accessToken,
+        redis.opsForValue().set(
+                "refresh:" + email,
                 refreshToken,
-                UserProfile.from(entity)
+                refreshTokenTTL
         );
-    }
-    public AuthResponse login(String refreshToken) {
-        RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
-                .orElseThrow(() -> new InvalidRefreshTokenException(refreshToken));
-        User user = userRepository.findByEmail(token.getUser())
-                .orElseThrow(() -> new UsernameNotFoundException(token.getUser()));
-        List<String> roles = user.getRoles().stream()
-                .map(Role::getRolename)
-                .toList();
-        String accessToken = generateAccessToken(user.getEmail(), roles);
-        String newRefreshToken = regenerateRefreshToken(UserAuth.from(user));
 
-        return new AuthResponse(
-                accessToken,
-                newRefreshToken,
-                UserProfile.from(user)
-        );
+        return new SessionTokens(accessToken, refreshToken);
     }
 
 
-    // Métodos auxiliares
-
-    private String generateAccessToken(String email, List<String> roles) {
+    public String generateAccessToken(String email, Set<String> roles) {
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plus(tokenTTL)))
+                .expiration(Date.from(Instant.now().plus(accessTokenTTL)))
                 .notBefore(Date.from(Instant.now()))
                 .claim("roles", roles)
                 .signWith(keyPair.getPrivate())
                 .compact();
     }
 
-    public String regenerateRefreshToken(UserAuth user) {
-        UUID uuid = UUID.randomUUID();
-        RefreshToken refreshToken = new RefreshToken(uuid.toString(), user.email(), refreshTTL.toSeconds());
-        refreshTokenRepository.deleteAllByUser(user.email());
-        refreshTokenRepository.save(refreshToken);
+    public SessionTokens refreshAccessToken(String refreshToken, String email) {
+        String storedToken = redis.opsForValue().get("refresh:" + email);
 
-        return refreshToken.getToken();
+        if (storedToken == null || !storedToken.equals(refreshToken)) {
+            throw new RuntimeException("Invalid or expired refresh token");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+
+        String newAccessToken = generateAccessToken(email, user.getRoles());
+        String newRefreshToken = UUID.randomUUID().toString();
+
+        // Borrar viejo y guardar nuevo
+        invalidateTokens(email);
+        redis.opsForValue().set(
+                "refresh:" + email,
+                newRefreshToken,
+                refreshTokenTTL
+        );
+
+        return new SessionTokens(newAccessToken, newRefreshToken);
     }
 
     public void invalidateTokens(String email) {
-        refreshTokenRepository.deleteAllByUser(email);
+        redis.delete("refresh:" + email);
     }
 
-    public UserAuth parseJWT(String token) throws JwtException {
-        Claims claims = Jwts.parser()
-                .verifyWith(keyPair.getPublic())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+    public AuthenticatedUser parseJWT(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .verifyWith(keyPair.getPublic())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
 
-        String email = claims.getSubject();
-        var user = userRepository.findByEmail(email);
+            String email = claims.getSubject();
+            Set<String> roles = new HashSet<>(claims.get("roles", List.class));
 
-        if (user.isPresent()) {
-            return UserAuth.from(user.get());
-        } else {
-            throw new UsernameNotFoundException("User (email) not found");
+            return new AuthenticatedUser(email, roles);
+
+        } catch (Exception e) {
+            throw new JwtException("Invalid token");
         }
     }
-
-    public RoleHierarchy loadRoleHierarchy() {
+    public RoleHierarchyImpl loadRoleHierarchy() {
         RoleHierarchyImpl.Builder builder = RoleHierarchyImpl.withRolePrefix("");
 
         roleRepository.findAll().forEach(role -> {

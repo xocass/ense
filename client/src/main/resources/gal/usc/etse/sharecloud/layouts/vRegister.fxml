@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="422.0" prefWidth="878.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cLog">
+<AnchorPane prefHeight="422.0" prefWidth="878.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cRegister">
    <children>
       <Pane layoutX="-6.0" layoutY="-8.0" prefHeight="430.0" prefWidth="884.0" styleClass="background-image" stylesheets="@../styles/log.css">
          <children>
@@ -48,29 +48,23 @@
                   </VBox>
                   <HBox alignment="CENTER" prefHeight="25.0" prefWidth="436.0">
                      <children>
-                        <AnchorPane prefHeight="32.0" prefWidth="191.0">
+                        <AnchorPane prefHeight="25.0" prefWidth="379.0">
                            <children>
-                              <Label fx:id="statusLabel" alignment="TOP_LEFT" layoutX="-1.0" prefHeight="32.0" prefWidth="210.0" textFill="#c10000" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="32.0" prefWidth="158.0">
-                           <children>
-                              <Label contentDisplay="RIGHT" prefHeight="18.0" prefWidth="156.0" text="¿Has olvidado tu contraseña?" underline="true" />
+                              <Label fx:id="statusLabel" textFill="#c10000" />
                            </children>
                         </AnchorPane>
                      </children>
                   </HBox>
                   <VBox prefHeight="146.0" prefWidth="436.0" spacing="20.0">
                      <children>
-                        <AnchorPane prefHeight="108.0" prefWidth="436.0">
-                           <children>
-                              <Button fx:id="btnIniciarSesion" alignment="CENTER" layoutX="32.0" layoutY="24.0" mnemonicParsing="false" onAction="#clickOnLogin" styleClass="button-login" stylesheets="@../styles/log.css" text="Iniciar sesión" />
-                              <Label layoutX="140.0" layoutY="77.0" text="—   o, si no tienes cuenta   —" textFill="#260842" />
-                           </children>
-                        </AnchorPane>
                         <AnchorPane prefHeight="85.0" prefWidth="436.0">
                            <children>
-                              <Button fx:id="btnRegistrarse" layoutX="32.0" layoutY="-8.0" mnemonicParsing="false" onAction="#clickOnRegister" styleClass="button-register" stylesheets="@../styles/log.css" text="Regístrate" />
+                              <Button fx:id="btnRegistrarse" alignment="CENTER" layoutX="32.0" layoutY="6.0" mnemonicParsing="false" onAction="#clickOnRegister" styleClass="button-login" stylesheets="@../styles/log.css" text="Registrarse" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="btnCancelar" layoutX="32.0" layoutY="14.0" mnemonicParsing="false" onAction="#clickOnCancel" styleClass="button-register" stylesheets="@../styles/log.css" text="Cancelar" />
                            </children>
                         </AnchorPane>
                      </children>

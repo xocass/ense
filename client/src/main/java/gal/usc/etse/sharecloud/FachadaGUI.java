@@ -1,17 +1,5 @@
 package gal.usc.etse.sharecloud;
 
-import gal.usc.etse.sharecloud.gui_controller.cLog;
-import gal.usc.etse.sharecloud.gui_controller.cProfile;
-import gal.usc.etse.sharecloud.gui_controller.cSession;
-import gal.usc.etse.sharecloud.clientModel.User;
-import javafx.application.Application;
-import javafx.application.HostServices;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
-import java.io.IOException;
-
 /*
      ¡OLLO! Antes de nada:
              - Ter instalado jdk-21
@@ -24,9 +12,23 @@ import java.io.IOException;
      3. Runnear en outra terminal cliente:          ./gradlew :client:run
  */
 
+import gal.usc.etse.sharecloud.guiController.cLog;
+import gal.usc.etse.sharecloud.guiController.cSession;
+import javafx.application.Application;
+import javafx.application.HostServices;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
 public class FachadaGUI extends Application {
     private Stage entrarStage;
     private static HostServices hostServices;
+
+
+    public Stage getEntrarStage() {return entrarStage;}
+    public void setEntrarStage(Stage entrarStage) {this.entrarStage = entrarStage;}
 
     public static void main(String[] args){
         launch();
@@ -57,39 +59,19 @@ public class FachadaGUI extends Application {
         }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
     }
 
-    public void entrarSesion(User loggedUser){
+    public void entrarSesion(String email){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
                     FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vPrincipal.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 600, 400);
             cSession controller = fxmlLoader.getController();
-            controller.setFachadas(this, loggedUser);
-            controller.initSpotifyApi(loggedUser.getEmail(), loggedUser.getAccessToken());
+            controller.setEmail(email);
+            controller.setFachadas(this);
 
             entrarStage.setTitle("Session");
             entrarStage.setScene(scene);
             entrarStage.show();
         }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
-    }
-
-    public void entrarPerfil(User loggedUser, User profileView) throws Exception{
-        try {
-            FXMLLoader loader = new FXMLLoader(FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfile.fxml"));
-            Scene scene = new Scene(loader.load(), 600, 400);
-
-            cProfile controller = loader.getController();
-            Image pfp = new Image(profileView.getImage());
-            controller.pfpView.setImage(pfp);
-            controller.usernameLabel.setText(profileView.getUsername());
-            controller.countryLabel.setText(profileView.getCountry());
-            controller.setFachadas(this, loggedUser);
-            controller.initSpotifyApi(loggedUser.getEmail(), loggedUser.getAccessToken());
-
-            entrarStage.setTitle(profileView.getUsername());
-            entrarStage.setScene(scene);
-            entrarStage.show();
-
-        }catch(Exception  e) {e.printStackTrace();}
     }
 }

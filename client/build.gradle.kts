@@ -52,7 +52,7 @@ jlink {
 
 application {
     mainClass.set("gal.usc.etse.sharecloud.FachadaGUI")
-    mainModule.set("ShareCloud.client")
+    mainModule.set("ShareCloud.client.main")
 }
 
 tasks.withType<Test> {

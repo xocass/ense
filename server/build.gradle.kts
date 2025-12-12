@@ -25,14 +25,23 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation ("org.springframework.boot:spring-boot-starter-webflux")
+    //implementation ("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    //implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
     implementation ("org.mongodb:mongodb-driver-sync")
     implementation("org.json:json:20210307")
+
+    //Swagger
+    //implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+    //implementation("org.springdoc:springdoc-openapi-starter-webmvc-scalar:3.0.0-RC1")
+
+    // Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("io.lettuce:lettuce-core")
 
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
@@ -48,7 +57,6 @@ jlink {
 
 application {
     mainClass.set("gal.usc.etse.sharecloud.Boot")
-    //mainModule.set("ShareCloud.main")
 }
 
 tasks.withType<Test> {

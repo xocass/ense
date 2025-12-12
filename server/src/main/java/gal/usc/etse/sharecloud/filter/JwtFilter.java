@@ -44,7 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
         AuthenticatedUser user = authenticationService.parseJWT(jwt);
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        user.email(),
+                        user.userId(),
                         null,
                         user.roles().stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r)).toList()
                 );

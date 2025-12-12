@@ -15,4 +15,9 @@ public class cSession {
     private void clickSearchFriends(){
 
     }
+
+    @FXML
+    private void clickViewProfile(){
+        fgui.verCurrPerfil();
+    }
 }

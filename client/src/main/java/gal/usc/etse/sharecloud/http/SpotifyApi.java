@@ -1,6 +1,5 @@
 package gal.usc.etse.sharecloud.http;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -8,8 +7,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
+
+
 public class SpotifyApi {
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final static ObjectMapper mapper = new ObjectMapper();
     private final static String serverSpotifyUrl = "http://127.0.0.1:8080/api/spotify";
 
     public static String startSpotifyLink(String email) throws Exception {
@@ -45,15 +48,19 @@ public class SpotifyApi {
         }
     }
 
-    public static void getSpotifyProfile(String email) throws Exception {
+    public static SpotifyProfile getSpotifyProfile(String userID) throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8080/api/user/" + email + "/spotify/me"))
+                .uri(URI.create("http://127.0.0.1:8080/api/user/" + userID + "/spotify/me"))
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .GET()
                 .build();
         HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
 
-        System.out.println("STATUS = " + res.statusCode());
-        System.out.println("BODY = " + res.body());
+        if (res.statusCode() != 200) {
+            throw new RuntimeException("Error obteniendo perfil Spotify");
+        }
+
+        return mapper.readValue(res.body(), SpotifyProfile.class);
+
     }
 }

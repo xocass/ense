@@ -22,7 +22,7 @@ public class UserSpotifyController {
         this.spotifyService = spotifyService;
     }
 
-    @PreAuthorize("#id == authentication.principal.username")
+    @PreAuthorize("#id == authentication.name")
     @GetMapping("/me")
     public ResponseEntity<SpotifyProfile> getSpotifyProfile(@PathVariable String id) throws Exception {
         SpotifyProfile profile = spotifyService.getSpotifyUserProfile(id);

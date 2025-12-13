@@ -21,7 +21,7 @@ public class UserActivityService {
     }
 
     // Se actualizan las ultimas canciones escuchadas contenidas en 'ListenedTrackPayload' en la BD
-    public void upsertListenedTrackState(String userId, List<TrackInfo> tracks) {
+    public void updateListenedTrackState(String userId, List<TrackInfo> tracks) {
         UserActivity activity = activityRepo.findByUserIdAndType(userId, ActivityType.LISTENED_TRACK)
                 .orElseGet(() -> {
                     UserActivity a = new UserActivity();

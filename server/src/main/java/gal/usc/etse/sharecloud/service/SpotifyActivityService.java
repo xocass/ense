@@ -36,7 +36,7 @@ public class SpotifyActivityService {
             tracks.add(track);
         }
 
-        activityService.upsertListenedTrackState(
+        activityService.updateListenedTrackState(
                 userId,
                 tracks);
     }

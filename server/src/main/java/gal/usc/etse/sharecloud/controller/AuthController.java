@@ -2,6 +2,7 @@ package gal.usc.etse.sharecloud.controller;
 
 import gal.usc.etse.sharecloud.model.dto.AuthRequest;
 import gal.usc.etse.sharecloud.model.dto.LoginResponse;
+import gal.usc.etse.sharecloud.model.dto.ResetPasswordRequest;
 import gal.usc.etse.sharecloud.model.dto.SessionTokens;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.UserRepository;
@@ -152,6 +153,43 @@ public class AuthController {
                 .build();
     }
 
+    /*@Operation(
+            summary = "Request password recovery code",
+            description = "Generates a 6-digit recovery code and sends it by email. "
+                    + "The response is always successful to avoid revealing whether the email exists."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Recovery process started")
+    })*/
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@RequestBody String email) {
+        email = email.trim();
+        if (email.startsWith("\"") && email.endsWith("\"") && email.length() >= 2) {
+            email = email.substring(1, email.length() - 1);
+        }
+        authService.sendRecoveryCode(email);
+        return ResponseEntity.ok().build();
+    }
 
+
+    @PostMapping("/check-reset-code")
+    public ResponseEntity<Void> checkResetCode(@RequestBody AuthRequest request) {
+        authService.checkPasswordRecoveryCode(request.email(), request.password());
+        return ResponseEntity.ok().build();
+    }
+
+    /*@Operation(
+            summary = "Reset password using recovery code",
+            description = "Validates the recovery code and sets a new password for the user."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Password updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid or expired recovery code")
+    })*/
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody AuthRequest request) {
+        authService.resetPassword(request.email(), request.password());
+        return ResponseEntity.ok().build();
+    }
 
 }

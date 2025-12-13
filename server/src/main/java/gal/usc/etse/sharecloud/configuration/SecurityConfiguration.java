@@ -37,6 +37,9 @@ public class SecurityConfiguration {
                                         "/api/auth/register",
                                         "/api/auth/login",
                                         "/api/auth/refresh",
+                                        "/api/auth/forgot-password",
+                                        "/api/auth/check-reset-code",
+                                        "/api/auth/reset-password",
                                         "/api/spotify/start-link",
                                         "/api/spotify/callback",
                                         "/api/spotify/complete-link").permitAll()

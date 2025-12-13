@@ -3,7 +3,7 @@
     -fx-text-fill: white;
     -fx-border-width: 1;
     -fx-font-size: 13px;
-    -fx-padding: 5 0;
+    //-fx-padding: 5 0;
     -fx-cursor: hand;
     -fx-pref-width: 371;
     -fx-pref-height: 40;
@@ -14,7 +14,7 @@
     -fx-border-width: 1;
     -fx-text-fill: #260842 ;
     -fx-font-size: 13px;
-    -fx-padding: 5 0;
+    //-fx-padding: 5 0;
     -fx-cursor: hand;
     -fx-pref-width: 371;
     -fx-pref-height: 40;
@@ -30,7 +30,7 @@
     -fx-background-color: #f5f5f5;
 }
 .image-logo{
-    -fx-image: url("../imgs/logo_vertical.png");
+    -fx-image: url("../imgs/logo_vert_spotify.png");
 }
 .background-image {
     -fx-background-image: url("../imgs/logBackgroud01.jpg");

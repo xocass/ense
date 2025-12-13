@@ -2,7 +2,10 @@ package gal.usc.etse.sharecloud.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gal.usc.etse.sharecloud.model.dto.SpotifyProfile;
+import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTokenResponse;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.UserRepository;
@@ -34,6 +37,8 @@ public class SpotifyService {
 
     @Value("${spotify.scope}")
     private String scope;
+
+    private final static String SPOTIFY_API_URI = "https://api.spotify.com/v1";
 
     private final UserRepository userRepo;
 
@@ -98,7 +103,7 @@ public class SpotifyService {
     public void fetchSpotifyId(User user) throws Exception{
         String spotifyAccessToken = user.getSpotifyAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.spotify.com/v1/me"))
+                .uri(URI.create(SPOTIFY_API_URI + "/me"))
                 .header("Authorization", "Bearer " + spotifyAccessToken)
                 .GET()
                 .build();
@@ -111,7 +116,7 @@ public class SpotifyService {
             refreshSpotifyAccessToken(user);
             spotifyAccessToken = user.getSpotifyAccessToken();
             request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.spotify.com/v1/me"))
+                    .uri(URI.create(SPOTIFY_API_URI + "/me"))
                     .header("Authorization", "Bearer " + spotifyAccessToken)
                     .GET()
                     .build();
@@ -141,7 +146,7 @@ public class SpotifyService {
 
         String spotifyAccessToken = user.getSpotifyAccessToken();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.spotify.com/v1/me"))
+                .uri(URI.create(SPOTIFY_API_URI + "/me"))
                 .header("Authorization", "Bearer " + spotifyAccessToken)
                 .GET()
                 .build();
@@ -154,7 +159,7 @@ public class SpotifyService {
             refreshSpotifyAccessToken(user);
             spotifyAccessToken = user.getSpotifyAccessToken();
             request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.spotify.com/v1/me"))
+                    .uri(URI.create(SPOTIFY_API_URI + "/me"))
                     .header("Authorization", "Bearer " + spotifyAccessToken)
                     .GET()
                     .build();
@@ -242,5 +247,47 @@ public class SpotifyService {
         user.setSpotifyAccessTokenExpiresAt(Instant.now().plusSeconds(expiresIn));
 
         userRepo.save(user);
+    }
+
+    public SpotifyRecentlyPlayedResponse getRecentlyPlayed(String userId, int limit) throws Exception {
+        User user = userRepo.findById(userId).orElseThrow(() -> new UsernameNotFoundException(userId));
+
+        if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {
+            refreshSpotifyAccessToken(user);
+        }
+        String spotifyAccessToken = user.getSpotifyAccessToken();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(SPOTIFY_API_URI + "/me/player/recently-played?limit=" + limit))
+                .header("Authorization", "Bearer " + spotifyAccessToken)
+                .GET()
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 401) {
+            refreshSpotifyAccessToken(user);
+            spotifyAccessToken = user.getSpotifyAccessToken();
+
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(SPOTIFY_API_URI + "/me/player/recently-played?limit=" + limit))
+                    .header("Authorization", "Bearer " + spotifyAccessToken)
+                    .GET()
+                    .build();
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        }
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error fetching recently played");
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        return mapper.readValue(
+                response.body(),
+                SpotifyRecentlyPlayedResponse.class
+        );
     }
 }

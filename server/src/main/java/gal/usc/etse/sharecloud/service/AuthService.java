@@ -31,6 +31,7 @@ public class AuthService {
     private final StringRedisTemplate redis;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final SpotifyActivityService spotifyActivityService;
 
     private final String SECRET = "__SECRET:_VERY_SECRETY_SECRET";
     @Value("${auth.jwt.ttl:PT15M}")
@@ -41,12 +42,13 @@ public class AuthService {
 
     @Autowired
     public AuthService(AuthenticationManager authenticationManager, KeyPair keyPair, StringRedisTemplate redis,
-                       UserRepository userRepository, RoleRepository roleRepository) {
+                       UserRepository userRepository, RoleRepository roleRepository, SpotifyActivityService spotifyActivityService) {
         this.authenticationManager = authenticationManager;
         this.keyPair = keyPair;
         this.redis = redis;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.spotifyActivityService = spotifyActivityService;
     }
 
     public SessionTokens login(AuthRequest request) {
@@ -68,6 +70,10 @@ public class AuthService {
                 refreshToken,
                 refreshTokenTTL
         );
+
+        try {
+            spotifyActivityService.updateListenedTrackState(userId, 10);
+        }catch (Exception e){ System.err.println("Error Spotify- obtencion canciones: "+e.getMessage());}
 
         return new SessionTokens(userId, accessToken, refreshToken);
     }

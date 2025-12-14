@@ -17,7 +17,11 @@ import gal.usc.etse.sharecloud.guiController.cProfile;
 import gal.usc.etse.sharecloud.guiController.cSession;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 import gal.usc.etse.sharecloud.http.TokenManager;
+import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyArtist;
+import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyTrack;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
+import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
+import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
 import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 import javafx.application.Application;
 import javafx.application.HostServices;
@@ -106,6 +110,14 @@ public class FachadaGUI extends Application {
             SpotifyRecentlyPlayedResponse recentlyPlayed = SpotifyApi.getRecentlyPlayed(TokenManager.getUserID(),10);
             _cargarRecentlyPlayed(controller,recentlyPlayed);
 
+            //CARGAR TOP TRACKS
+            SpotifyTopTracksResponse topTracks = SpotifyApi.getTopTracks(TokenManager.getUserID(),10);
+            _cargarTopTracks(controller,topTracks);
+
+            //CARGAR TOP ARTISTAS
+            SpotifyTopArtistsResponse topArtists = SpotifyApi.getTopArtists(TokenManager.getUserID(),10);
+            _cargarTopArtistas(controller,topArtists);
+
             entrarStage.setTitle(profileView.getDisplayName());
             entrarStage.setScene(scene);
             entrarStage.show();
@@ -117,55 +129,130 @@ public class FachadaGUI extends Application {
     private void _cargarRecentlyPlayed(cProfile controller, SpotifyRecentlyPlayedResponse response){
         controller.recentlyPlayedBox.getChildren().clear();
         int counter = 0;
+        //recorrer las cinco ultimas escuchadas
         for (SpotifyRecentlyPlayedResponse.Item item : response.items()) {
-        if(counter<5) {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/gal/usc/etse/sharecloud/layouts/vItemTemplate.fxml")
-            );
+            if(counter<5) {
+                //cargar el template
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/gal/usc/etse/sharecloud/layouts/vItemTemplate.fxml")
+                );
+                Parent template;
+                try {
+                    template = loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                gal.usc.etse.sharecloud.guiController.cItemTemplate cTemplate = loader.getController();
 
-            Parent template;
-            try {
-                template = loader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-                continue;
+                //recuperar datos del response
+                String trackName = item.track().name();
+
+                String artists = item.track().artists()
+                        .stream()
+                        .map(SpotifyRecentlyPlayedResponse.Artist::name)
+                        .collect(Collectors.joining(", "));
+
+                String imageUrl = null;
+                if (item.track().album() != null
+                        && item.track().album().images() != null
+                        && !item.track().album().images().isEmpty()) {
+                    imageUrl = item.track().album().images().getFirst().url();
+                }
+
+                //settear datos del template y añadir al hbox
+                cTemplate.setName(trackName);
+                cTemplate.setArtist(artists);
+                if (imageUrl != null) cTemplate.setImage(new Image(imageUrl));
+
+                controller.recentlyPlayedBox.getChildren().add(template);
+                counter++;
             }
-
-            // Controller del template
-            gal.usc.etse.sharecloud.guiController.cItemTemplate cTemplate = loader.getController();
-
-        /* ==========================
-           Datos desde el DTO
-           ========================== */
-
-            // Nombre de la canción
-            String trackName = item.track().name();
-
-            // Artistas (separados por coma)
-            String artists = item.track().artists()
-                    .stream()
-                    .map(SpotifyRecentlyPlayedResponse.Artist::name)
-                    .collect(Collectors.joining(", "));
-
-            // Imagen del álbum (primer tamaño disponible)
-            String imageUrl = null;
-            if (item.track().album() != null
-                    && item.track().album().images() != null
-                    && !item.track().album().images().isEmpty()) {
-
-                imageUrl = item.track().album().images().getFirst().url();
-            }
-            System.out.println("Foto n"+counter+": "+imageUrl);
-        /* ==========================
-           Inicialización del template
-           ========================== */
-            cTemplate.setName(trackName);
-            cTemplate.setArtist(artists);
-            if (imageUrl != null) cTemplate.setImage(new Image(imageUrl));
-
-            controller.recentlyPlayedBox.getChildren().add(template);
-            counter++;
         }
+    }
+    public void _cargarTopTracks(cProfile controller, SpotifyTopTracksResponse response) {
+        controller.topTrackBox.getChildren().clear();
+        int counter=0;
+        //recorrer los 5 primeros items
+        for (SpotifyTrack track : response.items()) {
+            if (counter<5) {
+                //cargar el template
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/gal/usc/etse/sharecloud/layouts/vItemTemplate.fxml")
+                );
+                Parent template;
+                try {
+                    template = loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                gal.usc.etse.sharecloud.guiController.cItemTemplate cTemplate=loader.getController();
+
+                //recuperar datos de cada
+                String trackName = track.name();
+
+                String artists = track.artists()
+                        .stream()
+                        .map(SpotifyArtist::name)
+                        .collect(Collectors.joining(", "));
+
+                String imageUrl = null;
+                if (track.album() != null
+                        && track.album().images() != null
+                        && !track.album().images().isEmpty()) {
+                    imageUrl = track.album().images().getFirst().url();
+                }
+
+                //settear los datos al template y añadirlo al hbox
+                cTemplate.setName(trackName);
+                cTemplate.setArtist(artists);
+                if (imageUrl != null) {
+                    cTemplate.setImage(new Image(imageUrl, true));
+                }
+
+                controller.topTrackBox.getChildren().add(template);
+                counter++;
+            }
+        }
+    }
+
+    public void _cargarTopArtistas(cProfile controller, SpotifyTopArtistsResponse response) {
+        controller.topArtistBox.getChildren().clear();
+        int counter = 0;
+        // recorrer los 5 primeros artistas
+        for (SpotifyTopArtistsResponse.Item artist : response.items()) {
+            if (counter <5) {
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/gal/usc/etse/sharecloud/layouts/vItemTemplate.fxml")
+                );
+                Parent template;
+                try {
+                    template = loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                gal.usc.etse.sharecloud.guiController.cItemTemplate cTemplate = loader.getController();
+
+                //recuperar datos del response
+                String artistName = artist.name();
+
+                String imageUrl = null;
+                if (artist.images() != null && !artist.images().isEmpty()) {
+                    imageUrl = artist.images().getFirst().url();
+                }
+
+                //settear los datos del template y añadirlo al hbox
+                cTemplate.setName(artistName);
+                cTemplate.invLabel();
+                if (imageUrl != null) {
+                    cTemplate.setImage(new Image(imageUrl, true));
+                }
+
+                controller.topArtistBox.getChildren().add(template);
+                counter++;
+            }
         }
     }
 }

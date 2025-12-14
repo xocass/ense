@@ -2,6 +2,8 @@ package gal.usc.etse.sharecloud.controller;
 
 import gal.usc.etse.sharecloud.model.dto.SpotifyProfile;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
+import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
+import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
 import gal.usc.etse.sharecloud.model.entity.ActivityType;
 import gal.usc.etse.sharecloud.model.entity.UserActivity;
 import gal.usc.etse.sharecloud.service.SpotifyActivityService;
@@ -92,14 +94,10 @@ public class UserSpotifyController {
     })*/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/top-tracks")
-    public ResponseEntity<UserActivity> getTopTracks(@RequestParam String id,
-                                                           @RequestParam(defaultValue = "10") int limit)
+    public ResponseEntity<SpotifyTopTracksResponse> getTopTracks(@RequestParam String id,
+                                                                 @RequestParam(defaultValue = "10") int limit)
             throws Exception{
-        spotifyActivityService.updateTopTracks(id, limit);
-
-        UserActivity activity= spotifyActivityService.getUserActivity(id, ActivityType.TOP_TRACKS);
-
-        return ResponseEntity.ok(activity);
+        return ResponseEntity.ok(spotifyActivityService.returnTopTracks(id, limit));
     }
 
     /*@Operation(
@@ -117,13 +115,9 @@ public class UserSpotifyController {
     })*/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/top-artists")
-    public ResponseEntity<UserActivity> getTopArtists(@RequestParam String id,
-                                                            @RequestParam(defaultValue = "10") int limit)
+    public ResponseEntity<SpotifyTopArtistsResponse> getTopArtists(@RequestParam String id,
+                                                                   @RequestParam(defaultValue = "10") int limit)
             throws Exception {
-        spotifyActivityService.updateTopArtists(id, limit);
-
-        UserActivity activity= spotifyActivityService.getUserActivity(id, ActivityType.TOP_ARTISTS);
-
-        return ResponseEntity.ok(activity);
+        return ResponseEntity.ok(spotifyActivityService.returnTopArtists(id, limit));
     }
 }

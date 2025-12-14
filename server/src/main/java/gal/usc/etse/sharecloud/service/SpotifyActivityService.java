@@ -157,4 +157,11 @@ public class SpotifyActivityService {
         }
         return response;
     }
+
+    public SpotifyTopTracksResponse returnTopTracks(String userId, int limit) throws Exception {
+        return spotifyService.getTopTracks(userId, limit);
+    }
+    public SpotifyTopArtistsResponse returnTopArtists(String userId, int limit) throws Exception {
+        return spotifyService.getTopArtists(userId, limit);
+    }
 }

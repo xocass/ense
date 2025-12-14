@@ -10,22 +10,22 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="621.0" prefWidth="822.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cProfile">
+<AnchorPane prefHeight="620.0" prefWidth="820.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cProfile">
    <children>
       <VBox prefHeight="620.0" prefWidth="820.0">
          <children>
             <AnchorPane prefHeight="135.0" prefWidth="750.0">
                <children>
-                  <ImageView fx:id="pfpView" fitHeight="100.0" fitWidth="100.0" layoutX="38.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="pfpView" fitHeight="114.0" fitWidth="116.0" layoutX="30.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../imgs/default-pfp.png" />
                      </image>
                   </ImageView>
                   <VBox layoutX="154.0" layoutY="27.0" prefHeight="100.0" prefWidth="255.0" spacing="20.0">
                      <children>
-                        <Text fx:id="usernameLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="USERNAME" wrappingWidth="112.5367431640625">
+                        <Text fx:id="usernameLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="USERNAME" wrappingWidth="115.73675537109375">
                            <font>
-                              <Font name="System Bold" size="14.0" />
+                              <Font name="System Bold" size="18.0" />
                            </font>
                         </Text>
                         <Text fx:id="countryLabel" fill="#797979" strokeType="OUTSIDE" strokeWidth="0.0" text="Ubication" />
@@ -39,7 +39,7 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <HBox prefHeight="19.0" prefWidth="820.0" spacing="550.0">
+            <HBox prefHeight="19.0" prefWidth="820.0" spacing="470.0">
                <children>
                   <Label prefHeight="18.0" prefWidth="140.0" text="Últimas reproducciones">
                      <font>
@@ -53,15 +53,15 @@
                   </Label>
                </children>
                <VBox.margin>
-                  <Insets left="40.0" right="40.0" top="20.0" />
+                  <Insets left="80.0" right="80.0" top="20.0" />
                </VBox.margin>
             </HBox>
-            <HBox fx:id="recentlyPlayedBox" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
+            <HBox fx:id="recentlyPlayedBox" alignment="TOP_CENTER" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
                <VBox.margin>
-                  <Insets left="40.0" right="40.0" />
+                  <Insets left="80.0" right="80.0" />
                </VBox.margin>
             </HBox>
-            <HBox prefHeight="19.0" prefWidth="820.0" spacing="550.0">
+            <HBox prefHeight="19.0" prefWidth="820.0" spacing="470.0">
                <children>
                   <Label prefWidth="140.0" text="Top artistas">
                      <font>
@@ -75,15 +75,15 @@
                   </Label>
                </children>
                <VBox.margin>
-                  <Insets left="40.0" right="40.0" top="20.0" />
+                  <Insets left="80.0" right="80.0" top="20.0" />
                </VBox.margin>
             </HBox>
-            <HBox fx:id="topArtistBox" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
+            <HBox fx:id="topArtistBox" alignment="TOP_CENTER" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
                <VBox.margin>
-                  <Insets left="40.0" right="40.0" />
+                  <Insets left="80.0" right="80.0" />
                </VBox.margin>
             </HBox>
-            <HBox prefHeight="19.0" prefWidth="820.0" spacing="550.0">
+            <HBox prefHeight="19.0" prefWidth="820.0" spacing="470.0">
                <children>
                   <Label prefWidth="140.0" text="Top canciones">
                      <font>
@@ -97,12 +97,12 @@
                   </Label>
                </children>
                <VBox.margin>
-                  <Insets left="40.0" right="40.0" top="20.0" />
+                  <Insets left="80.0" right="80.0" top="20.0" />
                </VBox.margin>
             </HBox>
-            <HBox fx:id="topTrackBox" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
+            <HBox fx:id="topTrackBox" alignment="TOP_CENTER" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
                <VBox.margin>
-                  <Insets left="40.0" right="40.0" />
+                  <Insets left="80.0" right="80.0" />
                </VBox.margin>
             </HBox>
          </children>

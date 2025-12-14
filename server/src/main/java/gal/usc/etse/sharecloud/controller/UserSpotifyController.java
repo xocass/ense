@@ -71,9 +71,10 @@ public class UserSpotifyController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/recently-played")
     public ResponseEntity<SpotifyRecentlyPlayedResponse> getRecentlyPlayedTracks(@RequestParam String id,
-                                                                      @RequestParam(defaultValue = "10") int limit)
+                                                                      @RequestParam(defaultValue = "10") int limitSave,
+                                                                                 @RequestParam(defaultValue = "10") int limitReturn)
             throws Exception {
-        SpotifyRecentlyPlayedResponse response = spotifyActivityService.returnListenedTrackState(id, limit);
+        SpotifyRecentlyPlayedResponse response = spotifyActivityService.returnListenedTrackState(id, limitSave, limitReturn);
 
 
         return ResponseEntity.ok(response);

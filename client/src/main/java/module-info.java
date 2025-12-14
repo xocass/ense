@@ -17,6 +17,7 @@ module ShareCloud.client.main {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.core;
     requires com.fasterxml.jackson.datatype.jsr310;
+    requires javafx.media;
     //requires ShareCloud.main;
 
     exports gal.usc.etse.sharecloud.model.dto to com.fasterxml.jackson.databind;

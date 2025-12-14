@@ -66,9 +66,9 @@ public class SpotifyApi {
         return mapper.readValue(res.body(), SpotifyProfile.class);
     }
 
-    public static SpotifyRecentlyPlayedResponse getRecentlyPlayed(String userID, int limit) throws Exception {
+    public static SpotifyRecentlyPlayedResponse getRecentlyPlayed(String userID, int limitReturn, int limitSave) throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/recently-played?id="+userID+"&limit=" + limit))
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/recently-played?id="+userID+"&limitSave=" + limitSave+"&limitReturn=" + limitReturn))
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .GET()
                 .build();

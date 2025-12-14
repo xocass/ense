@@ -1,5 +1,6 @@
 package gal.usc.etse.sharecloud.guiController;
 
+import gal.usc.etse.sharecloud.FachadaGUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -26,11 +27,11 @@ public class cItemTemplate {
     public void setImage(Image image) {
         this.image.setImage(image);
     }
+
     //funcion para borrar el segundo label
     public void invLabel(){
         artist.setVisible(false);
     }
-
 
     @FXML
     private void onMouseEntered() {

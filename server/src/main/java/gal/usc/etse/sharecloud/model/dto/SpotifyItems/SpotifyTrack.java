@@ -8,5 +8,7 @@ import java.util.List;
 public record SpotifyTrack(String id,
                            String name,
                            List<SpotifyArtist> artists,
-                           SpotifyAlbum album
+                           SpotifyAlbum album,
+                           String preview_url,
+                           Integer duration_ms
 ) {}

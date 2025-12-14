@@ -8,11 +8,12 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
 import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 
 
 public class SpotifyApi {
-    private final static ObjectMapper mapper = new ObjectMapper();
+    private final static ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
     private final static String serverSpotifyUrl = "http://127.0.0.1:8080/api/spotify";
 
     public static String startSpotifyLink(String email) throws Exception {
@@ -50,17 +51,31 @@ public class SpotifyApi {
 
     public static SpotifyProfile getSpotifyProfile(String userID) throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8080/api/user/" + userID + "/spotify/me"))
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/profile?id="+userID))
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .GET()
                 .build();
         HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
 
         if (res.statusCode() != 200) {
-            throw new RuntimeException("Error obteniendo perfil Spotify");
+            throw new RuntimeException("Error obteniendo perfil Spotify: HTTP "+res.statusCode());
         }
 
         return mapper.readValue(res.body(), SpotifyProfile.class);
+    }
 
+    public static SpotifyRecentlyPlayedResponse getRecentlyPlayed(String userID, int limit) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/recently-played?id="+userID+"&limit=" + limit))
+                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
+                .GET()
+                .build();
+        HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
+
+        if (res.statusCode() != 200) {
+            throw new RuntimeException("Error obteniendo canciones reproducidas recientemente: HTTP " + res.statusCode());
+        }
+
+        return mapper.readValue(res.body(), SpotifyRecentlyPlayedResponse.class);
     }
 }

@@ -1,6 +1,4 @@
-package gal.usc.etse.sharecloud.model;
-
-import gal.usc.etse.sharecloud.model.entity.TrackInfo;
+package gal.usc.etse.sharecloud.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -38,6 +38,10 @@ dependencies {
     //implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     //implementation("org.springdoc:springdoc-openapi-starter-webmvc-scalar:3.0.0-RC1")
 
+    // Resend
+    //implementation("com.resend:resend-java:3.1.0")
+    implementation("com.resend:resend-java:+")
+
     // Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-cache")

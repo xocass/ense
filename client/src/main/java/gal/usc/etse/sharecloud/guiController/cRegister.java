@@ -48,7 +48,6 @@ public class cRegister {
 
                 if (status == 201) {
                     Platform.runLater(() -> {
-                        statusLabel.setText("Cuenta creada correctamente.");
                         showSpotifyLinkPopup(email);
                     });
 

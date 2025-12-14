@@ -3,6 +3,7 @@ package gal.usc.etse.sharecloud.controller;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTokenResponse;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.service.SpotifyService;
+
 /*import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

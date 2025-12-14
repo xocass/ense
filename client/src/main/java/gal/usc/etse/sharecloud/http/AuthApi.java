@@ -30,7 +30,6 @@ public class AuthApi {
             LoginResponse dto = mapper.readValue(response.body(), LoginResponse.class);
             TokenManager.setAccessToken(dto.accessToken());
             TokenManager.setUserID(dto.userID());
-            //System.out.print("userID: "+TokenManager.getUserID());
         }
 
         return response.statusCode();
@@ -54,7 +53,7 @@ public class AuthApi {
 
     public static void logout(String email) throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/api/auth/logout"))
+                .uri(URI.create(BASE_URL + "/logout"))
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
@@ -65,7 +64,7 @@ public class AuthApi {
             if (ApiClient.refreshAccessToken(email)) {
                 // retry
                 HttpRequest retry = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:8080/api/auth/logout"))
+                        .uri(URI.create(BASE_URL + "/logout"))
                         .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                         .POST(HttpRequest.BodyPublishers.noBody())
                         .build();
@@ -81,5 +80,53 @@ public class AuthApi {
 
         TokenManager.reset();
         ApiClient.getCookieManager().getCookieStore().removeAll();
+    }
+
+    public static void sendRecoveryCode(String email) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/forgot-password"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(
+                        "\"" + email + "\""
+                ))
+                .build();
+
+        HttpResponse<Void> response =
+                ApiClient.getClient().send(request, HttpResponse.BodyHandlers.discarding());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException(
+                    "Unexpected response status: " + response.statusCode()
+            );
+        }
+    }
+
+    public static boolean checkRecoveryCode(String email, String code) throws Exception {
+        AuthRequest req = new AuthRequest(email, code);
+        String json = mapper.writeValueAsString(req);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/check-reset-code"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        HttpResponse<Void> response = ApiClient.getClient().send(request, HttpResponse.BodyHandlers.discarding());
+
+        return response.statusCode() == 200;
+    }
+
+    public static boolean updatePassword(String email, String newPassword) throws Exception {
+        AuthRequest req = new AuthRequest(email, newPassword);
+        String json = mapper.writeValueAsString(req);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/reset-password"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+
+        HttpResponse<Void> response = ApiClient.getClient().send(request, HttpResponse.BodyHandlers.discarding());
+
+        return response.statusCode() == 200;
     }
 }

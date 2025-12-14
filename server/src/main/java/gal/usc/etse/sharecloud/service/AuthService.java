@@ -17,21 +17,25 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyPair;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class AuthService {
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
     private final KeyPair keyPair;
     private final StringRedisTemplate redis;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final SpotifyActivityService spotifyActivityService;
+    private final EmailService emailService;
 
     private final String SECRET = "__SECRET:_VERY_SECRETY_SECRET";
     @Value("${auth.jwt.ttl:PT15M}")
@@ -39,16 +43,22 @@ public class AuthService {
     @Value("${auth.refresh.ttl:PT72H}")
     private Duration refreshTokenTTL;
 
+    private static final Duration RESET_CODE_TTL = Duration.ofMinutes(10);
+
+
 
     @Autowired
-    public AuthService(AuthenticationManager authenticationManager, KeyPair keyPair, StringRedisTemplate redis,
-                       UserRepository userRepository, RoleRepository roleRepository, SpotifyActivityService spotifyActivityService) {
+    public AuthService(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, KeyPair keyPair,
+                       StringRedisTemplate redis, UserRepository userRepository, RoleRepository roleRepository,
+                       SpotifyActivityService spotifyActivityService, EmailService emailService) {
         this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
         this.keyPair = keyPair;
         this.redis = redis;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.spotifyActivityService = spotifyActivityService;
+        this.emailService = emailService;
     }
 
     public SessionTokens login(AuthRequest request) {
@@ -72,11 +82,55 @@ public class AuthService {
         );
 
         try {
-            spotifyActivityService.updateListenedTrackState(userId, 10);
-        }catch (Exception e){ System.err.println("Error Spotify- obtencion canciones: "+e.getMessage());}
+            spotifyActivityService.updateRecentlyPlayedTracks(userId, 10);
+            spotifyActivityService.updateTopTracks(userId, 10);
+            spotifyActivityService.updateTopArtists(userId, 10);
+        }catch (Exception e){ System.err.println("Error Spotify - obtencion canciones: "+e.getMessage());}
 
         return new SessionTokens(userId, accessToken, refreshToken);
     }
+
+    public void sendRecoveryCode(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            return;
+        }
+
+        String code = generateSixDigitCode();
+        redis.opsForValue().set(
+                "reset:" + email,
+                code,
+                RESET_CODE_TTL
+        );
+
+        emailService.sendPasswordRecoveryEmail(email, code);
+    }
+
+    public void checkPasswordRecoveryCode(String email, String code) {
+        String redisKey = "reset:" + email;
+        String storedCode = redis.opsForValue().get(redisKey);
+
+        if (storedCode == null || !storedCode.equals(code)) {
+            throw new IllegalArgumentException("Invalid or expired recovery code");
+        }
+    }
+
+    public void resetPassword(String email, String newPassword) {
+        String redisKey = "reset:" + email;
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Invalid recovery request"));
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
+        redis.delete(redisKey);
+    }
+
+    private String generateSixDigitCode() {
+        int code = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        return String.valueOf(code);
+    }
+
+
 
 
     public String generateAccessToken(String userId, Set<String> roles) {

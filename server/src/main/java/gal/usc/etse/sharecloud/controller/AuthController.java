@@ -6,8 +6,8 @@ import gal.usc.etse.sharecloud.model.dto.SessionTokens;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.UserRepository;
 import gal.usc.etse.sharecloud.service.AuthService;
-
 import gal.usc.etse.sharecloud.service.UserService;
+
 /*import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -152,6 +152,58 @@ public class AuthController {
                 .build();
     }
 
+    /*@Operation(
+            summary = "Solicitar código de recuperación de contraseña",
+            description = """
+                Genera un código de recuperación de 6 dígitos y lo envía por email.
+                La respuesta es siempre 200 para evitar revelar si el email existe.
+                """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Proceso de recuperación iniciado")
+    })*/
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@RequestBody String email) {
+        email = email.trim();
+        if (email.startsWith("\"") && email.endsWith("\"") && email.length() >= 2) {
+            email = email.substring(1, email.length() - 1);
+        }
+        authService.sendRecoveryCode(email);
+        return ResponseEntity.ok().build();
+    }
 
+    /*@Operation(
+            summary = "Verificar código de recuperación",
+            description = """
+                Comprueba si el código de recuperación introducido es válido.
+                No modifica la contraseña.
+                """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Código válido"),
+            @ApiResponse(responseCode = "400", description = "Código inválido o expirado")
+    })*/
+    @PostMapping("/check-reset-code")
+    public ResponseEntity<Void> checkResetCode(@RequestBody AuthRequest request) {
+        authService.checkPasswordRecoveryCode(request.email(), request.password());
+        return ResponseEntity.ok().build();
+    }
+
+    /*@Operation(
+            summary = "Restablecer contraseña",
+            description = """
+                Establece una nueva contraseña usando un código de recuperación válido.
+                El código se invalida tras el uso.
+                """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contraseña actualizada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida o código expirado")
+    })*/
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody AuthRequest request) {
+        authService.resetPassword(request.email(), request.password());
+        return ResponseEntity.ok().build();
+    }
 
 }

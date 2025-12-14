@@ -1,6 +1,7 @@
 package gal.usc.etse.sharecloud.controller;
 
 import gal.usc.etse.sharecloud.model.dto.SpotifyProfile;
+import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
 import gal.usc.etse.sharecloud.model.entity.ActivityType;
 import gal.usc.etse.sharecloud.model.entity.UserActivity;
 import gal.usc.etse.sharecloud.service.SpotifyActivityService;
@@ -47,7 +48,7 @@ public class UserSpotifyController {
     })*/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
-    public ResponseEntity<SpotifyProfile> getSpotifyProfile(@RequestBody String id) throws Exception {
+    public ResponseEntity<SpotifyProfile> getSpotifyProfile(@RequestParam String id) throws Exception {
         SpotifyProfile profile = spotifyService.getSpotifyUserProfile(id);
         return ResponseEntity.ok(profile);
     }
@@ -67,13 +68,13 @@ public class UserSpotifyController {
     })*/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/recently-played")
-    public ResponseEntity<UserActivity> getRecentlyPlayedTracks(@RequestParam String userId,
+    public ResponseEntity<SpotifyRecentlyPlayedResponse> getRecentlyPlayedTracks(@RequestParam String id,
                                                                       @RequestParam(defaultValue = "10") int limit)
             throws Exception {
-        spotifyActivityService.updateRecentlyPlayedTracks(userId, limit);
-        UserActivity activity= spotifyActivityService.getUserActivity(userId, ActivityType.LISTENED_TRACKS);
+        SpotifyRecentlyPlayedResponse response = spotifyActivityService.returnListenedTrackState(id, limit);
 
-        return ResponseEntity.ok(activity);
+
+        return ResponseEntity.ok(response);
     }
 
     /*@Operation(
@@ -91,12 +92,12 @@ public class UserSpotifyController {
     })*/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/top-tracks")
-    public ResponseEntity<UserActivity> getTopTracks(@RequestParam String userId,
+    public ResponseEntity<UserActivity> getTopTracks(@RequestParam String id,
                                                            @RequestParam(defaultValue = "10") int limit)
             throws Exception{
-        spotifyActivityService.updateTopTracks(userId, limit);
+        spotifyActivityService.updateTopTracks(id, limit);
 
-        UserActivity activity= spotifyActivityService.getUserActivity(userId, ActivityType.TOP_TRACKS);
+        UserActivity activity= spotifyActivityService.getUserActivity(id, ActivityType.TOP_TRACKS);
 
         return ResponseEntity.ok(activity);
     }
@@ -116,22 +117,13 @@ public class UserSpotifyController {
     })*/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/top-artists")
-    public ResponseEntity<UserActivity> getTopArtists(@RequestParam String userId,
+    public ResponseEntity<UserActivity> getTopArtists(@RequestParam String id,
                                                             @RequestParam(defaultValue = "10") int limit)
             throws Exception {
-        spotifyActivityService.updateTopArtists(userId, limit);
+        spotifyActivityService.updateTopArtists(id, limit);
 
-        UserActivity activity= spotifyActivityService.getUserActivity(userId, ActivityType.TOP_ARTISTS);
+        UserActivity activity= spotifyActivityService.getUserActivity(id, ActivityType.TOP_ARTISTS);
 
         return ResponseEntity.ok(activity);
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @GetMapping("/recently-played")
-    public ResponseEntity<SpotifyRecentlyPlayedResponse> getRecentlyPlayed(@RequestParam String id, @RequestParam int limit) throws Exception {
-        SpotifyRecentlyPlayedResponse recentlyPlayed;
-        if(limit==10) recentlyPlayed= activityService.returnListenedTrackState(id,limit);
-        else recentlyPlayed= spotifyService.getRecentlyPlayed(id,limit);
-        return ResponseEntity.ok(recentlyPlayed);
     }
 }

@@ -45,7 +45,7 @@ public class SpotifyApi {
         System.out.println("STATUS = " + res.statusCode());
         System.out.println("BODY = " + res.body());
         if (res.statusCode() != 200) {
-            throw new RuntimeException("Error linking Spotify account");
+            throw new RuntimeException("Error linking Spotify account: HTTP "+res.statusCode());
         }
     }
 

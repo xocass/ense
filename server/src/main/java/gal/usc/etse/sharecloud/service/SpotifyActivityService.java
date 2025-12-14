@@ -134,7 +134,7 @@ public class SpotifyActivityService {
 
     public SpotifyRecentlyPlayedResponse returnListenedTrackState(String userId, int limit) throws Exception {
         SpotifyRecentlyPlayedResponse response = spotifyService.getRecentlyPlayed(userId, limit);
-        List<TrackInfo> tracks = new ArrayList<>();
+        /*List<TrackInfo> tracks = new ArrayList<>();
 
         for (SpotifyRecentlyPlayedResponse.Item item : response.items()) {
             TrackInfo track = new TrackInfo();
@@ -145,11 +145,16 @@ public class SpotifyActivityService {
             track.setPlayedAt(item.playedAt());
 
             tracks.add(track);
-        }
+        }*/
+        if(limit==10){
+            List<TrackInfo> tracks = response.items().stream()
+                    .map(this::mapRecentlyPlayedItemToTrackInfo)
+                    .toList();
 
-        activityService.upsertListenedTrackState(
-                userId,
-                tracks);
-    return response;
+            ListenedTrackPayload payload = new ListenedTrackPayload();
+            payload.setTracks(tracks);
+            updateActivity(userId, ActivityType.LISTENED_TRACKS, payload);
+        }
+        return response;
     }
 }

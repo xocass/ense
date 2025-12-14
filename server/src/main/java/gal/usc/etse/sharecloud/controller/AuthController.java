@@ -83,7 +83,6 @@ public class AuthController {
     public ResponseEntity<Void> register(@RequestBody AuthRequest req) {
         userService.register(req);
 
-        // Devuelve 201 en caso de éxito
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -108,7 +107,6 @@ public class AuthController {
         if (refreshCookie == null || email == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        System.out.println("refresh: email recibido -- " + email);
 
         SessionTokens result = authService.refreshAccessToken(refreshCookie, email);
 
@@ -146,7 +144,6 @@ public class AuthController {
                 .maxAge(0) // borrar cookie
                 .build();
 
-        // En caso de exito: 204
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .build();

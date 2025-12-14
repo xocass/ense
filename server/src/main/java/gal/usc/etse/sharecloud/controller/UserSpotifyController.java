@@ -47,8 +47,8 @@ public class UserSpotifyController {
     })*/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
-    public ResponseEntity<SpotifyProfile> getSpotifyProfile(@RequestBody String id) throws Exception {
-        SpotifyProfile profile = spotifyService.getSpotifyUserProfile(id);
+    public ResponseEntity<SpotifyProfile> getSpotifyProfile(@RequestParam String userId) throws Exception {
+        SpotifyProfile profile = spotifyService.getSpotifyUserProfile(userId);
         return ResponseEntity.ok(profile);
     }
 
@@ -68,7 +68,7 @@ public class UserSpotifyController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/recently-played")
     public ResponseEntity<UserActivity> getRecentlyPlayedTracks(@RequestParam String userId,
-                                                                      @RequestParam(defaultValue = "10") int limit)
+                                                                @RequestParam(defaultValue = "10") int limit)
             throws Exception {
         spotifyActivityService.updateRecentlyPlayedTracks(userId, limit);
         UserActivity activity= spotifyActivityService.getUserActivity(userId, ActivityType.LISTENED_TRACKS);

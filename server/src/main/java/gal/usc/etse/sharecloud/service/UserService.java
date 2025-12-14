@@ -1,6 +1,7 @@
 package gal.usc.etse.sharecloud.service;
 
 import gal.usc.etse.sharecloud.model.dto.AuthRequest;
+import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -36,13 +38,30 @@ public class UserService implements UserDetailsService {
     }
 
     public void register(AuthRequest request) {
-        // Comprobación de duplicados
         if (userRepository.existsByEmail(request.email())) {throw new RuntimeException("Email already registered");}
 
-        // Crear entidad correctamente
         User user = new User(request.email(), passwordEncoder.encode(request.password()), Set.of("USER"));
-
         userRepository.save(user);
+    }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
+    public List<UserSearchResult> searchUsers(String query, String requesterId) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+
+        return userRepository.findTop10BySpotifyProfile_DisplayNameContainingIgnoreCase(query.trim())
+                .stream()
+                .filter(user -> !user.getId().equals(requesterId)) // no te devuelves a ti mismo
+                .map(user -> new UserSearchResult(
+                        user.getId(),
+                        user.getSpotifyProfile().getDisplay_name(),
+                        user.getSpotifyProfile().getImage()
+                ))
+                .toList();
     }
 
 }

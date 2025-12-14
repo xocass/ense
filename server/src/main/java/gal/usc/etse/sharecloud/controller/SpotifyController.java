@@ -1,6 +1,7 @@
 package gal.usc.etse.sharecloud.controller;
 
 import gal.usc.etse.sharecloud.model.dto.SpotifyTokenResponse;
+import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.service.SpotifyService;
 
@@ -8,6 +9,7 @@ import gal.usc.etse.sharecloud.service.SpotifyService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;*/
+import gal.usc.etse.sharecloud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +21,12 @@ import org.springframework.web.bind.annotation.*;
 //@Tag(name = "Spotify", description = "Endpoints para vinculación y acceso a Spotify")
 public class SpotifyController {
     private final SpotifyService spotifyService;
+    private final UserService userService;
 
     @Autowired
-    public SpotifyController(SpotifyService spotifyService) {
+    public SpotifyController(SpotifyService spotifyService, UserService userService) {
         this.spotifyService = spotifyService;
+        this.userService = userService;
     }
 
 
@@ -71,7 +75,8 @@ public class SpotifyController {
             summary = "Completar vinculación con Spotify",
             description = """
                 El cliente JavaFX envía aquí el code y el email tras interceptar el callback.
-                El backend intercambia el code por tokens de Spotify, los guarda y marca spotifyLinked=true.
+                El backend intercambia el code por tokens de Spotify, los guarda, marca spotifyLinked=true,
+                obtiene el perfil y actualiza el user en la BD
                 """
     )
     @ApiResponses({
@@ -82,9 +87,15 @@ public class SpotifyController {
     @PostMapping("/complete-link")
     public ResponseEntity<String> completeLink(@RequestParam String code,
                                                @RequestParam String state) throws Exception {
+        // Se obtienen los token y se guardan en User
         SpotifyTokenResponse tokens = spotifyService.exchangeCodeForTokens(code);
         User user= spotifyService.updateUserSpotifyTokens(state, tokens);
-        spotifyService.fetchSpotifyId(user);
+        userService.saveUser(user);
+
+        // Se obtiene el perfil, se guardan en User y se actualiza User en la BS
+        SpotifyProfile spotifyProfile= SpotifyProfile.from(spotifyService.getSpotifyUserProfile(user.getId()));
+        user.setSpotifyProfile(spotifyProfile);
+        userService.saveUser(user);
 
         return ResponseEntity.ok("Spotify linked successfully. You may return to the application.");
     }

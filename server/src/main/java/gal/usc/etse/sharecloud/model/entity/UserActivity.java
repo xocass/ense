@@ -1,7 +1,5 @@
 package gal.usc.etse.sharecloud.model.entity;
 
-import gal.usc.etse.sharecloud.model.ActivityPayload;
-import gal.usc.etse.sharecloud.model.ActivityType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

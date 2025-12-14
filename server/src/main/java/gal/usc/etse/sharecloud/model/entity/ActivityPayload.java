@@ -1,4 +1,4 @@
-package gal.usc.etse.sharecloud.model;
+package gal.usc.etse.sharecloud.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

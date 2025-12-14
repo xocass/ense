@@ -82,7 +82,9 @@ public class AuthService {
         );
 
         try {
-            spotifyActivityService.updateListenedTrackState(userId, 10);
+            spotifyActivityService.updateRecentlyPlayedTracks(userId, 10);
+            spotifyActivityService.updateTopTracks(userId, 10);
+            spotifyActivityService.updateTopArtists(userId, 10);
         }catch (Exception e){ System.err.println("Error Spotify - obtencion canciones: "+e.getMessage());}
 
         return new SessionTokens(userId, accessToken, refreshToken);

@@ -26,6 +26,11 @@ public class cItemTemplate {
     public void setImage(Image image) {
         this.image.setImage(image);
     }
+    //funcion para borrar el segundo label
+    public void invLabel(){
+        artist.setVisible(false);
+    }
+
 
     @FXML
     private void onMouseEntered() {

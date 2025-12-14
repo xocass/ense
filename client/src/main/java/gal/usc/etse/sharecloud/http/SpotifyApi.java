@@ -9,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
+import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
+import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
 import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 
 
@@ -77,5 +79,33 @@ public class SpotifyApi {
         }
 
         return mapper.readValue(res.body(), SpotifyRecentlyPlayedResponse.class);
+    }
+
+    public static SpotifyTopTracksResponse getTopTracks(String userID, int limit) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/top-tracks?id="+userID+"&limit=" + limit))
+                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
+                .GET()
+                .build();
+        HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
+
+        if (res.statusCode() != 200) {
+            throw new RuntimeException("Error obteniendo canciones reproducidas recientemente: HTTP " + res.statusCode());
+        }
+        return mapper.readValue(res.body(), SpotifyTopTracksResponse.class);
+    }
+
+    public static SpotifyTopArtistsResponse getTopArtists(String userID, int limit) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/top-artists?id="+userID+"&limit=" + limit))
+                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
+                .GET()
+                .build();
+        HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
+
+        if (res.statusCode() != 200) {
+            throw new RuntimeException("Error obteniendo canciones reproducidas recientemente: HTTP " + res.statusCode());
+        }
+        return mapper.readValue(res.body(), SpotifyTopArtistsResponse.class);
     }
 }

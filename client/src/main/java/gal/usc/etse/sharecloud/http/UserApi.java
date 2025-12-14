@@ -21,7 +21,7 @@ public class UserApi {
         String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/search/user?query=" + encodedQuery + "&userId=" + TokenManager.getUserID()))
+                .uri(URI.create(BASE_URL + "/search/user?id=" + TokenManager.getUserID() + "&query=" + encodedQuery))
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .GET()
                 .build();

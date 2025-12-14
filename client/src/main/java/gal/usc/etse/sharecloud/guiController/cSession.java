@@ -46,6 +46,7 @@ public class cSession {
             updateStatus(results.isEmpty() ? "No se encontraron usuarios" : "");
 
         } catch (Exception e){
+            System.out.println(e.getMessage());
             updateStatus("Error en la búsqueda");
         }
     }

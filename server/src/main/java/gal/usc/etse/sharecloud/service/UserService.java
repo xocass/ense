@@ -53,12 +53,15 @@ public class UserService implements UserDetailsService {
             return List.of();
         }
 
-        return userRepository.findTop10BySpotifyProfile_DisplayNameContainingIgnoreCase(query.trim())
+        List<User> users =
+                userRepository.findTop10BySpotifyProfile_DisplayNameContainingIgnoreCase(query.trim());
+
+        return users
                 .stream()
                 .filter(user -> !user.getId().equals(requesterId)) // no te devuelves a ti mismo
                 .map(user -> new UserSearchResult(
                         user.getId(),
-                        user.getSpotifyProfile().getDisplay_name(),
+                        user.getSpotifyProfile().getDisplayName(),
                         user.getSpotifyProfile().getImage()
                 ))
                 .toList();

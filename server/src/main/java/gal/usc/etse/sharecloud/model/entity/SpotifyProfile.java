@@ -31,7 +31,7 @@ public class SpotifyProfile {
     }
 
     public String getSpotifyID() {return spotifyID;}
-    public String getDisplay_name() {return displayName;}
+    public String getDisplayName() {return displayName;}
     public String getEmail() {return email;}
     public String getCountry() {return country;}
     public String getImage() {return image;}
@@ -39,7 +39,7 @@ public class SpotifyProfile {
     public String getProfileURL() {return profileURL;}
 
     public void setSpotifyID(String spotifyID) {this.spotifyID = spotifyID;}
-    public void setDisplay_name(String display_name) {this.displayName = display_name;}
+    public void setDisplayName(String display_name) {this.displayName = display_name;}
     public void setEmail(String email) {this.email = email;}
     public void setCountry(String country) {this.country = country;}
     public void setImage(String image) {this.image = image;}

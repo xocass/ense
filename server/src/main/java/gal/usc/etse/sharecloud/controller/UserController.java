@@ -43,9 +43,9 @@ public class UserController {
     })*/
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/search/user")
-    public ResponseEntity<List<UserSearchResult>> searchUsers(@RequestParam String userId,
+    public ResponseEntity<List<UserSearchResult>> searchUsers(@RequestParam String id,
                                                               @RequestParam("query") String query) {
-        List<UserSearchResult> results = userService.searchUsers(query, userId);
+        List<UserSearchResult> results = userService.searchUsers(query, id);
 
         return ResponseEntity.ok(results);
     }

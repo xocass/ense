@@ -131,4 +131,30 @@ public class SpotifyActivityService {
                 })
                 .toList();
     }
+
+    public SpotifyRecentlyPlayedResponse returnListenedTrackState(String userId, int limit) throws Exception {
+        SpotifyRecentlyPlayedResponse response = spotifyService.getRecentlyPlayed(userId, limit);
+        /*List<TrackInfo> tracks = new ArrayList<>();
+
+        for (SpotifyRecentlyPlayedResponse.Item item : response.items()) {
+            TrackInfo track = new TrackInfo();
+            track.setTrackId(item.track().id());
+            track.setTrackName(item.track().name());
+            track.setArtistName(item.track().artists().get(0).name());
+            track.setImageUrl(item.track().album().images().get(0).url());
+            track.setPlayedAt(item.playedAt());
+
+            tracks.add(track);
+        }*/
+        if(limit==10){
+            List<TrackInfo> tracks = response.items().stream()
+                    .map(this::mapRecentlyPlayedItemToTrackInfo)
+                    .toList();
+
+            ListenedTrackPayload payload = new ListenedTrackPayload();
+            payload.setTracks(tracks);
+            updateActivity(userId, ActivityType.LISTENED_TRACKS, payload);
+        }
+        return response;
+    }
 }

@@ -1,35 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="536.0" prefWidth="727.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cProfile">
+<AnchorPane prefHeight="621.0" prefWidth="822.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cProfile">
    <children>
-      <AnchorPane layoutY="30.0" prefHeight="148.0" prefWidth="727.0">
+      <VBox prefHeight="620.0" prefWidth="820.0">
          <children>
-            <ImageView fx:id="pfpView" fitHeight="150.0" fitWidth="150.0" layoutX="72.0" pickOnBounds="true" preserveRatio="true" />
-            <VBox layoutX="264.0" prefHeight="150.0" prefWidth="278.0" spacing="40.0">
+            <AnchorPane prefHeight="135.0" prefWidth="750.0">
                <children>
-                  <Text fx:id="usernameLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="USERNAME" wrappingWidth="112.5367431640625">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="countryLabel" fill="#797979" strokeType="OUTSIDE" strokeWidth="0.0" text="Ubication" />
+                  <ImageView fx:id="pfpView" fitHeight="100.0" fitWidth="100.0" layoutX="38.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../imgs/default-pfp.png" />
+                     </image>
+                  </ImageView>
+                  <VBox layoutX="154.0" layoutY="27.0" prefHeight="100.0" prefWidth="255.0" spacing="20.0">
+                     <children>
+                        <Text fx:id="usernameLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="USERNAME" wrappingWidth="112.5367431640625">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                        <Text fx:id="countryLabel" fill="#797979" strokeType="OUTSIDE" strokeWidth="0.0" text="Ubication" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="20.0" top="20.0" />
+                     </padding>
+                  </VBox>
                </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="20.0" top="20.0" />
-               </padding>
-            </VBox>
+            </AnchorPane>
+            <HBox prefHeight="19.0" prefWidth="820.0" spacing="550.0">
+               <children>
+                  <Label prefHeight="18.0" prefWidth="140.0" text="Últimas reproducciones">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="extendLastPlayed" text="Ver más..." textFill="#555555">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets left="40.0" right="40.0" top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox fx:id="recentlyPlayedBox" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
+               <VBox.margin>
+                  <Insets left="40.0" right="40.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="19.0" prefWidth="820.0" spacing="550.0">
+               <children>
+                  <Label prefWidth="140.0" text="Top artistas">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="extendTopArtist" text="Ver más..." textFill="#555555">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets left="40.0" right="40.0" top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox fx:id="topArtistBox" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
+               <VBox.margin>
+                  <Insets left="40.0" right="40.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefHeight="19.0" prefWidth="820.0" spacing="550.0">
+               <children>
+                  <Label prefWidth="140.0" text="Top canciones">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="extendTopTracks" text="Ver más..." textFill="#555555">
+                     <font>
+                        <Font name="System Italic" size="12.0" />
+                     </font>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets left="40.0" right="40.0" top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox fx:id="topTrackBox" prefHeight="120.0" prefWidth="590.0" spacing="20.0">
+               <VBox.margin>
+                  <Insets left="40.0" right="40.0" />
+               </VBox.margin>
+            </HBox>
          </children>
-      </AnchorPane>
+      </VBox>
    </children>
 </AnchorPane>

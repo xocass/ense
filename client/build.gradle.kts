@@ -28,6 +28,8 @@ dependencies {
     implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
     implementation ("org.mongodb:mongodb-driver-sync")
     implementation("org.json:json:20210307")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2")
+
 
     //JAVAFX
     implementation ("org.openjfx:javafx-controls:21.0.2")

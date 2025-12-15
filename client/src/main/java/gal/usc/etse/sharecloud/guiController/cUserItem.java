@@ -1,27 +1,37 @@
 package gal.usc.etse.sharecloud.guiController;
 
-import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
+import gal.usc.etse.sharecloud.FachadaGUI;
+import gal.usc.etse.sharecloud.http.FriendApi;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
 
 public class cUserItem {
     @FXML private ImageView profilePic;
     @FXML private Label labelName;
     @FXML private Label labelCountry;
-    @FXML private ImageView iconOptions;
+    @FXML private HBox hboxItem;
 
     private String userId;
     private boolean isFriend;
+    private FachadaGUI fgui;
 
 
     @FXML
     private void initialize() {
-        // click en el item al completo
-        profilePic.getParent().setOnMouseClicked(e -> onItemClicked());
+        hboxItem.setOnMouseClicked(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                showContextMenu();
+            }
+        });
     }
+    public void setFachadas(FachadaGUI fgui) {this.fgui = fgui;}
     public void setLabelName(String name) {labelName.setText(name);}
     public void setLabelCountry(String country) {labelCountry.setText(country);}
     public ImageView getProfilePic() {return profilePic;}
@@ -31,34 +41,32 @@ public class cUserItem {
     public String getUserId() {return userId;}
     public boolean getIsFriend() {return isFriend;}
 
-    public void setUser(UserSearchResult user, Boolean isFriend){
-        this.userId = user.id();
-        this.isFriend = isFriend;
 
-        labelName.setText(user.username());
-        labelCountry.setText(user.country());
+    private void showContextMenu() {
+        ContextMenu menu = new ContextMenu();
 
-        Image pic = new Image(user.image());
-        profilePic.setImage(pic);
+        MenuItem viewProfile = new MenuItem("Ver perfil");
+        MenuItem addFriend = new MenuItem("Solicitar amistad");
 
-        if (!isFriend) {
-            /*iconOptions.setImage(
-                    new Image(getClass().getResourceAsStream(
-                            "/gal/usc/etse/sharecloud/imgs/icon-add.png"
-                    ))
-            );*/
-        } else {
-            iconOptions.setVisible(false);
-            iconOptions.setManaged(false);
-        }
-    }
+        //##############################################################
+        //##############################################################
+        viewProfile.setOnAction(e1 -> fgui.verCurrPerfil());
+        addFriend.setOnAction(e2 -> {
+                try{
+                    FriendApi.sendRequest(userId);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }});
 
-    private void onItemClicked() {
-        System.out.println("Click en usuario: " + userId);
-        // aquí:
-        // - abrir perfil
-        // - enviar solicitud
-        // - aceptar
+        menu.getItems().addAll(viewProfile, addFriend);
+
+        // Mostrar a la derecha del item
+        Bounds bounds = hboxItem.localToScreen(hboxItem.getBoundsInLocal());
+        menu.show(
+                hboxItem,
+                bounds.getMaxX(),
+                bounds.getMinY()
+        );
     }
 
 }

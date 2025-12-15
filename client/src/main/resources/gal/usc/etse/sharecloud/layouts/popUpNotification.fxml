@@ -29,7 +29,7 @@
 
             <Region HBox.hgrow="ALWAYS" />
 
-            <Button fx:id="btnClose" styleClass="popup-close-button" text="✕" />
+            <Button fx:id="btnClose" onAction="#clickOnClose" styleClass="popup-close-button" text="✕" />
         </HBox>
 
         <!-- CONTENT -->

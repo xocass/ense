@@ -1,5 +1,6 @@
 package gal.usc.etse.sharecloud.repository;
 
+import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 import gal.usc.etse.sharecloud.model.entity.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -12,5 +13,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findById(String userId);
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
+    SpotifyProfile findProfileByEmail(String email);
     List<User> findTop10BySpotifyProfile_DisplayNameContainingIgnoreCase(String username);
 }

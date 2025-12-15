@@ -4,16 +4,14 @@ import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.http.AuthApi;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 
-public class cUpdatePassword {
+public class cForgotPasswordUpdate {
     @FXML
     private Label statusLabel;
     @FXML private PasswordField fieldNewPassword;
-    @FXML private PasswordField fieldPassword2;
+    @FXML private PasswordField fieldRepeatPassword;
 
     private FachadaGUI fgui;
     private String email;
@@ -27,9 +25,9 @@ public class cUpdatePassword {
 
 
     @FXML
-    private void clickOnUpdatePassword() {
+    private void clickOnSavePassword() {
         String newPassword = fieldNewPassword.getText();
-        String password2 = fieldPassword2.getText();
+        String password2 = fieldRepeatPassword.getText();
 
         if (newPassword.isEmpty() || password2.isEmpty()) {
             updateStatus("Escriba en los campos.");
@@ -41,7 +39,7 @@ public class cUpdatePassword {
 
         try {
             if(AuthApi.updatePassword(email, newPassword)){
-                returnToLogin();
+                fgui.recuperarContrasenhaCompletado();
             }else{
                 updateStatus("No se ha podido actualizar la contraseña.");
             }
@@ -49,26 +47,6 @@ public class cUpdatePassword {
             updateStatus("ERROR: " + e.getMessage());
         }
 
-    }
-
-    @FXML
-    private void clickOnGoBack(){returnToLogin();}
-
-    private void returnToLogin() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vLog.fxml")
-            );
-            Scene scene = new Scene(fxmlLoader.load(), 878, 422);
-            cLog controller = fxmlLoader.getController();
-            controller.setFachadas(this.fgui);
-
-            fgui.getEntrarStage().setTitle("Iniciar sesión");
-            fgui.getEntrarStage().setScene(scene);
-            fgui.getEntrarStage().show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void updateStatus(String msg) {Platform.runLater(() -> statusLabel.setText(msg));}

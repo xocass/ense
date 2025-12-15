@@ -1,0 +1,567 @@
+/* ================= GLOBAL ================= */
+.root {
+    -fx-font-family: "Poppins";
+    -fx-background-color: white;
+}
+
+/* ================= BACKGROUNDS ================= */
+.login-background {
+    -fx-background-color: #FAFAFA;
+}
+
+/* ================= CARD ================= */
+.login-card {
+    -fx-background-color: white;
+    -fx-border-color: rgba(102, 102, 102, 0.5);
+    -fx-border-width: 1px;
+    -fx-border-radius: 24;
+    -fx-background-radius: 24;
+    -fx-padding: 40 56;
+}
+
+/* ================= TEXT ================= */
+.title-text {
+    -fx-font-size: 32px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #333333;
+}
+
+.field-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+.muted-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+}
+
+.link-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #111111;
+}
+
+.brand-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #1DB954;
+}
+
+/* ================= INPUTS ================= */
+.text-input {
+    -fx-background-color: white;
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 40;
+    -fx-background-radius: 40;
+    -fx-padding: 12 20;
+    -fx-font-size: 14px;
+}
+
+/* ================= STATUS ================= */
+.status-error {
+    -fx-text-fill: #EE1D52;
+    -fx-font-size: 14px;
+}
+
+/* ================= BUTTONS ================= */
+.primary-button {
+    -fx-background-color: #BDBDBD;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: 500;
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+    -fx-padding: 12 0;
+}
+
+.primary-button:hover {
+    -fx-background-color: #A0A0A0;
+}
+
+.primary-button:pressed {
+    -fx-background-color: #9A9A9A;
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #111111;
+    -fx-border-width: 1px;
+    -fx-border-radius: 40;
+    -fx-background-radius: 40;
+    -fx-font-size: 16px;
+    -fx-padding: 12 0;
+}
+
+.secondary-button:hover {
+    -fx-background-color: rgba(0,0,0,0.04);
+}
+
+/* ================= STEPS ================= */
+.step-active {
+    -fx-background-color: #111111;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+    -fx-min-width: 24px;
+    -fx-min-height: 24px;
+    -fx-background-radius: 12;
+    -fx-font-size: 12px;
+}
+
+.step-inactive {
+    -fx-background-color: #CCCCCC;
+    -fx-text-fill: white;
+    -fx-alignment: center;
+    -fx-min-width: 24px;
+    -fx-min-height: 24px;
+    -fx-background-radius: 12;
+    -fx-font-size: 12px;
+}
+
+.step-text-active {
+    -fx-font-size: 13px;
+    -fx-text-fill: #111111;
+}
+
+.step-text-inactive {
+    -fx-font-size: 13px;
+    -fx-text-fill: #999999;
+}
+
+/* ================= SPOTIFY BUTTON ================= */
+.spotify-button {
+    -fx-background-color: #1DB954;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 40;
+    -fx-border-radius: 40;
+    -fx-padding: 14 0;
+}
+
+.spotify-button:hover {
+    -fx-background-color: #1AA34A;
+}
+
+.spotify-button:pressed {
+    -fx-background-color: #168F3F;
+}
+
+/* ================= POPUP ================= */
+.popup-root {
+    -fx-background-color: transparent;
+}
+
+.popup-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 20, 0, 0, 6);
+}
+
+.popup-icon-container {
+    -fx-background-color: #FFE6B3;
+    -fx-background-radius: 20;
+    -fx-min-width: 32;
+    -fx-min-height: 32;
+    -fx-alignment: center;
+}
+
+.popup-icon-text {
+    -fx-text-fill: #FF8C00;
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+}
+
+.popup-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #111111;
+}
+
+.popup-message {
+    -fx-font-size: 14px;
+    -fx-text-fill: #444444;
+    -fx-line-spacing: 2px;
+}
+
+.popup-secondary-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555555;
+    -fx-font-size: 14px;
+}
+
+.popup-secondary-button:hover {
+    -fx-text-fill: #111111;
+}
+
+.popup-danger-button {
+    -fx-background-color: #E53935;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8;
+    -fx-padding: 10 16;
+}
+
+.popup-danger-button:hover {
+    -fx-background-color: #D32F2F;
+}
+
+/* ========================================================= */
+/* ===================== FEED / HOME (LIGHT) ================= */
+/* ========================================================= */
+
+.side-menu-light {
+    -fx-background-color: #f4f4f7;
+}
+
+.user-box-light {
+    -fx-background-color: #e6e6eb;
+    -fx-background-radius: 18;
+    -fx-padding: 10 12;
+}
+
+.user-name-light {
+    -fx-font-size: 16px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #222;
+}
+
+.avatar-wrap {
+    -fx-background-color: white;
+    -fx-background-radius: 999;
+    -fx-padding: 4;
+}
+
+.menu-separator-light {
+    -fx-opacity: 0.25;
+}
+
+/* MENU BUTTONS */
+.menu-button-light {
+    -fx-font-size: 16px;
+    -fx-text-fill: #222;
+    -fx-padding: 10 14;
+    -fx-graphic-text-gap: 14;
+    -fx-background-radius: 12;
+    -fx-background-color: transparent;
+}
+
+.menu-button-light:hover {
+    -fx-background-color: rgba(0,0,0,0.05);
+}
+
+.menu-button-light-active {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #111;
+    -fx-padding: 10 14;
+    -fx-graphic-text-gap: 14;
+    -fx-background-radius: 12;
+
+    -fx-background-color: #e0dde6;
+    -fx-border-color: #b48acb;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 12;
+}
+
+/* PILL BUTTONS (Amigos / Buscar) */
+.pill-button,
+.pill-button-active {
+    -fx-font-size: 15px;
+    -fx-padding: 8 22;
+    -fx-background-radius: 20;
+}
+
+.pill-button {
+    -fx-background-color: #d0d0d6;
+    -fx-text-fill: #333;
+}
+
+.pill-button:hover {
+    -fx-background-color: #c3c3ca;
+}
+
+.pill-button-active {
+    -fx-background-color: #e7c8f0;
+    -fx-text-fill: #111;
+    -fx-font-weight: 600;
+}
+
+/* Side scroll */
+.side-scroll {
+    -fx-background-color: transparent;
+}
+
+.side-scroll-content {
+    -fx-padding: 8 6;
+}
+
+/* FEED BACKGROUND */
+.feed-background-light {
+    -fx-background-image: url("../imgs/background-login.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+
+    /* oscurecido */
+    -fx-background-color: rgba(0,0,0,0.22);
+    -fx-background-blend-mode: multiply;
+}
+
+/* FEED CARD  */
+.feed-card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 24;
+    -fx-background-insets: 0;
+    -fx-border-radius: 24;
+    -fx-border-insets: 0;
+}
+
+.feed-card-main {
+    -fx-padding: 18 18 18 18;
+    -fx-spacing: 14;
+}
+
+.activity-box {
+    -fx-background-color: #ececf1;
+    -fx-background-radius: 14;
+    -fx-padding: 24;
+}
+
+.activity-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+}
+
+.card-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #222;
+}
+
+.card-date {
+    -fx-font-size: 13px;
+    -fx-text-fill: #777;
+}
+
+
+.action-strip {
+    -fx-background-color: #805C7D;
+    -fx-background-radius: 0 24 24 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0 12;          
+}
+
+.icon-clickable {
+    -fx-cursor: hand;
+}
+
+.search-field {
+    -fx-pref-height: 44px;
+    -fx-font-size: 15px;
+}
+
+/* ================= PROFILE HEADER ================= */
+
+.profile-header-card {
+    -fx-background-color: white;
+    -fx-background-radius: 24;
+    -fx-padding: 18;
+}
+
+.profile-name {
+    -fx-font-size: 20px;
+    -fx-font-weight: 600;
+}
+
+.profile-country,
+.profile-followers {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666;
+}
+
+.profile-separator {
+    -fx-text-fill: #999;
+}
+
+.profile-scroll {
+    -fx-background-color: transparent;
+}
+
+.profile-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+}
+
+.section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #111;
+}
+
+.avatar-wrap-large {
+    -fx-background-color: #f2f2f2;
+    -fx-background-radius: 50;
+    -fx-padding: 6;
+}
+
+.profile-wrapper {
+    -fx-padding: 16 20 0 20;
+}
+
+.profile-content {
+    -fx-padding: 6 0 20 0;
+}
+
+/* ================= ICON BUTTONS ================= */
+
+.icon-circle-button {
+    -fx-background-color: #f2f2f2;
+    -fx-background-radius: 20;
+    -fx-padding: 8;
+}
+
+.icon-circle-button:hover {
+    -fx-background-color: #e6e6e6;
+}
+
+/* ================= SCROLL CLEAN ================= */
+
+.profile-scroll-clean {
+    -fx-background-color: transparent;
+}
+
+.profile-scroll-clean > .viewport {
+    -fx-background-color: transparent;
+}
+
+.inner-scroll-clean {
+    -fx-background-color: transparent;
+}
+
+.inner-scroll-clean > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ================= SOFT CARDS ================= */
+
+.profile-card-soft {
+    -fx-background-color: rgba(255,255,255,0.95);
+    -fx-background-radius: 20;
+    -fx-padding: 16;
+}
+
+/* ================= TOP ITEMS ================= */
+
+.top-item ImageView {
+    -fx-background-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 8, 0, 0, 3);
+}
+
+.top-rank {
+    -fx-font-size: 22px;
+    -fx-font-weight: 600;
+}
+
+.top-name {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-wrap-text: true;
+    -fx-alignment: center;
+}
+
+/* ================= RECENT TRACKS ================= */
+
+.recent-row {
+    -fx-padding: 6 0;
+}
+
+.recent-track {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+}
+
+.recent-artist {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666;
+}
+
+.recent-duration {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666;
+}
+
+/* ================= PROFILE TEXT ================= */
+
+.profile-name-bold {
+    -fx-font-size: 21px;
+    -fx-font-weight: 700;
+}
+
+.section-title-bold {
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #111;
+}
+
+/* ================= PROFILE CONTENT ================= */
+
+.profile-content-padded {
+    -fx-padding: 8 24 24 8; /* margen derecho extra para scrollbar */
+}
+
+/* ================= DARK ICON BUTTONS ================= */
+
+.icon-circle-button-dark {
+    -fx-background-color: #3E3E3E;
+    -fx-background-radius: 22;
+    -fx-padding: 10;
+}
+
+.icon-circle-button-dark:hover {
+    -fx-background-color: #4a4a4a;
+}
+
+/* ================= SOFT CARDS (MORE VISIBLE) ================= */
+
+.profile-card-soft {
+    -fx-background-color: rgba(255,255,255,0.90);
+    -fx-background-radius: 20;
+    -fx-padding: 16 16 16 22; /* más margen izquierdo */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 4);
+}
+
+/* ================= TOP ITEMS ================= */
+
+.top-name-centered {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-font-weight: 500;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+/* ================= RECENT TRACKS ================= */
+
+.recent-row {
+    -fx-padding: 6 8 6 0;
+}
+
+.recent-track,
+.recent-artist {
+    -fx-max-width: Infinity;
+}
+
+/* ================= SIDE USER ITEM ================= */
+
+.side-user-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600; /* NEGRITA */
+    -fx-text-fill: #222;
+}
+
+.side-user-sub {
+    -fx-font-size: 12px;
+    -fx-text-fill: #666;
+}

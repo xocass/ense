@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.*;
 
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -23,6 +24,8 @@ public class User {
     private String spotifyRefreshToken;
     private Instant spotifyAccessTokenExpiresAt;
 
+    private final Set<String> friendIds = new HashSet<>();
+
     public User(String email, String password, Set<String> roles) {
         this.email = email;
         this.password = password;
@@ -38,6 +41,7 @@ public class User {
     public String getSpotifyRefreshToken() {return this.spotifyRefreshToken;}
     public Instant getSpotifyAccessTokenExpiresAt() {return this.spotifyAccessTokenExpiresAt;}
     public SpotifyProfile getSpotifyProfile() {return this.spotifyProfile;}
+    public Set<String> getFriendIds() {return this.friendIds;}
 
     public void setEmail(String email) {this.email = email;}
     public void setPassword(String password) {this.password = password;}
@@ -47,6 +51,8 @@ public class User {
     public void setSpotifyAccessTokenExpiresAt(Instant expiresAt) {this.spotifyAccessTokenExpiresAt = expiresAt;}
     public void setSpotifyLinked(boolean spotifyLinked) {this.spotifyLinked = spotifyLinked;}
     public void setSpotifyProfile(SpotifyProfile spotifyProfile) {this.spotifyProfile = spotifyProfile;}
+    public void setFriendIds(Set<String> friendIds) {this.friendIds.addAll(friendIds);}
 
+    public void addFriend(String friendId) {this.friendIds.add(friendId);}
     public boolean isSpotifyLinked() {return this.spotifyLinked;}
 }

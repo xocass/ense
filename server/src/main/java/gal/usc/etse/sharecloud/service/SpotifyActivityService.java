@@ -104,7 +104,8 @@ public class SpotifyActivityService {
                 track.name(),
                 artists,
                 image,
-                null
+                null,
+                track.duration_ms()
         );
     }
 
@@ -132,8 +133,8 @@ public class SpotifyActivityService {
                 .toList();
     }
 
-    public SpotifyRecentlyPlayedResponse returnListenedTrackState(String userId, int limit) throws Exception {
-        SpotifyRecentlyPlayedResponse response = spotifyService.getRecentlyPlayed(userId, limit);
+    public SpotifyRecentlyPlayedResponse returnListenedTrackState(String userId, int limitSave, int limitReturn) throws Exception {
+        SpotifyRecentlyPlayedResponse response = spotifyService.getRecentlyPlayed(userId, limitReturn);
         /*List<TrackInfo> tracks = new ArrayList<>();
 
         for (SpotifyRecentlyPlayedResponse.Item item : response.items()) {
@@ -146,13 +147,15 @@ public class SpotifyActivityService {
 
             tracks.add(track);
         }*/
-        if(limit==10){
-            List<TrackInfo> tracks = response.items().stream()
+        if(limitSave>0){
+            List<TrackInfo> tracksReturned = response.items().stream()
                     .map(this::mapRecentlyPlayedItemToTrackInfo)
                     .toList();
-
+            List<TrackInfo> tracksSaved = tracksReturned.stream()
+                    .limit(limitSave)
+                    .toList();
             ListenedTrackPayload payload = new ListenedTrackPayload();
-            payload.setTracks(tracks);
+            payload.setTracks(tracksSaved);
             updateActivity(userId, ActivityType.LISTENED_TRACKS, payload);
         }
         return response;

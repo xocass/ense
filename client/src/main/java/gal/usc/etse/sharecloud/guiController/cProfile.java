@@ -5,6 +5,7 @@ import gal.usc.etse.sharecloud.http.SpotifyApi;
 import javafx.fxml.FXML;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 public class cProfile {
@@ -20,7 +21,7 @@ public class cProfile {
     @FXML
     public Text countryLabel;
     @FXML
-    public HBox recentlyPlayedBox;
+    public VBox recentlyPlayedBox;
     @FXML
     public HBox topArtistBox;
     @FXML

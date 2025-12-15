@@ -77,8 +77,13 @@ public class cSession {
                 cUserSearchResult controller = loader.getController();
                 controller.setUserSearchResult(user);
                 controller.setLabelUsername(user.username());
-                Image pic = new Image(user.image());
+                Image pic;
+                if(user.image()!=null) pic = new Image(user.image());
+                else pic = new Image(getClass().getResource("/gal/usc/etse/sharecloud/imgs/default-pfp.png").toExternalForm());
                 controller.getProfilePic().setImage(pic);
+                item.setOnMouseClicked((event) -> {
+                    fgui.verOtroPerfil(user.id());
+                });
 
                 resultsBox.getChildren().add(item);
 

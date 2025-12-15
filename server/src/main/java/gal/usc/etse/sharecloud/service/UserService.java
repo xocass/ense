@@ -1,6 +1,7 @@
 package gal.usc.etse.sharecloud.service;
 
 import gal.usc.etse.sharecloud.model.dto.AuthRequest;
+import gal.usc.etse.sharecloud.model.dto.SpotifyProfile;
 import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -61,10 +63,25 @@ public class UserService implements UserDetailsService {
                 .filter(user -> !user.getId().equals(requesterId)) // no te devuelves a ti mismo
                 .map(user -> new UserSearchResult(
                         user.getId(),
+                        user.getSpotifyProfile().getSpotifyID(),
                         user.getSpotifyProfile().getDisplayName(),
                         user.getSpotifyProfile().getImage()
                 ))
                 .toList();
+    }
+
+    public SpotifyProfile returnSpotifyProfile(String id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        System.out.println("ID: "+user.getSpotifyProfile().getSpotifyID());
+        return new SpotifyProfile(
+                user.getSpotifyProfile().getSpotifyID(),
+                user.getSpotifyProfile().getDisplayName(),
+                user.getSpotifyProfile().getEmail(),
+                user.getSpotifyProfile().getCountry(),
+                user.getSpotifyProfile().getImage(),
+                user.getSpotifyProfile().getnFollowers(),
+                user.getSpotifyProfile().getProfileURL()
+        );
     }
 
 }

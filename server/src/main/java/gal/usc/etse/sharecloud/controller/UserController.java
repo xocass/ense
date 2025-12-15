@@ -1,6 +1,9 @@
 package gal.usc.etse.sharecloud.controller;
 
-import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
+import gal.usc.etse.sharecloud.model.dto.*;
+import gal.usc.etse.sharecloud.model.entity.UserActivity;
+import gal.usc.etse.sharecloud.service.SpotifyActivityService;
+import gal.usc.etse.sharecloud.service.UserActivityService;
 import gal.usc.etse.sharecloud.service.UserService;
 
 /*import io.swagger.v3.oas.annotations.Operation;
@@ -10,10 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;*/
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,11 +22,13 @@ import java.util.List;
 //@Tag(name = "User Social", description = "Búsqueda de usuarios y funcionalidades sociales")
 public class UserController {
     private final UserService userService;
+    private final UserActivityService activityService;
 
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserActivityService activityService) {
         this.userService = userService;
+        this.activityService = activityService;
     }
 
 
@@ -48,6 +50,31 @@ public class UserController {
         List<UserSearchResult> results = userService.searchUsers(query, id);
 
         return ResponseEntity.ok(results);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/spotify/profile")
+    public ResponseEntity<SpotifyProfile> returnSpotifyProfile(@PathVariable String id) {
+        System.out.println("ENTRE");
+        SpotifyProfile result = userService.returnSpotifyProfile(id);
+        return ResponseEntity.ok(result);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/spotify/recently-played")
+    public ResponseEntity<SpotifyRecentlyPlayedResponse> returnRecentlyPlayed(@PathVariable String id) throws Exception {
+        SpotifyRecentlyPlayedResponse result = activityService.returnOtherRecentlyPlayed(id);
+        return ResponseEntity.ok(result);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/spotify/top-tracks")
+    public ResponseEntity<SpotifyTopTracksResponse> returnTopTracks(@PathVariable String id) throws Exception {
+        SpotifyTopTracksResponse result = activityService.returnOtherTopTracks(id);
+        return ResponseEntity.ok(result);
+    }
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/spotify/top-artists")
+    public ResponseEntity<SpotifyTopArtistsResponse> returnTopArtists(@PathVariable String id) throws Exception {
+        SpotifyTopArtistsResponse result = activityService.returnOtherTopArtists(id);
+        return ResponseEntity.ok(result);
     }
 
 }

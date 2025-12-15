@@ -13,34 +13,26 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="760"
-            prefWidth="1200"
-            stylesheets="@../styles/main.css"
-            xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="gal.usc.etse.sharecloud.guiController.cProfile">
+<BorderPane prefHeight="760" prefWidth="1200" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cProfile">
 
     <!-- ================= LEFT MENU ================= -->
     <left>
-        <VBox alignment="TOP_LEFT"
-            prefWidth="280"
-            spacing="14"
-            styleClass="side-menu-light">
+        <VBox alignment="TOP_LEFT" prefWidth="280" spacing="14" styleClass="side-menu-light">
 
             <padding>
-                <Insets bottom="10" left="14" right="14" top="8"/>
+                <Insets bottom="10" left="14" right="14" top="8" />
             </padding>
 
             <!-- USER HEADER -->
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="user-box-light">
                 <StackPane styleClass="avatar-wrap">
-                    <ImageView fitHeight="34" fitWidth="34" preserveRatio="true">
-                        <image><Image url="@../imgs/default-pfp.png"/></image>
+                    <ImageView fx:id="currPfp" fitHeight="34" fitWidth="34" preserveRatio="true">
+                        <image><Image url="@../imgs/default-pfp.png" /></image>
                     </ImageView>
                 </StackPane>
 
-                <Label styleClass="user-name-light" text="Username"/>
-                <Region HBox.hgrow="ALWAYS"/>
+                <Label styleClass="user-name-light" text="currUsername" />
+                <Region HBox.hgrow="ALWAYS" />
                 <ImageView fx:id="btnNotification" fitHeight="18" fitWidth="18" preserveRatio="true">
                     <image>
                         <Image url="@../imgs/icon-bell.png" />
@@ -48,7 +40,7 @@
                 </ImageView>
             </HBox>
 
-            <Separator styleClass="menu-separator-light"/>
+            <Separator styleClass="menu-separator-light" />
 
             <!-- MENU BUTTONS -->
             <VBox spacing="14">
@@ -75,34 +67,30 @@
                 </Button>
             </VBox>
 
-            <Separator styleClass="menu-separator-light"/>
+            <Separator styleClass="menu-separator-light" />
 
             <!-- FRIENDS / SEARCH -->
             <HBox alignment="CENTER" spacing="14">
-                <Button minWidth="120" styleClass="pill-button-active" text="Amigos"/>
-                <Button minWidth="120" styleClass="pill-button" text="Buscar"/>
+                <Button minWidth="120" styleClass="pill-button-active" text="Amigos" />
+                <Button minWidth="120" styleClass="pill-button" text="Buscar" />
             </HBox>
 
             <!-- SHARED CONTENT (CLAVE) -->
-            <StackPane fx:id="sideContent"
-                    prefHeight="335"
-                    prefWidth="254"
-                    VBox.vgrow="ALWAYS">
+            <StackPane fx:id="sideContent" prefHeight="335" prefWidth="254" VBox.vgrow="ALWAYS">
 
                 <ScrollPane fitToWidth="true" styleClass="side-scroll">
-                    <VBox spacing="10" styleClass="side-scroll-content"/>
+                    <VBox spacing="10" styleClass="side-scroll-content" />
                 </ScrollPane>
 
             </StackPane>
 
             <!-- FOOTER -->
             <VBox prefHeight="38" prefWidth="254" spacing="5">
-                <Separator styleClass="menu-separator-light"/>
+                <Separator styleClass="menu-separator-light" />
                 <HBox alignment="CENTER">
-                    <ImageView fitHeight="87" fitWidth="189"
-                            preserveRatio="true" smooth="true">
+                    <ImageView fitHeight="87" fitWidth="189" preserveRatio="true" smooth="true">
                         <image>
-                            <Image url="@../imgs/sharecloud-horizontal-dark.png"/>
+                            <Image url="@../imgs/sharecloud-horizontal-dark.png" />
                         </image>
                     </ImageView>
                 </HBox>
@@ -122,18 +110,18 @@
                 <HBox alignment="CENTER_LEFT" spacing="18" styleClass="profile-header-card">
 
                     <StackPane styleClass="avatar-wrap-large">
-                        <ImageView fitHeight="72" fitWidth="72" preserveRatio="true">
+                        <ImageView fx:id="pfp" fitHeight="72" fitWidth="72" preserveRatio="true">
                             <image><Image url="@../imgs/default-pfp.png" /></image>
                         </ImageView>
                     </StackPane>
 
                     <VBox spacing="4">
-                        <Label fx:id="labelProfileUser" styleClass="profile-name-bold" text="Other user" />
+                        <Label fx:id="username" styleClass="profile-name-bold" text="Other user" />
 
                         <HBox alignment="CENTER_LEFT" spacing="8">
-                            <Label fx:id="labelCountry" styleClass="profile-country" text="País" />
+                            <Label fx:id="country" styleClass="profile-country" text="País" />
                             <Label styleClass="profile-separator" text="·" />
-                            <Label fx:id="labelFollowers" styleClass="profile-followers" text="124 seguidores" />
+                            <Label fx:id="followers" styleClass="profile-followers" text="124 seguidores" />
                         </HBox>
                     </VBox>
 
@@ -176,7 +164,7 @@
                         <VBox spacing="12" styleClass="profile-card-soft">
                             <Label styleClass="section-title-bold" text="Top artistas" />
 
-                            <HBox spacing="26">
+                            <HBox fx:id="topArtistBox" spacing="26">
                                 <VBox alignment="CENTER" spacing="6" styleClass="top-item">
                                     <HBox alignment="CENTER" spacing="6">
                                         <Label styleClass="top-rank" text="1" />
@@ -193,7 +181,7 @@
                         <VBox spacing="12" styleClass="profile-card-soft">
                             <Label styleClass="section-title-bold" text="Top canciones" />
 
-                            <HBox spacing="26">
+                            <HBox fx:id="topTracksBox" spacing="26">
                                 <VBox alignment="CENTER" spacing="6" styleClass="top-item">
                                     <HBox alignment="CENTER" spacing="6">
                                         <Label styleClass="top-rank" text="1" />
@@ -210,28 +198,21 @@
                         <VBox spacing="12" styleClass="profile-card-soft">
                             <Label styleClass="section-title-bold" text="Últimas canciones escuchadas" />
 
-                            <ScrollPane fitToWidth="true" prefHeight="200" styleClass="inner-scroll-clean">
+                             <VBox fx:id="recentlyPlayedBox" spacing="10">
+                                 <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="14" styleClass="recent-row">
+                                     <ImageView fitHeight="40" fitWidth="40">
+                                         <image>
+                                 <Image url="@../imgs/wifi_dino.jpg" />
+                              </image>
+                                     </ImageView>
 
-                                <VBox spacing="10">
-                                    <HBox alignment="CENTER_LEFT" maxWidth="Infinity" spacing="14" styleClass="recent-row">
-                                        <ImageView fitHeight="40" fitWidth="40">
-                                            <image><Image url="@../imgs/wifi_dino.jpg" /></image>
-                                        </ImageView>
+                                     <Label maxWidth="Infinity" styleClass="recent-track" text="Nombre canción" wrapText="true" />
 
-                                        <Label styleClass="recent-track"
-                                            text="Nombre canción"
-                                            wrapText="true"
-                                            maxWidth="Infinity"/>
-
-                                        <Label styleClass="recent-artist"
-                                            text="Artista"
-                                            wrapText="true"
-                                            maxWidth="Infinity"/>
-                                        <Region HBox.hgrow="ALWAYS" />
-                                        <Label styleClass="recent-duration" text="3:45" />
-                                    </HBox>
-                                </VBox>
-                            </ScrollPane>
+                                     <Label maxWidth="Infinity" styleClass="recent-artist" text="Artista" wrapText="true" />
+                                     <Region HBox.hgrow="ALWAYS" />
+                                     <Label styleClass="recent-duration" text="3:45" />
+                                 </HBox>
+                             </VBox>
                         </VBox>
 
                     </VBox>
@@ -242,4 +223,3 @@
     </center>
 
 </BorderPane>
-

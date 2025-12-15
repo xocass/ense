@@ -12,12 +12,14 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 
+import static gal.usc.etse.sharecloud.model.entity.ActivityType.LISTENED_TRACKS;
+
 
 @Service
 public class SpotifyActivityService {
     private final SpotifyService spotifyService;
     private final UserRepository userRepository;
-    private  final UserActivityRepository userActivityRepository;
+    private final UserActivityRepository userActivityRepository;
 
 
     public SpotifyActivityService(SpotifyService spotifyService, UserRepository userRepository, UserActivityRepository userActivityRepository) {
@@ -53,7 +55,7 @@ public class SpotifyActivityService {
 
         ListenedTrackPayload payload = new ListenedTrackPayload();
         payload.setTracks(tracks);
-        updateActivity(userId, ActivityType.LISTENED_TRACKS, payload);
+        updateActivity(userId, LISTENED_TRACKS, payload);
     }
 
     public void updateTopTracks(String userId, int limit) throws Exception {
@@ -156,10 +158,11 @@ public class SpotifyActivityService {
                     .toList();
             ListenedTrackPayload payload = new ListenedTrackPayload();
             payload.setTracks(tracksSaved);
-            updateActivity(userId, ActivityType.LISTENED_TRACKS, payload);
+            updateActivity(userId, LISTENED_TRACKS, payload);
         }
         return response;
     }
+
 
     public SpotifyTopTracksResponse returnTopTracks(String userId, int limit) throws Exception {
         return spotifyService.getTopTracks(userId, limit);

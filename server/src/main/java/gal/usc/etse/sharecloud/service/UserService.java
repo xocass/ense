@@ -1,6 +1,7 @@
 package gal.usc.etse.sharecloud.service;
 
 import gal.usc.etse.sharecloud.model.dto.AuthRequest;
+import gal.usc.etse.sharecloud.model.dto.SpotifyProfile;
 import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service

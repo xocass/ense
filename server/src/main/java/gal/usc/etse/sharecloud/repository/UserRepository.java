@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findById(String userId);
+    Optional<User> findBySpotifyProfile_SpotifyID(String spotifyID);
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
     SpotifyProfile findProfileByEmail(String email);

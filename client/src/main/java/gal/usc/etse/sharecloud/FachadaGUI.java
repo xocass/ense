@@ -15,6 +15,7 @@ package gal.usc.etse.sharecloud;
 import gal.usc.etse.sharecloud.guiController.*;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 import gal.usc.etse.sharecloud.http.TokenManager;
+import gal.usc.etse.sharecloud.http.UserApi;
 import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyArtist;
 import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyTrack;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
@@ -201,19 +202,20 @@ public class FachadaGUI extends Application {
     public void verCurrPerfil(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfile.fxml")
+                FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfileUser.fxml")
             );
-            Scene scene = new Scene(fxmlLoader.load(),1440,760);
+            Scene scene = new Scene(fxmlLoader.load(),1200,760);
             cProfile controller = fxmlLoader.getController();
 
             //CARGAR DATOS USUARIO
             SpotifyProfile profileView = SpotifyApi.getSpotifyProfile(TokenManager.getUserID());
             if(profileView.getImage()!=null) {
                 Image pfp = new Image(profileView.getImage());
-                controller.pfpView.setImage(pfp);
+                controller.setPfp(pfp);
             }
-            controller.usernameLabel.setText(profileView.getDisplayName());
-            controller.countryLabel.setText(profileView.getCountry());
+            controller.setUsername(profileView.getDisplayName());
+            controller.setCountry(profileView.getCountry());
+            controller.setFollowers(profileView.getNFollowers());
             controller.setFachadas(this,profileView);
 
             //CARGAR RECENTLY PLAYED
@@ -234,10 +236,46 @@ public class FachadaGUI extends Application {
         }catch(IOException e){System.err.println("IOException: "+e.getMessage());
         }catch(Exception e){System.err.println("Exception(getUser): "+e.getMessage());}
     }
+    public void verOtroPerfil(String otherID){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfileOther.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(),1200,760);
+            cProfile controller = fxmlLoader.getController();
 
+            //CARGAR DATOS USUARIO
+            SpotifyProfile profileView = UserApi.getOtherSpotifyProfile(otherID);
+            if(profileView.getImage()!=null) {
+                Image pfp = new Image(profileView.getImage());
+                controller.setPfp(pfp);
+            }
+            controller.setUsername(profileView.getDisplayName());
+            controller.setCountry(profileView.getCountry());
+            controller.setFollowers(profileView.getNFollowers());
+            controller.setFachadas(this,profileView);
+
+            //CARGAR RECENTLY PLAYED
+            SpotifyRecentlyPlayedResponse recentlyPlayed = UserApi.getOtherRecentlyPlayed(otherID);
+            _cargarRecentlyPlayed(controller,recentlyPlayed);
+
+            //CARGAR TOP TRACKS
+            SpotifyTopTracksResponse topTracks = UserApi.getOtherTopTracks(otherID);
+            _cargarTopTracks(controller,topTracks);
+
+            //CARGAR TOP ARTISTAS
+            SpotifyTopArtistsResponse topArtists = UserApi.getOtherTopArtists(otherID);
+            _cargarTopArtistas(controller,topArtists);
+
+            entrarStage.setTitle(profileView.getDisplayName());
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        }catch(IOException e){System.err.println("IOException: "+e.getMessage());
+        }catch(Exception e){System.err.println("Exception(getUser): "+e.getMessage());}
+    }
 
     private void _cargarRecentlyPlayed(cProfile controller, SpotifyRecentlyPlayedResponse response){
-        controller.recentlyPlayedBox.getChildren().clear();
+        controller.clearRecentlyPlayed();
         for (SpotifyRecentlyPlayedResponse.Item item : response.items()) {
                 //cargar el template
                 FXMLLoader loader = new FXMLLoader(
@@ -268,21 +306,20 @@ public class FachadaGUI extends Application {
                 }
 
                 Integer duration = item.track().duration_ms();
-                String  previewUrl = item.track().preview_url();
-                System.out.println("URL: "+previewUrl);
                 //settear datos del template y añadir al hbox
                 cTemplate.setName(trackName);
                 cTemplate.setArtist(artists);
                 if (imageUrl != null) cTemplate.setImage(new Image(imageUrl));
                 cTemplate.setDuration(duration);
-                cTemplate.setPreview(previewUrl);
 
-                controller.recentlyPlayedBox.getChildren().add(template);
+                controller.addRecentlyPlayed(template);
         }
     }
     public void _cargarTopTracks(cProfile controller, SpotifyTopTracksResponse response) {
-        controller.topTrackBox.getChildren().clear();
+        controller.clearTopTracks();
+        Integer counter = 0;
         for (SpotifyTrack track : response.items()) {
+            counter++;
             //cargar el template
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/gal/usc/etse/sharecloud/layouts/vItemTemplate.fxml")
@@ -313,15 +350,18 @@ public class FachadaGUI extends Application {
             //settear los datos al template y añadirlo al hbox
             cTemplate.setName(trackName);
             cTemplate.setArtist(artists);
+            cTemplate.setRank(counter.toString());
             if (imageUrl != null) {
                 cTemplate.setImage(new Image(imageUrl, true));
             }
-            controller.topTrackBox.getChildren().add(template);
+            controller.addTopTrack(template);
         }
     }
     public void _cargarTopArtistas(cProfile controller, SpotifyTopArtistsResponse response) {
-        controller.topArtistBox.getChildren().clear();
+        controller.clearTopArtist();
+        Integer counter=0;
         for (SpotifyTopArtistsResponse.Item artist : response.items()) {
+            counter++;
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/gal/usc/etse/sharecloud/layouts/vItemTemplate.fxml")
             );
@@ -345,10 +385,11 @@ public class FachadaGUI extends Application {
             //settear los datos del template y añadirlo al hbox
             cTemplate.setName(artistName);
             cTemplate.invLabel();
+            cTemplate.setRank(counter.toString());
             if (imageUrl != null) {
                 cTemplate.setImage(new Image(imageUrl, true));
             }
-            controller.topArtistBox.getChildren().add(template);
+            controller.addTopArtist(template);
         }
     }
 }

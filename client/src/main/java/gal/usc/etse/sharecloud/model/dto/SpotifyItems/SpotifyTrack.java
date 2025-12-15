@@ -9,6 +9,5 @@ public record SpotifyTrack(String id,
                            String name,
                            List<SpotifyArtist> artists,
                            SpotifyAlbum album,
-                           String preview_url,
                            Integer duration_ms
 ) {}

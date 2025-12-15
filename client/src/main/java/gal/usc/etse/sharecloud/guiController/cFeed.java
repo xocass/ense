@@ -150,7 +150,9 @@ public class cFeed {
                 Image pic = new Image(user.image());
                 controller.getProfilePic().setImage(pic);
             }
-
+            item.setOnMouseClicked((event) -> {
+                fgui.verOtroPerfil(user.id());
+            });
             container.getChildren().add(item);
         } catch (IOException e) {e.printStackTrace();}
     }

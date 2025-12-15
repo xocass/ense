@@ -1,20 +1,21 @@
 package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
+
 import gal.usc.etse.sharecloud.http.AuthApi;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-import java.io.IOException;
 
 public class cLog {
     @FXML private TextField fieldEmail;
     @FXML private PasswordField fieldPassword;
     @FXML private Label statusLabel;
+    @FXML private Hyperlink forgotPasswordLink;
 
     private FachadaGUI fgui;
 
@@ -31,14 +32,14 @@ public class cLog {
             statusLabel.setText("Email y contraseña requeridos.");
             return;
         }
-
+        System.out.println("Email: " + email+ ". Password: " + password);
 
             try {
                 int status = AuthApi.login(email, password);
 
                 if (status == 200) {
                     updateStatus("Login correcto.");
-                    fgui.entrarSesion(email);
+                    fgui.irFeed(email);
 
                 } else if (status == 401) {
                     updateStatus("Credenciales incorrectas.");
@@ -54,34 +55,12 @@ public class cLog {
 
     @FXML
     private void clickOnRegister() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegister.fxml")
-            );
-            Scene scene = new Scene(fxmlLoader.load(), 878, 422);
-            cRegister controller = fxmlLoader.getController();
-            controller.setFachadas(this.fgui, this);
-
-            fgui.getEntrarStage().setTitle("Registro");
-            fgui.getEntrarStage().setScene(scene);
-            fgui.getEntrarStage().show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+        fgui.registroCrearCuenta();
     }
 
     @FXML
     private void clickOnForgotPassword() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPassword.fxml")
-            );
-            Scene scene = new Scene(fxmlLoader.load(), 467, 422);
-            cForgotPassword controller = fxmlLoader.getController();
-            controller.setFachadas(this.fgui, this);
-
-            fgui.getEntrarStage().setTitle("Recuperar contraseña");
-            fgui.getEntrarStage().setScene(scene);
-            fgui.getEntrarStage().show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+        fgui.recuperarContrasenhaEmail();
     }
 
     private void updateStatus(String msg) {

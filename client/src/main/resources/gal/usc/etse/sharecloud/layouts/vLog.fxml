@@ -1,83 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="422.0" prefWidth="878.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cLog">
-   <children>
-      <Pane layoutX="-6.0" layoutY="-8.0" prefHeight="430.0" prefWidth="884.0" styleClass="background-image" stylesheets="@../styles/log.css">
-         <children>
-            <ImageView fitHeight="214.0" fitWidth="298.0" layoutX="531.0" layoutY="105.0" pickOnBounds="true" preserveRatio="true" styleClass="image-logo" />
-         </children></Pane>
-      <AnchorPane prefHeight="422.0" prefWidth="474.0" stylesheets="@../styles/log.css">
-         <children>
-            <Pane layoutY="-1.0" opacity="0.76" prefHeight="422.0" prefWidth="474.0" styleClass="login-background" />
-            <VBox layoutX="18.0" layoutY="50.0" prefHeight="317.0" prefWidth="436.0">
-               <children>
-                  <VBox prefHeight="54.0" prefWidth="436.0" spacing="20.0">
-                     <children>
-                        <AnchorPane prefHeight="46.0" prefWidth="436.0">
-                           <children>
-                              <Label layoutX="31.0" layoutY="10.0" prefHeight="13.0" prefWidth="118.0" text="Correo usuario">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="fieldEmail" layoutX="32.0" layoutY="29.0" prefHeight="26.0" prefWidth="371.0" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="142.0" prefWidth="436.0">
-                           <children>
-                              <PasswordField fx:id="fieldPassword" layoutX="31.0" layoutY="19.0" prefHeight="26.0" prefWidth="371.0" />
-                              <Label layoutX="31.0" text="Contraseña">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </VBox>
-                  <HBox alignment="CENTER" prefHeight="25.0" prefWidth="436.0">
-                     <children>
-                        <AnchorPane prefHeight="32.0" prefWidth="191.0">
-                           <children>
-                              <Label fx:id="statusLabel" alignment="TOP_LEFT" layoutX="-1.0" prefHeight="32.0" prefWidth="210.0" textFill="#c10000" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="32.0" prefWidth="158.0">
-                           <children>
-                              <Label contentDisplay="RIGHT" prefHeight="18.0" prefWidth="156.0" text="¿Has olvidado tu contraseña?" accessibleRole="BUTTON" onMouseClicked="#clickOnForgotPassword" underline="true" />
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </HBox>
-                  <VBox prefHeight="146.0" prefWidth="436.0" spacing="20.0">
-                     <children>
-                        <AnchorPane prefHeight="108.0" prefWidth="436.0">
-                           <children>
-                              <Button fx:id="btnIniciarSesion" alignment="CENTER" layoutX="32.0" layoutY="24.0" mnemonicParsing="false" onAction="#clickOnLogin" styleClass="button-login" stylesheets="@../styles/log.css" text="Iniciar sesión" />
-                              <Label layoutX="140.0" layoutY="77.0" text="—   o, si no tienes cuenta   —" textFill="#260842" />
-                           </children>
-                        </AnchorPane>
-                        <AnchorPane prefHeight="85.0" prefWidth="436.0">
-                           <children>
-                              <Button fx:id="btnRegistrarse" layoutX="32.0" layoutY="-8.0" mnemonicParsing="false" onAction="#clickOnRegister" styleClass="button-register" stylesheets="@../styles/log.css" text="Regístrate" />
-                           </children>
-                        </AnchorPane>
-                     </children>
-                  </VBox>
-               </children>
+<AnchorPane
+        fx:controller="gal.usc.etse.sharecloud.guiController.cLog"
+        prefHeight="760"
+        prefWidth="1200"
+        stylesheets="@../styles/main.css"
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1">
+
+    <HBox AnchorPane.topAnchor="0.0"
+          AnchorPane.bottomAnchor="0.0"
+          AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0">
+
+        <!-- ================= LEFT PANEL ================= -->
+        <StackPane prefWidth="600" styleClass="login-background">
+
+            <VBox alignment="CENTER" spacing="32">
+
+                <!-- Login Card -->
+                <VBox alignment="CENTER"
+                      maxWidth="520"
+                      spacing="24"
+                      styleClass="login-card">
+
+                    <Label styleClass="title-text" text="Bienvenido" />
+
+                    <!-- Email -->
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Correo electrónico" />
+                        <TextField fx:id="fieldEmail"
+                                   promptText="usuario@ejemplo.com"
+                                   styleClass="text-input" />
+                    </VBox>
+
+                    <!-- Password -->
+                    <VBox spacing="8">
+                        <Label styleClass="field-label" text="Contraseña" />
+                        <PasswordField fx:id="fieldPassword"
+                                       promptText="••••••••"
+                                       styleClass="text-input" />
+                    </VBox>
+
+                    <!-- Status -->
+                    <Label fx:id="statusLabel"
+                           styleClass="status-error"
+                           visible="false"
+                           wrapText="true" />
+
+                    <!-- Login -->
+                    <Button fx:id="btnLogin"
+                            maxWidth="Infinity"
+                            onAction="#clickOnLogin"
+                            styleClass="primary-button"
+                            text="Iniciar sesión" />
+
+                    <!-- Forgot -->
+                    <Hyperlink fx:id="forgotPasswordLink"
+                               onAction="#clickOnForgotPassword"
+                               styleClass="link-text"
+                               text="¿Has olvidado tu contraseña?"
+                               underline="true" />
+                </VBox>
+
+                <!-- Divider -->
+                <HBox alignment="CENTER" spacing="16">
+                    <Separator prefWidth="120" />
+                    <Label styleClass="muted-text" text="¿No tienes cuenta?" />
+                    <Separator prefWidth="120" />
+                </HBox>
+
+                <!-- Register -->
+                <Button fx:id="btnRegister"
+                        maxWidth="520"
+                        onAction="#clickOnRegister"
+                        styleClass="secondary-button"
+                        text="Regístrate" />
+
             </VBox>
-         </children>
-      </AnchorPane>
-   </children>
+        </StackPane>
+
+        <!-- ================= RIGHT PANEL ================= -->
+        <StackPane prefWidth="600">
+
+            <!-- Background image -->
+            <ImageView fitHeight="760"
+                       fitWidth="600"
+                       preserveRatio="false"
+                       smooth="true">
+                <image>
+                    <Image url="@../imgs/background-login.jpg" />
+                </image>
+            </ImageView>
+
+            <!-- Branding -->
+            <VBox alignment="CENTER" spacing="20">
+                <ImageView fitWidth="260"
+                           preserveRatio="true"
+                           smooth="true">
+                    <image>
+                        <Image url="@../imgs/sharecloud-logo.png" />
+                    </image>
+                </ImageView>
+            </VBox>
+
+        </StackPane>
+
+    </HBox>
 </AnchorPane>
+

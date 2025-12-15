@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="760" prefWidth="1200" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cFeed">
+
+    <!-- ================= LEFT MENU ================= -->
+    <left>
+        <VBox alignment="TOP_LEFT" prefWidth="280" spacing="14" styleClass="side-menu-light">
+
+            <padding>
+                <Insets bottom="10" left="14" right="14" top="8" />
+            </padding>
+
+            <!-- USER HEADER -->
+            <HBox alignment="CENTER_LEFT" spacing="12" styleClass="user-box-light">
+
+                <StackPane styleClass="avatar-wrap">
+                    <ImageView fx:id="profilePic" fitHeight="34" fitWidth="34" preserveRatio="true" smooth="true">
+                        <image>
+                            <Image url="@../imgs/default-pfp.png" />
+                        </image>
+                    </ImageView>
+                </StackPane>
+
+                <Label fx:id="labelUsername" styleClass="user-name-light" text="Username" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <ImageView fx:id="btnNotification" onMouseClicked="#clickOnNotification" fitHeight="18" fitWidth="18" preserveRatio="true">
+                    <image>
+                        <Image url="@../imgs/icon-bell.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+
+            <Separator styleClass="menu-separator-light" />
+
+            <!-- MENU BUTTONS -->
+            <VBox spacing="14">
+
+                <Button fx:id="btnProfile" onAction="#clickViewProfile" alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="254.0" styleClass="menu-button-light" text="Perfil">
+                    <graphic>
+                        <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
+                            <image><Image url="@../imgs/icon-profile.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="btnFeed" alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="254.0" styleClass="menu-button-light-active" text="Feed">
+                    <graphic>
+                        <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
+                            <image><Image url="@../imgs/icon-feed.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button fx:id="btnLogout" onAction="#clickOnLogout" alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="256.0" styleClass="menu-button-light" text="Cerrar sesión">
+                    <graphic>
+                        <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
+                            <image><Image url="@../imgs/icon-logout.png" /></image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+            </VBox>
+
+            <Separator styleClass="menu-separator-light" />
+
+            <!-- FRIENDS / SEARCH -->
+            <HBox alignment="CENTER" spacing="14">
+                <Button fx:id="btnFriends" onAction="#clickOnFriends" minWidth="120" styleClass="pill-button-active" text="Amigos" />
+                <Button fx:id="btnSearch" onAction="#clickOnSearch" minWidth="120" styleClass="pill-button" text="Buscar" />
+            </HBox>
+
+            <!-- SHARED CONTENT -->
+            <StackPane fx:id="sideContent" prefHeight="335.0" prefWidth="254.0" VBox.vgrow="ALWAYS">
+
+                <!-- ===== AMIGOS ===== -->
+                <ScrollPane fx:id="friendsPane" fitToWidth="true" styleClass="side-scroll" visible="true">
+                    <VBox spacing="10" fx:id="vboxFriends" styleClass="side-scroll-content">
+                        
+
+                    </VBox>
+                </ScrollPane>
+
+                <!-- ===== BUSCAR ===== -->
+                <VBox fx:id="searchPane" visible="false" managed="false" maxWidth="254.0" prefHeight="324.0" prefWidth="254.0" spacing="12">
+                    <StackPane>
+                  <HBox prefHeight="25.0" prefWidth="254.0">
+                     <children>
+                              <!-- TextField -->
+                              <TextField fx:id="fieldSearch" prefHeight="36.0" prefWidth="238.0" promptText="Buscar usuario..." styleClass="text-input search-field">
+                                  <padding>
+                                      <Insets bottom="12" left="42" right="16" top="12" />
+                                  </padding>
+                              </TextField>
+                        <AnchorPane prefHeight="71.0" prefWidth="31.0">
+                           <children>
+                                    <ImageView fx:id="iconSearch" onMouseClicked="#clickOnSearchIcon" fitHeight="18.0" fitWidth="18.0" layoutX="2.0" layoutY="13.0" mouseTransparent="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../imgs/icon-serach.png" />
+                                    </image>
+                                </ImageView>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </HBox>
+                    </StackPane>
+
+                    <ScrollPane fx:id="searchScrollPane" fitToWidth="true" prefHeight="269.0" prefWidth="254.0" styleClass="side-scroll">
+                        <VBox fx:id="vboxResults" spacing="6" styleClass="side-scroll-content" />
+                    </ScrollPane>
+
+                </VBox>
+
+            </StackPane>
+         <VBox prefHeight="38.0" prefWidth="254.0" spacing="5.0">
+            <children>
+               <Separator styleClass="menu-separator-light" />
+               <HBox alignment="CENTER">
+                  <children>
+                     <ImageView fitHeight="87.0" fitWidth="189.0" preserveRatio="true" smooth="true">
+                        <image>
+                           <Image url="@../imgs/sharecloud-horizontal-dark.png" />
+                        </image>
+                     </ImageView>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+
+        </VBox>
+    </left>
+
+    <!-- ================= FEED ================= -->
+    <center>
+        <StackPane styleClass="feed-background-light">
+
+            <HBox alignment="CENTER" spacing="18">
+
+                <ImageView fx:id="btnBack" fitHeight="70" preserveRatio="true" rotate="180">
+                    <image><Image url="@../imgs/btn-circle-arrow-white.png" /></image>
+                </ImageView>
+
+                <!-- FEED CARD  -->
+                <HBox maxHeight="560" fx:id="hboxActivity" prefHeight="560" spacing="0" styleClass="feed-card">
+
+                    <!-- MAIN  -->
+                    <VBox spacing="14" styleClass="feed-card-main" HBox.hgrow="ALWAYS">
+
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                            <StackPane styleClass="avatar-wrap">
+                                <ImageView fx:id="friendProfilePic" fitHeight="34" fitWidth="34" preserveRatio="true">
+                                    <image><Image url="@../imgs/default-pfp.png" /></image>
+                                </ImageView>
+                            </StackPane>
+
+                            <VBox spacing="2">
+                                <Label fx:id="labelFriendName" styleClass="card-title" text="Other user" />
+                                <Label fx:id="labelDate" styleClass="card-date" text="15 Dic 2025" />
+                            </VBox>
+                        </HBox>
+
+                        <StackPane fx:id="activityPane" prefHeight="454.0" prefWidth="442.0" styleClass="activity-box">
+                            <Label styleClass="activity-text" text="Esto contendrá la “actividad” reciente del usuario amigo" textAlignment="CENTER" wrapText="true" />
+                        </StackPane>
+
+                    </VBox>
+
+                    <!-- ACTION STRIP -->
+                    <VBox alignment="CENTER" maxHeight="560" minWidth="64" prefHeight="560" prefWidth="64" spacing="24" styleClass="action-strip">
+
+                        <ImageView fx:id="btnLike" fitHeight="26" fitWidth="26" preserveRatio="true" styleClass="icon-clickable">
+                            <image><Image url="@../imgs/icon-heart-white.png" /></image>
+                        </ImageView>
+
+                        <ImageView fx:id="btnComment" fitHeight="26" fitWidth="26" preserveRatio="true" styleClass="icon-clickable">
+                            <image><Image url="@../imgs/icon-comment-white.png" /></image>
+                        </ImageView>
+
+                        <ImageView fx:id="btnShare" fitHeight="26" fitWidth="26" preserveRatio="true" styleClass="icon-clickable">
+                            <image><Image url="@../imgs/icon-share-white.png" /></image>
+                        </ImageView>
+
+                    </VBox>
+
+                </HBox>
+
+                <ImageView fx:id="btnNext" fitHeight="70" preserveRatio="true">
+                    <image><Image url="@../imgs/btn-circle-arrow-white.png" /></image>
+                </ImageView>
+
+            </HBox>
+
+        </StackPane>
+    </center>
+
+</BorderPane>

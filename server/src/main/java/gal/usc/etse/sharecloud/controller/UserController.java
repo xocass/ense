@@ -77,4 +77,20 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
+    /*@PreAuthorize("isAuthenticated()")
+    @GetMapping("/friends")
+    @Operation(
+            summary = "Obtener amigos del usuario",
+            description = "Devuelve la lista de amigos del usuario autenticado"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de amigos devuelta correctamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado")
+    })*/
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/search/friend-list")
+    public ResponseEntity<List<UserSearchResult>> getFriends(@RequestParam String id) {
+        return ResponseEntity.ok(userService.getFriends(id));
+    }
+
 }

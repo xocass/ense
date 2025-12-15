@@ -2,14 +2,13 @@ package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.http.AuthApi;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-public class cInsertRecoveryCode {
+public class cForgotPasswordCode {
     @FXML private TextField fieldCode;
     @FXML private Label statusLabel;
 
@@ -26,7 +25,7 @@ public class cInsertRecoveryCode {
     }
 
     @FXML
-    private void clickOnCheckCode() {
+    private void clickOnVerifyCode() {
         String code = fieldCode.getText().trim();
         if (code.isEmpty()) {
             updateStatus("Introduce el código de verificación recibido.");
@@ -35,31 +34,13 @@ public class cInsertRecoveryCode {
 
         try {
             if(AuthApi.checkRecoveryCode(email, code)){
-                showUpdatePassword(email);
+                fgui.recuperarContrasenhaActualizar(email);
 
             }else{
                 updateStatus("Código incorrecto.");
             }
         } catch (Exception e) {
             updateStatus("Ha ocurrido un error al enviar el código. Inténtalo de nuevo");
-        }
-    }
-
-    private void showUpdatePassword(String email) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vUpdatePassword.fxml")
-            );
-            Scene scene = new Scene(fxmlLoader.load(), 467, 422);
-            cUpdatePassword controller = fxmlLoader.getController();
-            controller.setFachadas(this.fgui);
-            controller.setEmail(email);
-
-            fgui.getEntrarStage().setTitle("Iniciar sesión");
-            fgui.getEntrarStage().setScene(scene);
-            fgui.getEntrarStage().show();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -79,20 +60,7 @@ public class cInsertRecoveryCode {
 
     @FXML
     private void clickOnGoBack(){
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vLog.fxml")
-            );
-            Scene scene = new Scene(fxmlLoader.load(), 878, 422);
-            cLog controller = fxmlLoader.getController();
-            controller.setFachadas(this.fgui);
-
-            fgui.getEntrarStage().setTitle("Iniciar sesión");
-            fgui.getEntrarStage().setScene(scene);
-            fgui.getEntrarStage().show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        fgui.iniciarSesion();
     }
 
     private void updateStatus(String msg) {Platform.runLater(() -> statusLabel.setText(msg));}

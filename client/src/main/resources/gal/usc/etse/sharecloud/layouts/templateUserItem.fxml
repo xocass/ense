@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox alignment="CENTER_LEFT" spacing="12" styleClass="side-user-item" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cUserItem">
+
+    <ImageView fx:id="profilePic" fitHeight="36" fitWidth="36" preserveRatio="true">
+        <image>
+            <Image url="@../imgs/default-pfp.png" />
+        </image>
+    </ImageView>
+
+    <VBox spacing="1">
+        <Label fx:id="labelName" styleClass="side-user-name" text="Username" />
+        <Label fx:id="labelCountry" styleClass="side-user-sub" text="País" />
+    </VBox>
+
+    <Region HBox.hgrow="ALWAYS" />
+
+    <ImageView fx:id="iconOptions" fitHeight="18" preserveRatio="true">
+        <image>
+            <Image url="@../imgs/icon-show-options.png" />
+        </image>
+    </ImageView>
+
+</HBox>

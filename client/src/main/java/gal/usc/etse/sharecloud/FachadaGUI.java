@@ -12,9 +12,7 @@ package gal.usc.etse.sharecloud;
      3. Runnear en outra terminal cliente:          ./gradlew :client:run
  */
 
-import gal.usc.etse.sharecloud.guiController.cLog;
-import gal.usc.etse.sharecloud.guiController.cProfile;
-import gal.usc.etse.sharecloud.guiController.cSession;
+import gal.usc.etse.sharecloud.guiController.*;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 import gal.usc.etse.sharecloud.http.TokenManager;
 import gal.usc.etse.sharecloud.http.UserApi;
@@ -58,12 +56,11 @@ public class FachadaGUI extends Application {
 
     /* Función que muestra la pantalla de inicio de sesión */
     public void iniciarSesion() {
-        System.out.println("\n\n>>>>>>>> ARRANCADO <<<<<<<<<\n\n");
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
                     FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vLog.fxml")
             );
-            Scene scene = new Scene(fxmlLoader.load(), 878, 422);
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cLog controller = fxmlLoader.getController();
             controller.setFachadas(this);
 
@@ -73,8 +70,136 @@ public class FachadaGUI extends Application {
         }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
     }
 
-    public void entrarSesion(String email){
+    public void registroCrearCuenta(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterAccount.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            cRegisterAccount controller = fxmlLoader.getController();
+            controller.setFachadas(this);
 
+            entrarStage.setTitle("Registro");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+    }
+
+    public void registroVincularSpotify(String email){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterLinkSpotify.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            cRegisterLinkSpotify controller = fxmlLoader.getController();
+            controller.setEmail(email);
+            controller.setFachadas(this);
+
+            entrarStage.setTitle("Registro");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+    }
+
+    public void registroCompletado(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterCompleted.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            cRegisterCompleted controller = fxmlLoader.getController();
+            controller.setFachadas(this);
+
+            entrarStage.setTitle("Registro");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+    }
+
+    public void recuperarContrasenhaEmail(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordEmail.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            cForgotPasswordEmail controller = fxmlLoader.getController();
+            controller.setFachadas(this);
+
+            entrarStage.setTitle("Recuperar contraseña");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        }catch(IOException e){System.err.println("IOException: "+e.getMessage()); e.printStackTrace();}
+    }
+
+    public void recuperarContrasenhaCodigo(String email){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordCode.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            cForgotPasswordCode controller = fxmlLoader.getController();
+            controller.setFachadas(this);
+            controller.setEmail(email);
+
+            entrarStage.setTitle("Recuperar contraseña");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+
+    }
+
+    public void recuperarContrasenhaActualizar(String email) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordUpdate.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            cForgotPasswordUpdate controller = fxmlLoader.getController();
+            controller.setFachadas(this);
+            controller.setEmail(email);
+
+            entrarStage.setTitle("Recuperar contraseña");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void recuperarContrasenhaCompletado() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordCompleted.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            cForgotPasswordCompleted controller = fxmlLoader.getController();
+            controller.setFachadas(this);
+
+            entrarStage.setTitle("Recuperar contraseña");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void irFeed(String email) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vFeed.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            cFeed controller = fxmlLoader.getController();
+            controller.setEmail(email);
+            controller.setFachadas(this);
+
+            entrarStage.setTitle("Sesión: Feed");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+    }
+
+    public void entrarSesion(String email){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
                     FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vPrincipal.fxml")

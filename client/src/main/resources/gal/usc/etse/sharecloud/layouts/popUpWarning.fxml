@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:controller="gal.usc.etse.sharecloud.guiController.cPopUpWarning" prefHeight="280" prefWidth="520" styleClass="popup-root" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- Card -->
+    <VBox alignment="TOP_LEFT" spacing="16" styleClass="popup-card" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="12">
+
+            <!-- Warning icon -->
+            <StackPane styleClass="popup-icon-container">
+                <Label styleClass="popup-icon-text" text="!" />
+            </StackPane>
+
+            <Label fx:id="labelWarning" styleClass="popup-title" text="Atención" />
+        </HBox>
+
+        <!-- Message -->
+        <Label fx:id="messageWarming" styleClass="popup-message" text="Es necesario tener vinculada una cuenta de Spotify para poder acceder a ShareCloud, ¿estás seguro que quieres volver al inicio y no finalizar el registro ahora?" wrapText="true" />
+
+        <!-- Spacer -->
+        <Region VBox.vgrow="ALWAYS" />
+
+        <!-- Actions -->
+        <HBox alignment="CENTER_RIGHT" spacing="16">
+
+            <Button fx:id="btnCancel" cancelButton="true" onAction="#clickOnCancel" styleClass="popup-secondary-button" text="Cancelar" />
+
+            <Button fx:id="btnConfirm" onAction="#clickOnConfirm" styleClass="popup-danger-button" text="Volver a inicio de sesión" />
+
+        </HBox>
+
+    </VBox>
+</AnchorPane>

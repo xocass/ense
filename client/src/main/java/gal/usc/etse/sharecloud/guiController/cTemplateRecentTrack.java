@@ -17,10 +17,10 @@ public class cTemplateRecentTrack {
     private Label artists;
     @FXML
     private Label duration;
-    @FXML
-    private ImageView preview;
+    /*@FXML
+    private ImageView preview;*/
 
-    private String previewURL=null;
+    //private String previewURL=null;
 
     public void setImage(Image image) {
         this.image.setImage(image);
@@ -38,7 +38,7 @@ public class cTemplateRecentTrack {
 
         this.duration.setText(String.format("%02d:%02d", minutes, seconds));
     }
-    public void setPreview(String previewURL) {
+    /*public void setPreview(String previewURL) {
         if (previewURL != null) {
             this.preview.setImage(new Image(getClass().getResource(
                     "/gal/usc/etse/sharecloud/imgs/play.png"
@@ -46,14 +46,14 @@ public class cTemplateRecentTrack {
             this.previewURL = previewURL;
 
         }
-    }
+    }SPOTIFY DEVUELVE SIEMPRE NULL*/
 
-    @FXML
+    /*@FXML
     public void play(){
         if (previewURL != null) {
             Media media = new Media(previewURL);
             MediaPlayer player = new MediaPlayer(media);
             player.play();
         }
-    }
+    }*/
 }

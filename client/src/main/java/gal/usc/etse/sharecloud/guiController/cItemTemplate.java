@@ -16,6 +16,8 @@ public class cItemTemplate {
     @FXML
     private ImageView image;
     @FXML
+    private Label rank;
+    @FXML
     private VBox root;
 
     public void setName(String name) {
@@ -26,6 +28,9 @@ public class cItemTemplate {
     }
     public void setImage(Image image) {
         this.image.setImage(image);
+    }
+    public void setRank(String rank) {
+        this.rank.setText(rank);
     }
 
     //funcion para borrar el segundo label

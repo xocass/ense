@@ -69,7 +69,6 @@ public class UserService implements UserDetailsService {
                 .filter(user -> !user.getId().equals(requesterId)) // no te devuelves a ti mismo
                 .map(user -> new UserSearchResult(
                         user.getId(),
-                        user.getSpotifyProfile().getSpotifyID(),
                         user.getSpotifyProfile().getDisplayName(),
                         user.getSpotifyProfile().getImage(),
                         user.getSpotifyProfile().getCountry(),

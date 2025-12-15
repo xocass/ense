@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 
-<AnchorPane prefHeight="59.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cTemplateRecentTrack">
+<AnchorPane maxHeight="59.0" maxWidth="788.0" minHeight="59.0" minWidth="788.0" prefHeight="59.0" prefWidth="788.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cTemplateRecentTrack">
    <children>
-      <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="1260.0" spacing="30.0">
+      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" maxWidth="Infinity" prefHeight="40.0" prefWidth="768.0" spacing="14" styleClass="recent-row">
          <children>
-            <ImageView fx:id="image" fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="name" text="Label" />
-            <Label fx:id="artists" text="Label" />
-            <Label fx:id="duration" text="Label" />
-            <ImageView fx:id="preview" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#play" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="image" fitHeight="40" fitWidth="40">
+               <image>
+                  <Image url="@../imgs/wifi_dino.jpg" />
+               </image>
+            </ImageView>
+            <Label fx:id="name" maxWidth="Infinity" styleClass="recent-track" text="Nombre canción" wrapText="true" />
+            <Label fx:id="artists" maxWidth="Infinity" styleClass="recent-artist" text="Artista" wrapText="true" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="duration" styleClass="recent-duration" text="3:45" />
          </children>
       </HBox>
    </children>

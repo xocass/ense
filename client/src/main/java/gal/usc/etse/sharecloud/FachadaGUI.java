@@ -255,6 +255,7 @@ public class FachadaGUI extends Application {
             controller.setFollowers(profileView.getNFollowers());
             controller.setFachadas(this,profileView);
 
+
             //CARGAR RECENTLY PLAYED
             SpotifyRecentlyPlayedResponse recentlyPlayed = UserApi.getOtherRecentlyPlayed(otherID);
             _cargarRecentlyPlayed(controller,recentlyPlayed);
@@ -269,6 +270,7 @@ public class FachadaGUI extends Application {
 
             //COMPROBAR SI SIGUE
             controller.setSeguido(SpotifyApi.isFollowing(TokenManager.getUserID(),otherID));
+
 
             entrarStage.setTitle(profileView.getDisplayName());
             entrarStage.setScene(scene);
@@ -393,6 +395,22 @@ public class FachadaGUI extends Application {
                 cTemplate.setImage(new Image(imageUrl, true));
             }
             controller.addTopArtist(template);
+        }
+    }
+
+    public void doFollow(String otherSpotifyID){
+        try {
+            SpotifyApi.doFollow(otherSpotifyID,TokenManager.getUserID());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void doUnfollow(String otherSpotifyID){
+        try {
+            SpotifyApi.doUnfollow(otherSpotifyID,TokenManager.getUserID());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

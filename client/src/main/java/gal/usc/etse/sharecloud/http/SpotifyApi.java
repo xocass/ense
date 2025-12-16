@@ -123,4 +123,30 @@ public class SpotifyApi {
         }
         return (res.body().trim().equals("[true]"));
     }
+
+    public static void doFollow(String targetSpotifyID, String currID) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/do-follow/"+targetSpotifyID+"?currID="+currID))
+                .header("Authorization","Bearer "+TokenManager.getAccessToken())
+                .POST(null)
+                .build();
+        HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
+
+        if (res.statusCode() != 200) {
+            throw new Exception("Error verificando si sigue a usuario: HTTP " + res.statusCode());
+        }
+    }
+
+    public static void doUnfollow(String targetSpotifyID, String currID) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/do-unfollow/"+targetSpotifyID+"?currID="+currID))
+                .header("Authorization","Bearer "+TokenManager.getAccessToken())
+                .DELETE()
+                .build();
+        HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
+
+        if (res.statusCode() != 200) {
+            throw new Exception("Error verificando si sigue a usuario: HTTP " + res.statusCode());
+        }
+    }
 }

@@ -15,9 +15,8 @@ import javafx.scene.text.Text;
 
 public class cProfile {
     private FachadaGUI fgui;
-    private SpotifyProfile loggedUser;
+    private SpotifyProfile user;
 
-    private SpotifyApi spotifyApi;
 
     @FXML
     private ImageView pfp;
@@ -44,7 +43,8 @@ public class cProfile {
 
     public String spotifyURL;
 
-    public void setFachadas(FachadaGUI fgui, SpotifyProfile loggedUser){this.fgui=fgui; this.loggedUser=loggedUser;}
+
+    public void setFachadas(FachadaGUI fgui, SpotifyProfile user){this.fgui=fgui; this.user=user;}
     public void setPfp(Image pfp){this.pfp.setImage(pfp);}
     public void setUsername(String username){this.username.setText(username);}
     public void setCountry(String country){this.country.setText(country);}
@@ -81,6 +81,17 @@ public class cProfile {
     }
     public void addTopTrack(Parent template){
         topTracksBox.getChildren().add(template);
+    }
+
+    @FXML
+    private void clickFollowUnfollow(){
+        if(seguido){
+            fgui.doUnfollow(user.getSpotifyId());
+            setSeguido(false);
+        }else {
+            fgui.doFollow(user.getSpotifyId());
+            setSeguido(true);
+        }
     }
 
 

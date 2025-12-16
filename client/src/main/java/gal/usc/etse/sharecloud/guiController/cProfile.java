@@ -84,7 +84,7 @@ public class cProfile {
     }
 
     @FXML
-    private void clickFollowUnfollow(){
+    public void clickFollowUnfollow(){
         if(seguido){
             fgui.doUnfollow(user.getSpotifyId());
             setSeguido(false);

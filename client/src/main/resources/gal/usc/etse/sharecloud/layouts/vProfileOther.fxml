@@ -162,7 +162,7 @@
                                   </graphic>
                               </Button>
                           </HBox>
-                      <Button fx:id="followSpoty" prefHeight="32" prefWidth="162" styleClass="spotify-follow-button" text="Seguir en Spotify">
+                      <Button fx:id="followSpoty" prefHeight="32" prefWidth="162" styleClass="spotify-follow-button" text="Seguir en Spotify" onAction="#clickFollowUnfollow">
                         <font>
                            <Font name="System Bold" size="10.0" />
                         </font></Button>

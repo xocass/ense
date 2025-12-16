@@ -370,6 +370,7 @@ public class SpotifyService {
     }
 
     public void doFollow(String targetSpotifyID, String currID) throws Exception {
+
         User user = userRepo.findById(currID)
                 .orElseThrow(() -> new UsernameNotFoundException(currID));
 
@@ -385,18 +386,22 @@ public class SpotifyService {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(uri))
                 .header("Authorization", "Bearer " + user.getSpotifyAccessToken())
-                .POST(null)
+                .PUT(HttpRequest.BodyPublishers.noBody()) // 🔑 AQUÍ
                 .build();
 
         HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response =
                 client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if(response.statusCode() == 204)System.out.println("Usuario seguido correctamente");
-        else
-            throw new RuntimeException(
-                    "Error checking Spotify following status: " + response.body()
-            );
+        if (response.statusCode() == 204) {
+            return; // OK
+        }
+
+        throw new RuntimeException(
+                "Error following Spotify user. HTTP "
+                        + response.statusCode()
+                        + " - " + response.body()
+        );
     }
 
     public void doUnfollow(String targetSpotifyID, String currID) throws Exception {
@@ -426,7 +431,7 @@ public class SpotifyService {
         if(response.statusCode() == 204)System.out.println("Usuario unfollowed correctamente");
         else
             throw new RuntimeException(
-                    "Error checking Spotify following status: " + response.body()
+                    "Error unfollowing response: " + response.body()
             );
     }
 }

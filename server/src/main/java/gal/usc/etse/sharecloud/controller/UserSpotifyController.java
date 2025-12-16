@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/user/me/spotify")
@@ -120,5 +122,13 @@ public class UserSpotifyController {
                                                                    @RequestParam(defaultValue = "10") int limit)
             throws Exception {
         return ResponseEntity.ok(spotifyActivityService.returnTopArtists(id, limit));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/following/{id}")
+    public ResponseEntity<String> isFollowing(@RequestParam String currID, @PathVariable String id)
+            throws Exception {
+        System.out.println("isFollowing");
+        return ResponseEntity.ok(spotifyService.isFollowingUser(id,currID));
     }
 }

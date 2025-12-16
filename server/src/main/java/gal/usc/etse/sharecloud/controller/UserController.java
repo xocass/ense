@@ -54,7 +54,6 @@ public class UserController {
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}/spotify/profile")
     public ResponseEntity<SpotifyProfile> returnSpotifyProfile(@PathVariable String id) {
-        System.out.println("ENTRE");
         SpotifyProfile result = userService.returnSpotifyProfile(id);
         return ResponseEntity.ok(result);
     }
@@ -92,5 +91,7 @@ public class UserController {
     public ResponseEntity<List<UserSearchResult>> getFriends(@RequestParam String id) {
         return ResponseEntity.ok(userService.getFriends(id));
     }
+
+
 
 }

@@ -21,6 +21,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class SpotifyService {
@@ -327,4 +328,44 @@ public class SpotifyService {
         );
     }
 
+    public String isFollowingUser(String targetSpotifyUserId, String currentUserId) throws Exception {
+
+        User user = userRepo.findById(currentUserId)
+                .orElseThrow(() -> new UsernameNotFoundException(currentUserId));
+
+        if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {
+            refreshSpotifyAccessToken(user);
+        }
+        User target = userRepo.findById(targetSpotifyUserId).orElseThrow(() -> new UsernameNotFoundException(targetSpotifyUserId));
+        String spotifyID=target.getSpotifyProfile().getSpotifyID();;
+
+        String uri = SPOTIFY_API_URI
+                + "/me/following/contains"
+                + "?type=user"
+                + "&ids=" + spotifyID;
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Authorization", "Bearer " + user.getSpotifyAccessToken())
+                .GET()
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Retry en 401 (igual que el resto del servicio)
+        if (response.statusCode() == 401) {
+            response = retryGETRequest(user, uri);
+        }
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException(
+                    "Error checking Spotify following status: " + response.body()
+            );
+        }
+
+        // Devolvemos el body tal cual: "[true]" o "[false]"
+        return response.body();
+    }
 }

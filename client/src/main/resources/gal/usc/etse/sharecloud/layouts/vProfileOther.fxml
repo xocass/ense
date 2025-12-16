@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane prefHeight="760" prefWidth="1200" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cProfile">
 
@@ -126,33 +127,47 @@
                     </VBox>
 
                     <Region HBox.hgrow="ALWAYS" />
-
-                    <!-- ICON BUTTONS -->
-                    <HBox spacing="12">
-                        <Button fx:id="btnOpenSpotify" styleClass="icon-circle-button-dark">
-                            <graphic>
-                                <ImageView fitHeight="20" preserveRatio="true">
-                                    <image><Image url="@../imgs/icon-friendAdd.png" /></image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-
-                        <Button fx:id="btnAskFriendship" styleClass="icon-circle-button-dark">
-                            <graphic>
-                                <ImageView fitHeight="20" preserveRatio="true">
-                                    <image><Image url="@../imgs/icon-messageSend.png" /></image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-
-                        <Button fx:id="btnMessage" styleClass="icon-circle-button-dark">
-                            <graphic>
-                                <ImageView fitHeight="20" preserveRatio="true">
-                                    <image><Image url="@../imgs/icon-goSpotify.png" /></image>
-                                </ImageView>
-                            </graphic>
-                        </Button>
-                    </HBox>
+               <VBox prefHeight="200.0" prefWidth="100.0">
+                  <children>
+      
+                          <!-- ICON BUTTONS -->
+                          <HBox prefHeight="60.0" prefWidth="162.0" spacing="12">
+                              <Button fx:id="btnAskFriendship" styleClass="icon-circle-button-dark">
+                                  <graphic>
+                                      <ImageView fitHeight="20" preserveRatio="true">
+                                          <image>
+                                    <Image url="@../imgs/icon-friendAdd.png" />
+                                 </image>
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+      
+                              <Button fx:id="btnMessage" styleClass="icon-circle-button-dark">
+                                  <graphic>
+                                      <ImageView fitHeight="20" preserveRatio="true">
+                                          <image>
+                                    <Image url="@../imgs/icon-messageSend.png" />
+                                 </image>
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+      
+                              <Button fx:id="btnOpenSpotify" styleClass="icon-circle-button-dark">
+                                  <graphic>
+                                      <ImageView fitHeight="20" preserveRatio="true">
+                                          <image>
+                                    <Image url="@../imgs/icon-goSpotify.png" />
+                                 </image>
+                                      </ImageView>
+                                  </graphic>
+                              </Button>
+                          </HBox>
+                      <Button fx:id="followSpoty" prefHeight="32" prefWidth="162" styleClass="spotify-follow-button" text="Seguir en Spotify">
+                        <font>
+                           <Font name="System Bold" size="10.0" />
+                        </font></Button>
+                  </children>
+               </VBox>
                 </HBox>
 
                 <!-- ===== CONTENT ===== -->

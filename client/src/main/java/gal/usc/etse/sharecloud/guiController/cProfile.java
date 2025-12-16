@@ -4,6 +4,7 @@ import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -36,6 +37,10 @@ public class cProfile {
     private HBox topArtistBox;
     @FXML
     private HBox topTracksBox;
+    @FXML
+    private Button followSpoty;
+
+    private Boolean seguido;
 
     public String spotifyURL;
 
@@ -46,6 +51,15 @@ public class cProfile {
     public void setFollowers(Integer followers){this.followers.setText(followers.toString()+" followers");}
     public void setCurrUsername(String currUsername){this.currUsername.setText(currUsername);}
     public void setCurrPfp(Image currPfp){this.currPfp.setImage(currPfp);}
+    public void setSeguido(Boolean seguido){
+        this.seguido=seguido;
+        if(this.seguido)
+            followSpoty.setText("Dejar de seguir");
+        else
+            followSpoty.setText("Seguir en spotify");
+    }
+
+    public Boolean getSeguido(){return seguido;}
 
     //Vaciar boxes
     public void clearRecentlyPlayed(){

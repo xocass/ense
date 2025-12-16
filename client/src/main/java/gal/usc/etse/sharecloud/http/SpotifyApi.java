@@ -108,4 +108,19 @@ public class SpotifyApi {
         }
         return mapper.readValue(res.body(), SpotifyTopArtistsResponse.class);
     }
+
+    public static boolean isFollowing(String id, String currID) throws Exception {
+        HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/following/"+id+"?currID="+currID))
+                .header("Authorization","Bearer "+TokenManager.getAccessToken())
+                .GET()
+                .build();
+        HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
+
+
+        if (res.statusCode() != 200) {
+            throw new Exception("Error verificando si sigue a usuario: HTTP " + res.statusCode());
+        }
+        return (res.body().trim().equals("[true]"));
+    }
 }

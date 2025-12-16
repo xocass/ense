@@ -79,7 +79,7 @@ public class cProfile {
     }
 
     @FXML
-    private void clickFollowUnfollow(){
+    public void clickFollowUnfollow(){
         if(seguido){
             FachadaGUI.getInstance().doUnfollow(loggedUser.getSpotifyId());
             setSeguido(false);

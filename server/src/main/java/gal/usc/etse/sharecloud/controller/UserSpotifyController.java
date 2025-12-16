@@ -153,13 +153,13 @@ public class UserSpotifyController {
     @PostMapping("/do-follow/{spotyid}")
     public ResponseEntity<Boolean> doFollow(@RequestParam String currID, @PathVariable String spotyid) throws Exception {
         spotifyService.doFollow(spotyid,currID);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/do-unfollow/{spotyid}")
     public ResponseEntity<Boolean> doUnfollow(@RequestParam String currID, @PathVariable String spotyid) throws Exception {
         spotifyService.doUnfollow(spotyid,currID);
-        return ResponseEntity.ok(true);
+        return ResponseEntity.noContent().build();
     }
 }

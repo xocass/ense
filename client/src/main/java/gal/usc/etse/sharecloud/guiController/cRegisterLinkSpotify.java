@@ -1,6 +1,7 @@
 package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
+import gal.usc.etse.sharecloud.ShareCloudBoot;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,13 +23,11 @@ import java.util.stream.Collectors;
 
 public class cRegisterLinkSpotify {
     private String email;
-    private FachadaGUI fgui;
     @FXML private Button btnLinkSpotify;
     @FXML private Label statusLabel;
 
-
     public void setEmail(String email) {this.email=email;}
-    public void setFachadas(FachadaGUI fgui) {this.fgui=fgui;}
+
 
     @FXML
     private void initialize() {statusLabel.setText("");}
@@ -37,7 +36,7 @@ public class cRegisterLinkSpotify {
     public void clickOnGoBack(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/popUpWarning.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/popUpWarning.fxml")
             );
             Parent root = fxmlLoader.load();
 
@@ -47,13 +46,12 @@ public class cRegisterLinkSpotify {
             popup.setResizable(false);
 
             cPopUpWarning controller = fxmlLoader.getController();
-            controller.setFachadas(this.fgui);
             controller.getLabelWarning().setText("Atención");
             controller.getMessageWarming().setText("Es necesario tener vinculada una cuenta de Spotify para poder "+
                             "acceder a ShareCloud, ¿estás seguro que quieres volver al inicio y no finalizar el registro ahora?");
 
             // Hacerla modal
-            popup.initOwner(fgui.getEntrarStage());
+            popup.initOwner(FachadaGUI.getInstance().getEntrarStage());
             popup.initModality(Modality.WINDOW_MODAL);
 
             popup.show();
@@ -87,7 +85,7 @@ public class cRegisterLinkSpotify {
                         SpotifyApi.completeSpotifyLink(code, state);
 
                         stage.close();
-                        fgui.registroCompletado();
+                        FachadaGUI.getInstance().registroCompletado();
 
                     } catch (Exception ex) { ex.printStackTrace(); }
                 }

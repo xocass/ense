@@ -30,6 +30,8 @@ public class AuthApi {
             LoginResponse dto = mapper.readValue(response.body(), LoginResponse.class);
             TokenManager.setAccessToken(dto.accessToken());
             TokenManager.setUserID(dto.userID());
+            TokenManager.setUsername(dto.username());
+            TokenManager.setImage(dto.image());
         }
 
         return response.statusCode();

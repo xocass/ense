@@ -11,11 +11,9 @@ import javafx.scene.control.TextField;
 public class cForgotPasswordCode {
     @FXML private TextField fieldCode;
     @FXML private Label statusLabel;
-
-    private FachadaGUI fgui;
+    ;
     private String email;
 
-    public void setFachadas(FachadaGUI fgui) {this.fgui = fgui;}
     public void setEmail(String email) {this.email = email;}
 
 
@@ -34,7 +32,7 @@ public class cForgotPasswordCode {
 
         try {
             if(AuthApi.checkRecoveryCode(email, code)){
-                fgui.recuperarContrasenhaActualizar(email);
+                FachadaGUI.getInstance().recuperarContrasenhaActualizar(email);
 
             }else{
                 updateStatus("Código incorrecto.");
@@ -60,7 +58,7 @@ public class cForgotPasswordCode {
 
     @FXML
     private void clickOnGoBack(){
-        fgui.iniciarSesion();
+        FachadaGUI.getInstance().iniciarSesion(0);
     }
 
     private void updateStatus(String msg) {Platform.runLater(() -> statusLabel.setText(msg));}

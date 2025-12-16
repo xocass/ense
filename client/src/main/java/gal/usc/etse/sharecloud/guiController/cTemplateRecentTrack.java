@@ -4,19 +4,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 
 public class cTemplateRecentTrack {
-    @FXML
-    private ImageView image;
-    @FXML
-    private Label name;
-    @FXML
-    private Label artists;
-    @FXML
-    private Label duration;
+    @FXML private ImageView image;
+    @FXML private Label name;
+    @FXML private Label artists;
+    @FXML private Label duration;
     /*@FXML
     private ImageView preview;*/
 

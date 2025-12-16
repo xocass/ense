@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefWidth="1200" prefHeight="760" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../styles/main.css" styleClass="loading-overlay" fx:controller="gal.usc.etse.sharecloud.guiController.cLoading">
+
+    <!-- CARD COMPACTA -->
+    <VBox alignment="CENTER" spacing="18" maxWidth="420" maxHeight="260" styleClass="loading-card">
+
+        <!-- SPINNER -->
+        <ImageView fx:id="spinner" fitWidth="80" fitHeight="80" preserveRatio="true" smooth="true">
+            <image>
+                <Image url="@../imgs/loading-spinner.png"/>
+            </image>
+        </ImageView>
+
+        <!-- TEXTO -->
+        <Label fx:id="labelLoading" text="Cargando..." styleClass="loading-text"/>
+    </VBox>
+</StackPane>

@@ -12,9 +12,6 @@ public class cPopUpWarning {
     @FXML private Button btnCancel;
     @FXML private Button btnConfirm;
 
-    private FachadaGUI fgui;
-
-    public void setFachadas(FachadaGUI fgui){this.fgui=fgui;}
     public Label getLabelWarning(){return labelWarning;}
     public Label getMessageWarming(){return messageWarming;}
 
@@ -29,7 +26,7 @@ public class cPopUpWarning {
     }
     @FXML
     public void clickOnConfirm(){
-        fgui.iniciarSesion();
+        FachadaGUI.getInstance().iniciarSesion(0);
     }
 
 

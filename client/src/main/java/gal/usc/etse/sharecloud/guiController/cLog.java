@@ -1,9 +1,9 @@
 package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
-
 import gal.usc.etse.sharecloud.http.AuthApi;
-import javafx.event.ActionEvent;
+
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -17,53 +17,69 @@ public class cLog {
     @FXML private Label statusLabel;
     @FXML private Hyperlink forgotPasswordLink;
 
-    private FachadaGUI fgui;
-
-
-    public void setFachadas(FachadaGUI fgui){this.fgui=fgui;}
+    private String email;
+    private String password;
 
 
     @FXML
+    private void initialize(){
+        statusLabel.setText("");
+        fieldEmail.setOnAction(e -> callLogin());
+        fieldPassword.setOnAction(e -> callLogin());
+    }
+
+    @FXML
     private void clickOnLogin() {
-        String email = fieldEmail.getText();
-        String password = fieldPassword.getText();
+        callLogin();
+    }
+
+    private void callLogin() {
+        statusLabel.setText("");
+        this.email = fieldEmail.getText();
+        this.password = fieldPassword.getText();
 
         if (email.isBlank() || password.isBlank()) {
             updateStatus("Email y contraseña requeridos.");
             return;
         }
-        System.out.println("Email: " + email+ ". Password: " + password);
 
-            try {
-                int status = AuthApi.login(email, password);
+        FachadaGUI.getInstance().mostrarPantallaCarga();
 
-                if (status == 200) {
-                    updateStatus("Login correcto.");
-                    fgui.irFeed(email);
-
-                } else if (status == 401) {
-                    updateStatus("Credenciales incorrectas.");
-                } else {
-                    updateStatus("Error en login. Código: " + status);
-                }
-
-            } catch (Exception e) {
-                updateStatus("Error de conexión: " + e.getMessage());
+        Task<Integer> loginTask = new Task<>() {
+            @Override
+            protected Integer call() throws Exception {
+                return AuthApi.login(email, password);
             }
+        };
+        loginTask.setOnSucceeded(e -> {
+            int status = loginTask.getValue();
 
+            if (status == 200) {
+                FachadaGUI.getInstance().irFeed(email);
+            } else {
+                FachadaGUI.getInstance().iniciarSesion(status);
+            }
+        });
+
+        loginTask.setOnFailed(e -> {
+            int status = loginTask.getValue();
+            updateStatus("Error "+ status +": " + loginTask.getException());
+            FachadaGUI.getInstance().iniciarSesion(status);
+        });
+        new Thread(loginTask).start();
     }
 
     @FXML
     private void clickOnRegister() {
-        fgui.registroCrearCuenta();
+        FachadaGUI.getInstance().registroCrearCuenta();
     }
 
     @FXML
     private void clickOnForgotPassword() {
-        fgui.recuperarContrasenhaEmail();
+        FachadaGUI.getInstance().recuperarContrasenhaEmail();
     }
 
-    private void updateStatus(String msg) {
+    public void updateStatus(String msg) {
         javafx.application.Platform.runLater(() -> statusLabel.setText(msg));
     }
 }

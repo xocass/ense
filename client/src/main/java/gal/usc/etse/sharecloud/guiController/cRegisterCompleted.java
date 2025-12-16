@@ -6,13 +6,11 @@ import javafx.scene.control.Button;
 
 
 public class cRegisterCompleted {
-    private FachadaGUI fgui;
     @FXML private Button btnGoBack;
 
-    public void setFachadas(FachadaGUI fgui) {this.fgui=fgui;}
 
     @FXML
     public void clickOnGoBack(){
-        fgui.iniciarSesion();
+        FachadaGUI.getInstance().iniciarSesion(0);
     }
 }

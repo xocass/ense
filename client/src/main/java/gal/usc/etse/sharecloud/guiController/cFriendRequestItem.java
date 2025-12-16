@@ -1,6 +1,5 @@
 package gal.usc.etse.sharecloud.guiController;
 
-import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.http.FriendApi;
 import gal.usc.etse.sharecloud.model.dto.FriendRequest;
 
@@ -16,11 +15,8 @@ public class cFriendRequestItem {
     @FXML private Button btnAccept;
     @FXML private Button btnReject;
 
-    private FachadaGUI fgui;
     private FriendRequest request;
 
-
-    public void setFachadas(FachadaGUI fgui){this.fgui = fgui;}
     public void setRequest(FriendRequest request) {
         this.request = request;
 

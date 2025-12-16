@@ -1,6 +1,6 @@
 package gal.usc.etse.sharecloud.guiController;
 
-import gal.usc.etse.sharecloud.FachadaGUI;
+import gal.usc.etse.sharecloud.ShareCloudBoot;
 import gal.usc.etse.sharecloud.http.FriendApi;
 import gal.usc.etse.sharecloud.model.dto.FriendRequest;
 import javafx.application.Platform;
@@ -18,9 +18,6 @@ public class cPopUpNotification {
     @FXML VBox vboxNotifications;
     @FXML Button btnClose;
 
-    private FachadaGUI fgui;
-
-    public void setFachadas(FachadaGUI fgui) {this.fgui = fgui;}
 
     @FXML
     private void clickOnClose() { ((Stage) btnClose.getScene().getWindow()).close();}
@@ -46,7 +43,7 @@ public class cPopUpNotification {
     private void addRequestItem(FriendRequest request) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/templateFriendRequest.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/templateFriendRequest.fxml")
             );
             HBox item = loader.load();
 

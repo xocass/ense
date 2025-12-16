@@ -3,9 +3,12 @@ package gal.usc.etse.sharecloud.controller;
 import gal.usc.etse.sharecloud.model.dto.AuthRequest;
 import gal.usc.etse.sharecloud.model.dto.LoginResponse;
 import gal.usc.etse.sharecloud.model.dto.SessionTokens;
+import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
+import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.UserRepository;
 import gal.usc.etse.sharecloud.service.AuthService;
+import gal.usc.etse.sharecloud.service.SpotifyService;
 import gal.usc.etse.sharecloud.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,13 +33,16 @@ public class AuthController {
     private static final String REFRESH_TOKEN_COOKIE_NAME = "__Secure-RefreshToken";
     private final AuthService authService;
     private final UserService userService;
+    private final SpotifyService spotifyService;
     private final UserRepository userRepository;
 
     @Autowired
-    public AuthController(AuthService authService, UserService userService, UserRepository userRepository) {
+    public AuthController(AuthService authService, UserService userService, UserRepository userRepository,
+                          SpotifyService spotifyService) {
         this.authService = authService;
         this.userService = userService;
         this.userRepository = userRepository;
+        this.spotifyService = spotifyService;
     }
 
 
@@ -59,8 +65,9 @@ public class AuthController {
     @PostMapping(path= "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoginResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody AuthRequest request) throws Exception{
         SessionTokens tokens = authService.login(request);
+        gal.usc.etse.sharecloud.model.dto.SpotifyProfile profile= spotifyService.getSpotifyUserProfile(tokens.userId());
 
         ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, tokens.refreshToken())
                 .httpOnly(true)
@@ -72,7 +79,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new LoginResponse(tokens.accessToken(), tokens.userId()));
+                .body(new LoginResponse(tokens.accessToken(), tokens.userId(), profile.displayName(), profile.image()));
     }
 
 
@@ -119,12 +126,13 @@ public class AuthController {
     public ResponseEntity<LoginResponse> refresh(
             @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshCookie,
             @RequestBody String email
-    ) {
+    ) throws Exception{
         if (refreshCookie == null || email == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         SessionTokens result = authService.refreshAccessToken(refreshCookie, email);
+        gal.usc.etse.sharecloud.model.dto.SpotifyProfile profile= spotifyService.getSpotifyUserProfile(result.userId());
 
         ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE_NAME, result.refreshToken())
                 .httpOnly(true)
@@ -136,7 +144,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new LoginResponse(result.accessToken(), result.userId()));
+                .body(new LoginResponse(result.accessToken(), result.userId(), profile.displayName(), profile.image()));
     }
 
 

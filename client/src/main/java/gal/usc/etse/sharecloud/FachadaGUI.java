@@ -1,17 +1,5 @@
 package gal.usc.etse.sharecloud;
 
-/*
-     ¡OLLO! Antes de nada:
-             - Ter instalado jdk-21
-             - Declarar en terminales a emplear:
-                        $env:JAVA_HOME="C:\Program Files\Java\jdk-21"
-                        $env:Path="$env:JAVA_HOME\bin;" + $env:Path
-     Como runnear:
-     1. Buildear desde root / do proxecto:          ./gradlew clean build
-     2. Runnear en 1 terminal servidor primetro:    ./gradlew :server:bootRun
-     3. Runnear en outra terminal cliente:          ./gradlew :client:run
- */
-
 import gal.usc.etse.sharecloud.guiController.*;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 import gal.usc.etse.sharecloud.http.TokenManager;
@@ -21,8 +9,7 @@ import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyTrack;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
-import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
-import javafx.application.Application;
+import gal.usc.etse.sharecloud.model.entity.SpotifyResponseCompact;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -34,247 +21,256 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class FachadaGUI extends Application {
+public class FachadaGUI {
+    private static FachadaGUI instance;
     private Stage entrarStage;
-    private static HostServices hostServices;
+    private HostServices hostServices;
 
+    public FachadaGUI(Stage stage, HostServices hostServices) {
+        instance = this;
+        this.entrarStage = stage;
+        this.entrarStage.setResizable(false);
+        this.hostServices = hostServices;
+    }
 
+    public static FachadaGUI getInstance() {return instance;}
     public Stage getEntrarStage() {return entrarStage;}
     public void setEntrarStage(Stage entrarStage) {this.entrarStage = entrarStage;}
 
-    public static void main(String[] args){
-        launch();
-    }
 
-    @Override
-    public void start(Stage stage){
-        entrarStage=stage;
-        entrarStage.setResizable(false);
-        hostServices = getHostServices();
-        iniciarSesion();
-    }
 
-    /* Función que muestra la pantalla de inicio de sesión */
-    public void iniciarSesion() {
+
+    public void iniciarSesion(int status) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vLog.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vLog.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cLog controller = fxmlLoader.getController();
-            controller.setFachadas(this);
+            if(status != 200 && status != 0){
+                controller.updateStatus("Error "+ status +": El email o contraseña introducidos son incorrectos");
+            }
 
             entrarStage.setTitle("Iniciar sesión");
             entrarStage.setScene(scene);
             entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+
+        }catch(IOException e){e.printStackTrace();}
+    }
+
+    public void mostrarPantallaCarga(){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vLoading.fxml")
+            );
+            Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
+            entrarStage.setTitle("Cargando");
+            entrarStage.setScene(scene);
+            entrarStage.show();
+
+        } catch (IOException e) {e.printStackTrace();}
     }
 
     public void registroCrearCuenta(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterAccount.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterAccount.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cRegisterAccount controller = fxmlLoader.getController();
-            controller.setFachadas(this);
 
             entrarStage.setTitle("Registro");
             entrarStage.setScene(scene);
             entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+
+        }catch(IOException e){e.printStackTrace();}
     }
 
     public void registroVincularSpotify(String email){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterLinkSpotify.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterLinkSpotify.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cRegisterLinkSpotify controller = fxmlLoader.getController();
             controller.setEmail(email);
-            controller.setFachadas(this);
 
             entrarStage.setTitle("Registro");
             entrarStage.setScene(scene);
             entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+
+        }catch(IOException e){e.printStackTrace();}
     }
 
     public void registroCompletado(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterCompleted.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vRegisterCompleted.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cRegisterCompleted controller = fxmlLoader.getController();
-            controller.setFachadas(this);
 
             entrarStage.setTitle("Registro");
             entrarStage.setScene(scene);
             entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+
+        }catch(IOException e){e.printStackTrace();}
     }
 
     public void recuperarContrasenhaEmail(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordEmail.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordEmail.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cForgotPasswordEmail controller = fxmlLoader.getController();
-            controller.setFachadas(this);
 
             entrarStage.setTitle("Recuperar contraseña");
             entrarStage.setScene(scene);
             entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage()); e.printStackTrace();}
+
+        }catch(IOException e){e.printStackTrace();}
     }
 
     public void recuperarContrasenhaCodigo(String email){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordCode.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordCode.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cForgotPasswordCode controller = fxmlLoader.getController();
-            controller.setFachadas(this);
             controller.setEmail(email);
 
             entrarStage.setTitle("Recuperar contraseña");
             entrarStage.setScene(scene);
             entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+
+        }catch(IOException e){e.printStackTrace();}
 
     }
 
     public void recuperarContrasenhaActualizar(String email) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordUpdate.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordUpdate.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cForgotPasswordUpdate controller = fxmlLoader.getController();
-            controller.setFachadas(this);
             controller.setEmail(email);
 
             entrarStage.setTitle("Recuperar contraseña");
             entrarStage.setScene(scene);
             entrarStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        } catch (Exception e) {e.printStackTrace();}
     }
 
     public void recuperarContrasenhaCompletado() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordCompleted.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vForgotPasswordCompleted.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cForgotPasswordCompleted controller = fxmlLoader.getController();
-            controller.setFachadas(this);
 
             entrarStage.setTitle("Recuperar contraseña");
             entrarStage.setScene(scene);
             entrarStage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        } catch (Exception e) {e.printStackTrace();}
     }
+
 
     public void irFeed(String email) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vFeed.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vFeed.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cFeed controller = fxmlLoader.getController();
             controller.setEmail(email);
-            controller.setFachadas(this);
+            //controller.setFachadas(this);
+            controller.setMenuUsername(TokenManager.getUsername());
+            if(TokenManager.getImage() != null){
+                Image pic = new Image(TokenManager.getImage());
+                controller.getMenuUserPicture().setImage(pic);
+            }
 
             entrarStage.setTitle("Sesión: Feed");
             entrarStage.setScene(scene);
             entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
+
+        }catch(IOException e){e.printStackTrace();}
     }
 
-    public void verCurrPerfil(){
+    public void verCurrPerfil(SpotifyResponseCompact data, String userEmail){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfileUser.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfileUser.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(),1200,760);
             cProfile controller = fxmlLoader.getController();
+            controller.setUserEmail(userEmail);
+            controller.setMenuUsername(TokenManager.getUsername());
+            controller.setLoggedUser(data.getProfileView());
+            if(TokenManager.getImage() != null){
+                Image pic = new Image(TokenManager.getImage());
+                controller.getMenuUserPicture().setImage(pic);
+            }
 
-            //CARGAR DATOS USUARIO
-            SpotifyProfile profileView = SpotifyApi.getSpotifyProfile(TokenManager.getUserID());
-            if(profileView.getImage()!=null) {
-                Image pfp = new Image(profileView.getImage());
+            if(data.getProfileView().getImage()!=null) {
+                Image pfp = new Image(data.getProfileView().getImage());
                 controller.setPfp(pfp);
             }
-            controller.setUsername(profileView.getDisplayName());
-            controller.setCountry(profileView.getCountry());
-            controller.setFollowers(profileView.getNFollowers());
-            controller.setFachadas(this,profileView);
+            controller.setUsername(data.getProfileView().getDisplayName());
+            controller.setCountry(data.getProfileView().getCountry());
+            controller.setFollowers(data.getProfileView().getNFollowers());
 
-            //CARGAR RECENTLY PLAYED
-            SpotifyRecentlyPlayedResponse recentlyPlayed = SpotifyApi.getRecentlyPlayed(TokenManager.getUserID(),20,10);
-            _cargarRecentlyPlayed(controller,recentlyPlayed);
 
-            //CARGAR TOP TRACKS
-            SpotifyTopTracksResponse topTracks = SpotifyApi.getTopTracks(TokenManager.getUserID(),5);
-            _cargarTopTracks(controller,topTracks);
+            _cargarRecentlyPlayed(controller, data.getRecentlyPlayed());
+            _cargarTopTracks(controller, data.getTopTracks());
+            _cargarTopArtistas(controller, data.getTopArtists());
 
-            //CARGAR TOP ARTISTAS
-            SpotifyTopArtistsResponse topArtists = SpotifyApi.getTopArtists(TokenManager.getUserID(),5);
-            _cargarTopArtistas(controller,topArtists);
-
-            entrarStage.setTitle(profileView.getDisplayName());
+            entrarStage.setTitle("Sesión: Perfil de usuario");
             entrarStage.setScene(scene);
             entrarStage.show();
+
         }catch(IOException e){System.err.println("IOException: "+e.getMessage());
         }catch(Exception e){System.err.println("Exception(getUser): "+e.getMessage());}
     }
-    public void verOtroPerfil(String otherID){
+
+    public void verOtroPerfil(SpotifyResponseCompact data, String userEmail){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfileOther.fxml")
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vProfileOther.fxml")
             );
             Scene scene = new Scene(fxmlLoader.load(),1200,760);
             cProfile controller = fxmlLoader.getController();
+            controller.setUserEmail(userEmail);
+            controller.setMenuUsername(TokenManager.getUsername());
+            controller.setLoggedUser(data.getProfileView());
+            if(TokenManager.getImage() != null){
+                Image pic = new Image(TokenManager.getImage());
+                controller.getMenuUserPicture().setImage(pic);
+            }
 
-            //CARGAR DATOS USUARIO
-            SpotifyProfile profileView = UserApi.getOtherSpotifyProfile(otherID);
-            if(profileView.getImage()!=null) {
-                Image pfp = new Image(profileView.getImage());
+            if(data.getProfileView().getImage()!=null) {
+                Image pfp = new Image(data.getProfileView().getImage());
                 controller.setPfp(pfp);
             }
-            controller.setUsername(profileView.getDisplayName());
-            controller.setCountry(profileView.getCountry());
-            controller.setFollowers(profileView.getNFollowers());
-            controller.setFachadas(this,profileView);
+            controller.setUsername(data.getProfileView().getDisplayName());
+            controller.setCountry(data.getProfileView().getCountry());
+            controller.setFollowers(data.getProfileView().getNFollowers());
+            controller.setSeguido(data.isFollowing());
 
+            _cargarRecentlyPlayed(controller, data.getRecentlyPlayed());
+            _cargarTopTracks(controller, data.getTopTracks());
+            _cargarTopArtistas(controller, data.getTopArtists());
 
-            //CARGAR RECENTLY PLAYED
-            SpotifyRecentlyPlayedResponse recentlyPlayed = UserApi.getOtherRecentlyPlayed(otherID);
-            _cargarRecentlyPlayed(controller,recentlyPlayed);
-
-            //CARGAR TOP TRACKS
-            SpotifyTopTracksResponse topTracks = UserApi.getOtherTopTracks(otherID);
-            _cargarTopTracks(controller,topTracks);
-
-            //CARGAR TOP ARTISTAS
-            SpotifyTopArtistsResponse topArtists = UserApi.getOtherTopArtists(otherID);
-            _cargarTopArtistas(controller,topArtists);
-
-            //COMPROBAR SI SIGUE
-            controller.setSeguido(SpotifyApi.isFollowing(TokenManager.getUserID(),otherID));
-
-
-            entrarStage.setTitle(profileView.getDisplayName());
+            entrarStage.setTitle("Sesión: Perfil de " + data.getProfileView().getDisplayName());
             entrarStage.setScene(scene);
             entrarStage.show();
+
         }catch(IOException e){System.err.println("IOException: "+e.getMessage());
         }catch(Exception e){System.err.println("Exception(getUser): "+e.getMessage());}
     }
@@ -414,6 +410,3 @@ public class FachadaGUI extends Application {
         }
     }
 }
-
-
-

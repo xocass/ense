@@ -29,7 +29,7 @@ public class cLog {
         String password = fieldPassword.getText();
 
         if (email.isBlank() || password.isBlank()) {
-            statusLabel.setText("Email y contraseña requeridos.");
+            updateStatus("Email y contraseña requeridos.");
             return;
         }
         System.out.println("Email: " + email+ ". Password: " + password);

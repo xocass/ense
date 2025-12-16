@@ -2,6 +2,7 @@ package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.http.AuthApi;
+import gal.usc.etse.sharecloud.http.FriendApi;
 import gal.usc.etse.sharecloud.http.UserApi;
 import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
 
@@ -33,6 +34,9 @@ public class cFeed {
     public void setEmail(String email) {this.email = email;}
     public void setFachadas(FachadaGUI fgui) {this.fgui = fgui;}
 
+    @FXML private Label username;
+    @FXML private ImageView profilePic;
+
     @FXML private ImageView btnNotification;
     @FXML private Button btnFriends;
     @FXML private Button btnSearch;
@@ -42,7 +46,8 @@ public class cFeed {
     @FXML private TextField fieldSearch;
     @FXML private VBox vboxResults;
 
-
+    public void setUsername(String username) {this.username.setText(username);}
+    public ImageView getProfilePic() {return profilePic;}
 
     @FXML
     public void initialize() {
@@ -87,7 +92,7 @@ public class cFeed {
         try {
             vboxFriends.getChildren().clear();
 
-            List<UserSearchResult> amigos = UserApi.getFriends();
+            List<UserSearchResult> amigos = FriendApi.getFriends();
 
             if (amigos.isEmpty()) {
                 Label empty = new Label("Aún no tienes amigos añadidos");
@@ -162,6 +167,7 @@ public class cFeed {
     }
 
     private void abrirNotificaciones() {
+        Platform.runLater(()-> {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
                     FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/popUpNotification.fxml")
@@ -175,6 +181,7 @@ public class cFeed {
 
             cPopUpNotification controller = fxmlLoader.getController();
             controller.setFachadas(this.fgui);
+            //controller.loadRequests();
 
             // Hacerla modal
             popup.initOwner(fgui.getEntrarStage());
@@ -183,10 +190,9 @@ public class cFeed {
 
             popup.show();
 
-
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }});
     }
 
     @FXML

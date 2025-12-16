@@ -41,23 +41,6 @@ public class UserApi {
         );
     }
 
-    public static List<UserSearchResult> getFriends() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/search/friend-list?id=" + TokenManager.getUserID()))
-                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
-                .GET()
-                .build();
-        HttpResponse<String> response =
-                ApiClient.getClient().send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Error buscando usuarios");
-        }
-
-        return Arrays.asList(
-                mapper.readValue(response.body(), UserSearchResult[].class)
-        );
-    }
 
 
     public static SpotifyProfile getOtherSpotifyProfile(String userID) throws Exception {

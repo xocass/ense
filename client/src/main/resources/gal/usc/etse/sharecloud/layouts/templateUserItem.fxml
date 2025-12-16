@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox alignment="CENTER_LEFT" spacing="12" styleClass="side-user-item" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cUserItem">
+<HBox alignment="CENTER_LEFT" fx:id="hboxItem"  spacing="12" styleClass="side-user-item" stylesheets="@../styles/main.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cUserItem">
 
     <ImageView fx:id="profilePic" fitHeight="36" fitWidth="36" preserveRatio="true">
         <image>
@@ -21,11 +21,5 @@
     </VBox>
 
     <Region HBox.hgrow="ALWAYS" />
-
-    <ImageView fx:id="iconOptions" fitHeight="18" preserveRatio="true">
-        <image>
-            <Image url="@../imgs/icon-show-options.png" />
-        </image>
-    </ImageView>
 
 </HBox>

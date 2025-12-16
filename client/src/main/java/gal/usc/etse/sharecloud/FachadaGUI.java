@@ -199,22 +199,6 @@ public class FachadaGUI extends Application {
         }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
     }
 
-    public void entrarSesion(String email){
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(
-                    FachadaGUI.class.getResource("/gal/usc/etse/sharecloud/layouts/vPrincipal.fxml")
-            );
-            Scene scene = new Scene(fxmlLoader.load(), 820, 620);
-            cSession controller = fxmlLoader.getController();
-            controller.setEmail(email);
-            controller.setFachadas(this);
-
-            entrarStage.setTitle("Session");
-            entrarStage.setScene(scene);
-            entrarStage.show();
-        }catch(IOException e){System.err.println("IOException: "+e.getMessage());}
-    }
-
     public void verCurrPerfil(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(

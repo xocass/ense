@@ -29,6 +29,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorize ->
                         authorize.requestMatchers(
+                                        "/docs/**",
                                         "/swagger-ui/**",
                                         "/swagger-ui.html",
                                         "/v3/api-docs/**",
@@ -43,7 +44,6 @@ public class SecurityConfiguration {
                                         "/api/spotify/start-link",
                                         "/api/spotify/callback",
                                         "/api/spotify/complete-link").permitAll()
-                        .requestMatchers("/api/auth/logout").authenticated()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

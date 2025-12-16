@@ -17,17 +17,16 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.session:spring-session-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-hateoas")
+    //implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
-    //implementation ("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    //implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
@@ -35,11 +34,9 @@ dependencies {
     implementation("org.json:json:20210307")
 
     //Swagger
-    //implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
-    //implementation("org.springdoc:springdoc-openapi-starter-webmvc-scalar:3.0.0-RC1")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
     // Resend
-    //implementation("com.resend:resend-java:3.1.0")
     implementation("com.resend:resend-java:+")
 
     // Redis

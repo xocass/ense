@@ -145,28 +145,6 @@
     -fx-background-color: #168F3F;
 }
 
-/* ================= SPOTIFY FOLLOW BUTTON ================= */
-
-.spotify-follow-button {
-    -fx-background-color: #1ED761;
-    -fx-text-fill: #444444;          /* gris oscuro coherente */
-    -fx-font-size: 12px;
-    -fx-font-weight: 600;
-
-    -fx-background-radius: 20;
-    -fx-border-radius: 20;
-
-    -fx-padding: 6 14;
-}
-
-.spotify-follow-button:hover {
-    -fx-background-color: #1ACF5A;   /* ligero hover */
-}
-
-.spotify-follow-button:pressed {
-    -fx-background-color: #17B94F;
-}
-
 /* ================= POPUP ================= */
 .popup-root {
     -fx-background-color: transparent;
@@ -586,4 +564,39 @@
 .side-user-sub {
     -fx-font-size: 12px;
     -fx-text-fill: #666;
+}
+
+/* ================= LOADING ================= */
+
+.loading-overlay {
+    -fx-background-image: url("../imgs/background-login.jpg");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+
+    /* oscurecido */
+    -fx-background-color: rgba(0,0,0,0.35);
+    -fx-background-blend-mode: multiply;
+}
+
+/* CARD COMPACTA */
+.loading-card {
+    -fx-background-color: rgba(255, 255, 255, 0.94); /* ligera transparencia */
+    -fx-background-radius: 28;
+    -fx-padding: 36 52;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0,0,0,0.25),
+        30,
+        0,
+        0,
+        8
+    );
+}
+
+/* TEXTO */
+.loading-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #111111;
 }

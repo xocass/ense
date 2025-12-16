@@ -29,14 +29,14 @@
             <HBox alignment="CENTER_LEFT" spacing="12" styleClass="user-box-light">
 
                 <StackPane styleClass="avatar-wrap">
-                    <ImageView fx:id="profilePic" fitHeight="34" fitWidth="34" preserveRatio="true" smooth="true">
+                    <ImageView fx:id="menuUserPicture" fitHeight="34" fitWidth="34" preserveRatio="true" smooth="true">
                         <image>
                             <Image url="@../imgs/default-pfp.png" />
                         </image>
                     </ImageView>
                 </StackPane>
 
-                <Label fx:id="labelUsername" styleClass="user-name-light" text="Username" />
+                <Label fx:id="menuUsername" styleClass="user-name-light" text="Username" />
 
                 <Region HBox.hgrow="ALWAYS" />
 

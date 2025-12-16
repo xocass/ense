@@ -39,6 +39,7 @@ public class UserService implements UserDetailsService {
                 .build();
     }
 
+
     public void register(AuthRequest request) {
         if (userRepository.existsByEmail(request.email())) {throw new RuntimeException("Email already registered");}
 

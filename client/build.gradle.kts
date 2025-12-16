@@ -53,7 +53,7 @@ jlink {
 }
 
 application {
-    mainClass.set("gal.usc.etse.sharecloud.FachadaGUI")
+    mainClass.set("gal.usc.etse.sharecloud.ShareCloudBoot")
     mainModule.set("ShareCloud.client.main")
 }
 

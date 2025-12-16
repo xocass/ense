@@ -9,13 +9,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 public class cForgotPasswordEmail {
-    private FachadaGUI fgui;
-
     @FXML private TextField fieldEmail;
     @FXML private Label statusLabel;
-
-
-    public void setFachadas(FachadaGUI fgui) {this.fgui = fgui;}
 
 
     @FXML
@@ -29,7 +24,7 @@ public class cForgotPasswordEmail {
         try {
             AuthApi.sendRecoveryCode(email);
 
-            fgui.recuperarContrasenhaCodigo(email);
+            FachadaGUI.getInstance().recuperarContrasenhaCodigo(email);
         } catch (Exception e) {
             updateStatus("Ha ocurrido un error al enviar el código. Inténtalo de nuevo");
         }
@@ -38,7 +33,7 @@ public class cForgotPasswordEmail {
 
     @FXML
     private void clickOnGoBack(){
-            fgui.iniciarSesion();
+        FachadaGUI.getInstance().iniciarSesion(0);
     }
 
     private void updateStatus(String msg) {Platform.runLater(() -> statusLabel.setText(msg));}

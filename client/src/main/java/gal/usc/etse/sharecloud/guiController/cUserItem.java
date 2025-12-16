@@ -1,6 +1,5 @@
 package gal.usc.etse.sharecloud.guiController;
 
-import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.http.FriendApi;
 
 import javafx.fxml.FXML;
@@ -18,9 +17,9 @@ public class cUserItem {
     @FXML private Label labelCountry;
     @FXML private HBox hboxItem;
 
-    private String userId;
+    private String otherId;
+    private String userEmail;
     private boolean isFriend;
-    private FachadaGUI fgui;
 
 
     @FXML
@@ -31,15 +30,15 @@ public class cUserItem {
             }
         });
     }
-    public void setFachadas(FachadaGUI fgui) {this.fgui = fgui;}
-    public void setLabelName(String name) {labelName.setText(name);}
-    public void setLabelCountry(String country) {labelCountry.setText(country);}
-    public ImageView getProfilePic() {return profilePic;}
+    public void setOtherLabelName(String name) {labelName.setText(name);}
+    public void setOtherLabelCountry(String country) {labelCountry.setText(country);}
+    public ImageView getOtherProfilePic() {return profilePic;}
 
-    public void setUserId(String userId) {this.userId = userId;}
-    public void setIsFriend(boolean isFriend) {this.isFriend = isFriend;}
-    public String getUserId() {return userId;}
-    public boolean getIsFriend() {return isFriend;}
+    public void setUserEmail(String userEmail) {this.userEmail = userEmail;}
+    public void setOtherId(String userId) {this.otherId = userId;}
+    public void setOtherIsFriend(boolean isFriend) {this.isFriend = isFriend;}
+    public String getOtherId() {return otherId;}
+    public boolean getOtherIsFriend() {return isFriend;}
 
 
     private void showContextMenu() {
@@ -48,12 +47,10 @@ public class cUserItem {
         MenuItem viewProfile = new MenuItem("Ver perfil");
         MenuItem addFriend = new MenuItem("Solicitar amistad");
 
-        //##############################################################
-        //##############################################################
-        viewProfile.setOnAction(e1 -> fgui.verCurrPerfil());
+        viewProfile.setOnAction(e1 -> clickOnOtherProfile());
         addFriend.setOnAction(e2 -> {
                 try{
-                    FriendApi.sendRequest(userId);
+                    FriendApi.sendRequest(otherId);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }});
@@ -67,6 +64,9 @@ public class cUserItem {
                 bounds.getMaxX(),
                 bounds.getMinY()
         );
+    }
+    private void clickOnOtherProfile(){
+        cMenu.clickOnOtherProfile(otherId, userEmail);
     }
 
 }

@@ -1,6 +1,5 @@
 package gal.usc.etse.sharecloud.guiController;
 
-import gal.usc.etse.sharecloud.FachadaGUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -9,16 +8,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 
 public class cItemTemplate {
-    @FXML
-    private Label name;
-    @FXML
-    private Label artist;
-    @FXML
-    private ImageView image;
-    @FXML
-    private Label rank;
-    @FXML
-    private VBox root;
+    @FXML private Label name;
+    @FXML private Label artist;
+    @FXML private ImageView image;
+    @FXML private Label rank;
+    @FXML private VBox root;
 
     public void setName(String name) {
         this.name.setText(name);

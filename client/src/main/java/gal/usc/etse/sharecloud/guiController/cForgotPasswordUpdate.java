@@ -2,21 +2,19 @@ package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.http.AuthApi;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 
 public class cForgotPasswordUpdate {
-    @FXML
-    private Label statusLabel;
+    @FXML private Label statusLabel;
     @FXML private PasswordField fieldNewPassword;
     @FXML private PasswordField fieldRepeatPassword;
 
-    private FachadaGUI fgui;
     private String email;
 
-    public void setFachadas(FachadaGUI fgui) {this.fgui = fgui;};
     public void setEmail(String email) {this.email = email;}
 
 
@@ -39,7 +37,7 @@ public class cForgotPasswordUpdate {
 
         try {
             if(AuthApi.updatePassword(email, newPassword)){
-                fgui.recuperarContrasenhaCompletado();
+                FachadaGUI.getInstance().recuperarContrasenhaCompletado();
             }else{
                 updateStatus("No se ha podido actualizar la contraseña.");
             }

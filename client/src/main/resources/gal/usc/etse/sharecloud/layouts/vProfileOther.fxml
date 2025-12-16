@@ -61,7 +61,7 @@
                     </graphic>
                 </Button>
 
-                <Button fx:id="btnFeed" alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="254.0" styleClass="menu-button-light" text="Feed">
+                <Button fx:id="btnFeed" onAction="#clickViewFeed" alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="254.0" styleClass="menu-button-light" text="Feed">
                     <graphic>
                         <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
                             <image><Image url="@../imgs/icon-feed.png" /></image>

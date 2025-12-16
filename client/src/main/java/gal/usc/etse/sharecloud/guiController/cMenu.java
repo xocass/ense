@@ -132,18 +132,13 @@ public class cMenu {
                 Image pic = new Image(user.image());
                 controller.getOtherProfilePic().setImage(pic);
             }
-            /*item.setOnMouseClicked((event) -> {
-                fgui.mostrarPantallaCarga();
-                cMenu.clickOnOtherProfile(fgui, user.id(), userEmail);;
-            });*/
 
             container.getChildren().add(item);
         } catch (IOException e) {e.printStackTrace();}
     }
 
     public static void abrirNotificaciones() {
-        Platform.runLater(()-> {
-            try {
+        try {
                 FXMLLoader fxmlLoader = new FXMLLoader(
                         ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/popUpNotification.fxml")
                 );
@@ -167,10 +162,18 @@ public class cMenu {
 
             } catch (IOException e) {
                 e.printStackTrace();
-            }});
+            }
     }
 
 
+    public static void clickViewFeed(String userEmail){
+        //Logica de obtener actividades de amigos
+        //
+         //
+
+        FachadaGUI fgui = FachadaGUI.getInstance();
+        fgui.irFeed(userEmail);
+    }
 
     public static void clickOnUserProfile(String email) {
         Task<SpotifyResponseCompact> profileTask = new Task<>() {
@@ -193,6 +196,7 @@ public class cMenu {
         });
         profileTask.setOnFailed(e -> {
             // openErrorPopUp()
+;
             FachadaGUI fgui = FachadaGUI.getInstance();
             fgui.irFeed(email);
         });
@@ -217,7 +221,7 @@ public class cMenu {
         profileTask.setOnSucceeded(e -> {
             SpotifyResponseCompact data = profileTask.getValue();
             FachadaGUI fgui = FachadaGUI.getInstance();
-            //fgui.verOtroPerfil(data, userEmail);
+            fgui.verOtroPerfil(data, userEmail);
         });
         profileTask.setOnFailed(e -> {
             // openErrorPopUp()

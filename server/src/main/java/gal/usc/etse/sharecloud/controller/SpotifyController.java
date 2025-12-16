@@ -72,14 +72,47 @@ public class SpotifyController {
             @RequestParam(required = false) String state
     ) {
         String html = """
-        <html>
-        <body>
-            <h2>Procesando autenticación de Spotify...</h2>
-            <p>Puede cerrar esta ventana.</p>
-        </body>
-        </html>
-        """;
-
+                    <!DOCTYPE html>
+                    <html lang="es">
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>Spotify – ShareCloud</title>
+                        <style>
+                            body {
+                                margin: 0;
+                                height: 100vh;
+                                font-family: Arial, sans-serif;
+                                background-color: #121212;
+                                color: white;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+                    
+                            .container {
+                                text-align: center;
+                            }
+                    
+                            h2 {
+                                color: #1DB954;
+                                margin-bottom: 10px;
+                            }
+                    
+                            p {
+                                font-size: 14px;
+                                opacity: 0.9;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <h2>Conectando con Spotify</h2>
+                            <p>La vinculación se ha completado correctamente.</p>
+                            <p>Ya puedes volver a la aplicación.</p>
+                        </div>
+                    </body>
+                    </html>
+                    """;
         return ResponseEntity.ok().contentType(MediaType.TEXT_HTML).body(html);
     }
 

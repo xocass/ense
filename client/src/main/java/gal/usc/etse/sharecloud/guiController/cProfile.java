@@ -121,13 +121,18 @@ public class cProfile {
         cMenu.configurarNotificaciones(btnNotification);
     }
     @FXML
+    private void clickOnNotification(){
+        cMenu.abrirNotificaciones();
+    }
+    @FXML
     private void clickViewProfile(){
         FachadaGUI.getInstance().mostrarPantallaCarga();
         cMenu.clickOnUserProfile(userEmail);
     }
     @FXML
-    private void clickOnNotification(){
-        cMenu.abrirNotificaciones();
+    private void clickViewFeed(){
+        FachadaGUI.getInstance().mostrarPantallaCarga();
+        cMenu.clickViewFeed(userEmail);
     }
     @FXML
     private void clickOnLogout(){

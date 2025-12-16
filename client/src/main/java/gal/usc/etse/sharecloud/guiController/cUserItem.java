@@ -1,5 +1,6 @@
 package gal.usc.etse.sharecloud.guiController;
 
+import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.http.FriendApi;
 
 import javafx.fxml.FXML;
@@ -66,6 +67,7 @@ public class cUserItem {
         );
     }
     private void clickOnOtherProfile(){
+        FachadaGUI.getInstance().mostrarPantallaCarga();
         cMenu.clickOnOtherProfile(otherId, userEmail);
     }
 

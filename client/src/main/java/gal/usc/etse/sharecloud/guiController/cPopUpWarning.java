@@ -26,6 +26,7 @@ public class cPopUpWarning {
     }
     @FXML
     public void clickOnConfirm(){
+        ((Stage) btnConfirm.getScene().getWindow()).close();
         FachadaGUI.getInstance().iniciarSesion(0);
     }
 

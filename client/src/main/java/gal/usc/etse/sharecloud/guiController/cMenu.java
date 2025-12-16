@@ -217,7 +217,7 @@ public class cMenu {
         profileTask.setOnSucceeded(e -> {
             SpotifyResponseCompact data = profileTask.getValue();
             FachadaGUI fgui = FachadaGUI.getInstance();
-            //fgui.verOtroPerfil(data, userEmail);
+            fgui.verOtroPerfil(data, userEmail);
         });
         profileTask.setOnFailed(e -> {
             // openErrorPopUp()

@@ -8,10 +8,10 @@ import gal.usc.etse.sharecloud.repository.UserRepository;
 import gal.usc.etse.sharecloud.service.AuthService;
 import gal.usc.etse.sharecloud.service.UserService;
 
-/*import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;*/
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/auth")
-//@Tag(name = "Auth", description = "Endpoints de autenticación y gestión de usuarios")
+@Tag(name = "Auth", description = "Endpoints de autenticación y gestión de usuarios")
 public class AuthController {
     private static final String REFRESH_TOKEN_COOKIE_NAME = "__Secure-RefreshToken";
     private final AuthService authService;
@@ -40,7 +40,7 @@ public class AuthController {
     }
 
 
-    /*@Operation(
+    @Operation(
             summary = "Iniciar sesión",
             description = """
                 Autentica al usuario y devuelve un accessToken JWT.
@@ -50,7 +50,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login correcto"),
             @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
-    })*/
+    })
     @PreAuthorize("isAnonymous()")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody AuthRequest request) {
@@ -70,14 +70,14 @@ public class AuthController {
     }
 
 
-    /*@Operation(
+    @Operation(
             summary = "Registrar nuevo usuario",
             description = "Crea un usuario en el sistema con email y contraseña. Tras esto, debe completar la vinculación de Spotify."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Usuario registrado con éxito"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
-    })*/
+    })
     @PreAuthorize("isAnonymous()")
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody AuthRequest req) {
@@ -87,7 +87,7 @@ public class AuthController {
     }
 
 
-    /*@Operation(
+    @Operation(
             summary = "Refrescar token de acceso",
             description = """
                 Genera un nuevo accessToken usando el refresh token presente en la cookie.
@@ -97,7 +97,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Token renovado"),
             @ApiResponse(responseCode = "401", description = "Refresh token inválido o expirado")
-    })*/
+    })
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refresh(
@@ -124,10 +124,10 @@ public class AuthController {
     }
 
 
-    /*@Operation(summary = "Cerrar sesión", description = "Invalida el refresh token del usuario")
+    @Operation(summary = "Cerrar sesión", description = "Invalida el refresh token del usuario")
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Sesión cerrada")
-    })*/
+    })
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(Authentication auth) {
@@ -149,7 +149,7 @@ public class AuthController {
                 .build();
     }
 
-    /*@Operation(
+    @Operation(
             summary = "Solicitar código de recuperación de contraseña",
             description = """
                 Genera un código de recuperación de 6 dígitos y lo envía por email.
@@ -158,7 +158,7 @@ public class AuthController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Proceso de recuperación iniciado")
-    })*/
+    })
     @PostMapping("/forgot-password")
     public ResponseEntity<Void> forgotPassword(@RequestBody String email) {
         email = email.trim();
@@ -169,7 +169,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    /*@Operation(
+    @Operation(
             summary = "Verificar código de recuperación",
             description = """
                 Comprueba si el código de recuperación introducido es válido.
@@ -179,14 +179,14 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Código válido"),
             @ApiResponse(responseCode = "400", description = "Código inválido o expirado")
-    })*/
+    })
     @PostMapping("/check-reset-code")
     public ResponseEntity<Void> checkResetCode(@RequestBody AuthRequest request) {
         authService.checkPasswordRecoveryCode(request.email(), request.password());
         return ResponseEntity.ok().build();
     }
 
-    /*@Operation(
+    @Operation(
             summary = "Restablecer contraseña",
             description = """
                 Establece una nueva contraseña usando un código de recuperación válido.
@@ -196,7 +196,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Contraseña actualizada correctamente"),
             @ApiResponse(responseCode = "400", description = "Solicitud inválida o código expirado")
-    })*/
+    })
     @PostMapping("/reset-password")
     public ResponseEntity<Void> resetPassword(@RequestBody AuthRequest request) {
         authService.resetPassword(request.email(), request.password());

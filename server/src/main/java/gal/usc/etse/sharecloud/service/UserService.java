@@ -50,6 +50,19 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
+    public SpotifyProfile returnSpotifyProfile(String id){
+        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        System.out.println("ID: "+user.getSpotifyProfile().getSpotifyID());
+        return new SpotifyProfile(
+                user.getSpotifyProfile().getSpotifyID(),
+                user.getSpotifyProfile().getDisplayName(),
+                user.getSpotifyProfile().getEmail(),
+                user.getSpotifyProfile().getCountry(),
+                user.getSpotifyProfile().getImage(),
+                user.getSpotifyProfile().getnFollowers(),
+                user.getSpotifyProfile().getProfileURL());
+    }
+
     public List<UserSearchResult> searchUsers(String query, String requesterId) {
         if (query == null || query.isBlank()) {
             return List.of();

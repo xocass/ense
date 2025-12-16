@@ -13,6 +13,10 @@ import gal.usc.etse.sharecloud.service.SpotifyService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;*/
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user/me/spotify")
-//@Tag(name = "Spotify User Data", description = "Endpoints Spotify asociados al usuario autenticado")
+@Tag(name = "Spotify User Data", description = "Endpoints Spotify asociados al usuario autenticado")
 public class UserSpotifyController {
     private final SpotifyService spotifyService;
     private final SpotifyActivityService spotifyActivityService;
@@ -35,7 +39,7 @@ public class UserSpotifyController {
     }
 
 
-    /*@Operation(
+    @Operation(
             summary = "Obtener perfil de Spotify del usuario",
             description = """
                 Devuelve el perfil de Spotify del usuario autenticado.
@@ -47,7 +51,7 @@ public class UserSpotifyController {
             @ApiResponse(responseCode = "401", description = "Usuario no autenticado"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado"),
             @ApiResponse(responseCode = "500", description = "Error al consultar Spotify")
-    })*/
+    })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public ResponseEntity<SpotifyProfile> getSpotifyProfile(@RequestParam String id) throws Exception {
@@ -55,7 +59,7 @@ public class UserSpotifyController {
         return ResponseEntity.ok(profile);
     }
 
-    /*@Operation(
+    @Operation(
             summary = "Obtener últimas canciones escuchadas",
             description = """
                 Actualiza y devuelve el estado LISTENED_TRACK del usuario,
@@ -67,7 +71,7 @@ public class UserSpotifyController {
             @ApiResponse(responseCode = "401", description = "No autenticado"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado"),
             @ApiResponse(responseCode = "500", description = "Error consultando Spotify")
-    })*/
+    })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/recently-played")
     public ResponseEntity<SpotifyRecentlyPlayedResponse> getRecentlyPlayedTracks(@RequestParam String id,
@@ -80,7 +84,7 @@ public class UserSpotifyController {
         return ResponseEntity.ok(response);
     }
 
-    /*@Operation(
+    @Operation(
             summary = "Obtener top canciones del usuario",
             description = """
                 Actualiza y devuelve el estado MOST_LISTENED_TRACKS,
@@ -92,7 +96,7 @@ public class UserSpotifyController {
             @ApiResponse(responseCode = "401", description = "No autenticado"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado"),
             @ApiResponse(responseCode = "500", description = "Error consultando Spotify")
-    })*/
+    })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/top-tracks")
     public ResponseEntity<SpotifyTopTracksResponse> getTopTracks(@RequestParam String id,
@@ -101,7 +105,7 @@ public class UserSpotifyController {
         return ResponseEntity.ok(spotifyActivityService.returnTopTracks(id, limit));
     }
 
-    /*@Operation(
+    @Operation(
             summary = "Obtener top artistas del usuario",
             description = """
                 Actualiza y devuelve el estado MOST_LISTENED_ARTISTS,
@@ -113,7 +117,7 @@ public class UserSpotifyController {
             @ApiResponse(responseCode = "401", description = "No autenticado"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado"),
             @ApiResponse(responseCode = "500", description = "Error consultando Spotify")
-    })*/
+    })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/top-artists")
     public ResponseEntity<SpotifyTopArtistsResponse> getTopArtists(@RequestParam String id,

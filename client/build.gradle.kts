@@ -29,6 +29,7 @@ dependencies {
     implementation ("org.mongodb:mongodb-driver-sync")
     implementation("org.json:json:20210307")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
 
     //JAVAFX

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,16 +50,26 @@ public class FriendService {
         request.setSenderId(senderId);
         request.setReceiverId(receiverId);
         request.setStatus(FriendRequestStatus.PENDING);
-        request.setCreatedAt(Instant.now());
 
         friendRequestRepository.save(request);
     }
 
-    public List<FriendRequest> getPendingRequests(String userId) {
-        return friendRequestRepository.findByReceiverIdAndStatus(
-                userId,
-                FriendRequestStatus.PENDING
-        );
+    public List<gal.usc.etse.sharecloud.model.dto.FriendRequest> getPendingRequests(String receiverId) {
+        List<FriendRequest> requests = friendRequestRepository.findByReceiverIdAndStatus(
+                receiverId, FriendRequestStatus.PENDING);
+        return requests.stream().map(req -> {
+                    User sender = userRepository.findById(req.getSenderId()).orElseThrow(() ->
+                                    new IllegalStateException("Sender not found: " + req.getSenderId()));
+                    String senderName = null;
+                    String senderImage = null;
+
+                    if (sender.getSpotifyProfile() != null) {
+                        senderName = sender.getSpotifyProfile().getDisplayName();
+                        senderImage = sender.getSpotifyProfile().getImage();
+                    }
+
+                    return new gal.usc.etse.sharecloud.model.dto.FriendRequest(req.getId(),
+                            req.getSenderId(), senderName, senderImage);}).toList();
     }
 
     public void acceptRequest(String requestId, String userId) {

@@ -1,7 +1,7 @@
 package gal.usc.etse.sharecloud.controller;
 
 import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
-import gal.usc.etse.sharecloud.model.entity.FriendRequest;
+import gal.usc.etse.sharecloud.model.dto.FriendRequest;
 import gal.usc.etse.sharecloud.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.links.Link;

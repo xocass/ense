@@ -40,7 +40,7 @@
 
                 <Region HBox.hgrow="ALWAYS" />
 
-                <ImageView fx:id="btnNotification" onMouseClicked="#clickOnNotification" fitHeight="18" fitWidth="18" preserveRatio="true">
+                <ImageView fx:id="btnNotification" onMouseClicked="#clickOnNotification" pickOnBounds="true" fitHeight="18" fitWidth="18" preserveRatio="true">
                     <image>
                         <Image url="@../imgs/icon-bell.png" />
                     </image>
@@ -92,7 +92,7 @@
                 <!-- ===== AMIGOS ===== -->
                 <ScrollPane fx:id="friendsPane" fitToWidth="true" styleClass="side-scroll" visible="true">
                     <VBox spacing="10" fx:id="vboxFriends" styleClass="side-scroll-content">
-                        
+
 
                     </VBox>
                 </ScrollPane>

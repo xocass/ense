@@ -1,50 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<StackPane styleClass="popup-root" stylesheets="@../styles/popup.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cPopUpNotification">
+<StackPane
+        styleClass="popup-root"
+        stylesheets="@../styles/popup.css"
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="gal.usc.etse.sharecloud.guiController.cPopUpNotification">
 
-    <VBox prefHeight="260" prefWidth="420" spacing="18" styleClass="popup-card">
+    <VBox prefWidth="520"
+          prefHeight="360"
+          spacing="18"
+          styleClass="popup-card">
 
         <!-- HEADER -->
         <HBox alignment="CENTER_LEFT" spacing="12">
             <StackPane styleClass="popup-icon">
                 <ImageView fitHeight="22" fitWidth="22" preserveRatio="true">
                     <image>
-                        <Image url="@../imgs/icon-bell.png" />
+                        <Image url="@../imgs/icon-bell.png"/>
                     </image>
                 </ImageView>
             </StackPane>
 
-            <Label styleClass="popup-title" text="Notificaciones" />
+            <Label styleClass="popup-title" text="Notificaciones"/>
 
-            <Region HBox.hgrow="ALWAYS" />
-
-            <Button fx:id="btnClose" onAction="#clickOnClose" styleClass="popup-close-button" text="✕" />
+            <Region HBox.hgrow="ALWAYS"/>
         </HBox>
 
         <!-- CONTENT -->
-        <StackPane VBox.vgrow="ALWAYS">
-         <ScrollPane prefHeight="127.0" prefWidth="372.0">
-           <content>
-             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="355.0">
-                  <children>
-                     <VBox fx:id="vboxNotifications" prefHeight="154.0" prefWidth="356.0" />
-                        <Label fx:id="labelNoNotifications" layoutX="80.0" styleClass="popup-empty-text" text="No tienes nuevas notificaciones" />
-                  </children>
-               </AnchorPane>
-           </content>
-         </ScrollPane>
-        </StackPane>
+        <ScrollPane
+                fitToWidth="true"
+                VBox.vgrow="ALWAYS"
+                styleClass="popup-scroll">
+
+            <content>
+                <VBox fx:id="vboxNotifications"
+                      spacing="12"
+                      fillWidth="true"
+                      styleClass="popup-list"/>
+            </content>
+
+        </ScrollPane>
+
+        <!-- FOOTER -->
+        <HBox alignment="CENTER_RIGHT">
+            <Button fx:id="btnClose"
+                    onAction="#clickOnClose"
+                    text="Cerrar"
+                    styleClass="popup-close-button"/>
+        </HBox>
 
     </VBox>
 </StackPane>
+

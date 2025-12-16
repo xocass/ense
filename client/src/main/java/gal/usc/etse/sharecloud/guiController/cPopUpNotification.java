@@ -46,6 +46,7 @@ public class cPopUpNotification {
                     ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/templateFriendRequest.fxml")
             );
             HBox item = loader.load();
+            item.setMaxWidth(Double.MAX_VALUE);
 
             cFriendRequestItem controller = loader.getController();
             controller.setRequest(request);

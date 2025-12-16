@@ -1,9 +1,10 @@
 package gal.usc.etse.sharecloud.model.dto;
 
-import java.time.Instant;
+import gal.usc.etse.sharecloud.model.entity.FriendRequestStatus;
 
 public record FriendRequest(String id,
                             String senderId,
                             String senderName,
                             String senderImage
-) {}
+) {
+}

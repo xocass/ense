@@ -15,8 +15,6 @@ public class FriendRequest {
 
     private FriendRequestStatus status;
 
-    private Instant createdAt;
-
 
     public String getId() {return id;}
     public void setId(String id) {this.id = id;}
@@ -26,7 +24,5 @@ public class FriendRequest {
     public void setReceiverId(String receiverId) {this.receiverId = receiverId;}
     public FriendRequestStatus getStatus() {return status;}
     public void setStatus(FriendRequestStatus status) {this.status = status;}
-    public Instant getCreatedAt() {return createdAt;}
-    public void setCreatedAt(Instant createdAt) {this.createdAt = createdAt;}
 
 }

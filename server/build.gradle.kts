@@ -32,6 +32,7 @@ dependencies {
     implementation(platform("org.mongodb:mongodb-driver-bom:5.6.1"))
     implementation ("org.mongodb:mongodb-driver-sync")
     implementation("org.json:json:20210307")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
     //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")

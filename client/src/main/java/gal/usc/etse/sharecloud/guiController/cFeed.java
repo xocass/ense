@@ -59,6 +59,7 @@ public class cFeed {
     }
     @FXML
     private void clickOnNotification(){
+        System.out.println("CLICK NOTIFICATION");
         cMenu.abrirNotificaciones();
     }
     @FXML

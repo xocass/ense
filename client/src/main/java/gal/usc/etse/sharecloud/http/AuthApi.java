@@ -123,8 +123,9 @@ public class AuthApi {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + "/reset-password"))
+                .method("PATCH", HttpRequest.BodyPublishers.ofString(json))
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
+                //.POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<Void> response = ApiClient.getClient().send(request, HttpResponse.BodyHandlers.discarding());

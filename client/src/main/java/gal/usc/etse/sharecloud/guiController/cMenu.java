@@ -156,7 +156,7 @@ public class cMenu {
                 // Hacerla modal
                 popup.initOwner(fgui.getEntrarStage());
                 popup.initModality(Modality.WINDOW_MODAL);
-                popup.initStyle(StageStyle.TRANSPARENT);
+                //popup.initStyle(StageStyle.TRANSPARENT);
 
                 popup.show();
 

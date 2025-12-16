@@ -36,7 +36,7 @@ public class FriendApi {
 
     public static List<FriendRequest> getPendingRequests() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/request/send?id=" + TokenManager.getUserID()))
+                .uri(URI.create(BASE_URL + "/request/list?id=" + TokenManager.getUserID()))
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .GET()
                 .build();
@@ -76,8 +76,8 @@ public class FriendApi {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(BASE_URL + path + "?requestId=" + requestId +
                         "&id=" + TokenManager.getUserID()))
+                .method("PATCH", HttpRequest.BodyPublishers.noBody())
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
-                .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
         HttpResponse<Void> response = ApiClient.getClient().send(request, HttpResponse.BodyHandlers.discarding());
 

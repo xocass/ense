@@ -7,6 +7,7 @@ import gal.usc.etse.sharecloud.service.SpotifyService;
 
 import gal.usc.etse.sharecloud.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.links.Link;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/spotify")
-@Tag(name = "Spotify", description = "Endpoints para vinculación y acceso a Spotify")
+@Tag(name = "Spotify", description = "Vinculación de cuentas y acceso a datos de Spotify mediante OAuth 2.0")
 public class SpotifyController {
     private final SpotifyService spotifyService;
     private final UserService userService;
@@ -30,12 +31,20 @@ public class SpotifyController {
     }
 
 
-    @Operation(
-            summary = "Obtener URL de autorización de Spotify",
-            description = "Devuelve la URL que el cliente debe abrir para iniciar autorización OAuth con Spotify."
-    )
+    @Operation(operationId = "startSpotifyLink", summary = "Obtener URL de autorización de Spotify",
+            description = """
+                    Genera la URL de autorización OAuth de Spotify.
+                    El cliente debe abrir esta URL (WebView) para que el usuario conceda permisos a la aplicación.
+                    """)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "URL generada correctamente")
+            @ApiResponse(responseCode = "200", description = "URL de autorización generada correctamente",
+                    links = {@Link(name = "callback", operationId = "spotifyCallback",
+                                    description = "Endpoint al que Spotify redirige tras la autorización"
+                    ),
+                            @Link(name = "completeLink", operationId = "completeSpotifyLink",
+                                    description = "Completar la vinculación tras recibir el código OAuth")}
+            ),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos")
     })
     @PreAuthorize("isAnonymous()")
     @GetMapping("/start-link")
@@ -45,13 +54,17 @@ public class SpotifyController {
     }
 
 
-    @Operation(
-            summary = "Callback de Spotify",
+    @Operation(operationId = "spotifyCallback", summary = "Callback OAuth de Spotify",
             description = """
-                Este endpoint es llamado por Spotify tras la autorización.
-                No procesa tokens, solo devuelve una página HTML para que el WebView pueda detectarlo.
-                """
-    )
+                    Endpoint llamado directamente por Spotify tras la autorización del usuario.
+                    Devuelve una página HTML mínima para que el cliente
+                    (WebView) pueda detectar la redirección.
+                    """)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Callback recibido correctamente",
+                    links = {@Link(name = "completeLink", operationId = "completeSpotifyLink",
+                                    description = "Completar la vinculación con el código recibido")})
+    })
     @PreAuthorize("isAnonymous()")
     @GetMapping("/callback")
     public ResponseEntity<String> callback(
@@ -71,17 +84,24 @@ public class SpotifyController {
     }
 
 
-    @Operation(
-            summary = "Completar vinculación con Spotify",
+    @Operation(operationId = "completeSpotifyLink", summary = "Completar vinculación con Spotify",
             description = """
-                El cliente JavaFX envía aquí el code y el email tras interceptar el callback.
-                El backend intercambia el code por tokens de Spotify, los guarda, marca spotifyLinked=true,
-                obtiene el perfil y actualiza el user en la BD
-                """
-    )
+                    Completa el proceso de vinculación con Spotify.
+                    
+                    El backend:
+                    - Intercambia el código OAuth por tokens
+                    - Guarda los tokens en el usuario
+                    - Marca spotifyLinked = true
+                    - Obtiene el perfil del usuario en Spotify
+                    - Actualiza el usuario en la BD
+                    """)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Vinculación completada"),
-            @ApiResponse(responseCode = "400", description = "Error intercambiando tokens")
+            @ApiResponse(responseCode = "200", description = "Vinculación con Spotify completada correctamente",
+                    links = {@Link(name = "getSpotifyProfile", operationId = "getSpotifyProfile",
+                                    description = "Consultar el perfil de Spotify del usuario")}
+            ),
+            @ApiResponse(responseCode = "400", description = "Error intercambiando el código OAuth"),
+            @ApiResponse(responseCode = "500", description = "Error interno al comunicarse con Spotify")
     })
     @PreAuthorize("isAnonymous()")
     @PostMapping("/complete-link")

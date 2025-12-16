@@ -4,16 +4,11 @@ import gal.usc.etse.sharecloud.model.dto.SpotifyProfile;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
-import gal.usc.etse.sharecloud.model.entity.ActivityType;
-import gal.usc.etse.sharecloud.model.entity.UserActivity;
 import gal.usc.etse.sharecloud.service.SpotifyActivityService;
 import gal.usc.etse.sharecloud.service.SpotifyService;
 
-/*import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;*/
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.links.Link;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,15 +34,21 @@ public class UserSpotifyController {
     }
 
 
-    @Operation(
-            summary = "Obtener perfil de Spotify del usuario",
+
+    @Operation(operationId = "getMySpotifyProfile", summary = "Obtener perfil de Spotify del usuario autenticado",
             description = """
-                Devuelve el perfil de Spotify del usuario autenticado.
-                Incluye información básica como nombre, email, país e imagen.
-                """
-    )
+                    Devuelve el perfil de Spotify del usuario autenticado.
+                    Incluye nombre visible, email, país e imagen de perfil.
+                    """)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Perfil de Spotify obtenido correctamente"),
+            @ApiResponse(responseCode = "200", description = "Perfil de Spotify obtenido correctamente",
+                    links = {@Link(name = "recentlyPlayed", operationId = "getMyRecentlyPlayed",
+                                    description = "Consultar canciones escuchadas recientemente"),
+                            @Link(name = "topTracks", operationId = "getMyTopTracks",
+                                    description = "Consultar canciones más escuchadas"),
+                            @Link(name = "topArtists", operationId = "getMyTopArtists",
+                                    description = "Consultar artistas más escuchados")}
+            ),
             @ApiResponse(responseCode = "401", description = "Usuario no autenticado"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado"),
             @ApiResponse(responseCode = "500", description = "Error al consultar Spotify")
@@ -59,15 +60,19 @@ public class UserSpotifyController {
         return ResponseEntity.ok(profile);
     }
 
-    @Operation(
-            summary = "Obtener últimas canciones escuchadas",
+
+    @Operation(operationId = "getMyRecentlyPlayed", summary = "Obtener últimas canciones escuchadas",
             description = """
-                Actualiza y devuelve el estado LISTENED_TRACK del usuario,
-                consultando Spotify (/me/player/recently-played).
-                """
-    )
+                    Consulta Spotify (/me/player/recently-played), actualiza el estado LISTENED_TRACK del usuario
+                    y devuelve las canciones más recientes.
+                    """)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Canciones obtenidas correctamente"),
+            @ApiResponse(responseCode = "200", description = "Canciones obtenidas correctamente",
+                    links = {@Link(name = "topTracks", operationId = "getMyTopTracks",
+                                    description = "Consultar top canciones"),
+                            @Link(name = "topArtists", operationId = "getMyTopArtists",
+                                    description = "Consultar top artistas")}
+            ),
             @ApiResponse(responseCode = "401", description = "No autenticado"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado"),
             @ApiResponse(responseCode = "500", description = "Error consultando Spotify")
@@ -84,15 +89,20 @@ public class UserSpotifyController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(
-            summary = "Obtener top canciones del usuario",
+
+    @Operation(operationId = "getMyTopTracks", summary = "Obtener top canciones del usuario",
             description = """
-                Actualiza y devuelve el estado MOST_LISTENED_TRACKS,
-                usando Spotify (/me/top/tracks).
-                """
+                    Consulta Spotify (/me/top/tracks), actualiza el estado MOST_LISTENED_TRACKS
+                    y devuelve las canciones más escuchadas.
+                    """
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Top canciones obtenido"),
+            @ApiResponse(responseCode = "200", description = "Top canciones obtenido",
+                    links = {@Link(name = "topArtists", operationId = "getMyTopArtists",
+                                    description = "Consultar top artistas"),
+                            @Link(name = "recentlyPlayed", operationId = "getMyRecentlyPlayed",
+                                    description = "Consultar actividad reciente")}
+            ),
             @ApiResponse(responseCode = "401", description = "No autenticado"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado"),
             @ApiResponse(responseCode = "500", description = "Error consultando Spotify")
@@ -105,15 +115,18 @@ public class UserSpotifyController {
         return ResponseEntity.ok(spotifyActivityService.returnTopTracks(id, limit));
     }
 
-    @Operation(
-            summary = "Obtener top artistas del usuario",
+
+    @Operation(operationId = "getMyTopArtists", summary = "Obtener top artistas del usuario",
             description = """
-                Actualiza y devuelve el estado MOST_LISTENED_ARTISTS,
-                usando Spotify (/me/top/artists).
-                """
-    )
+                    Consulta Spotify (/me/top/artists), actualiza el estado MOST_LISTENED_ARTISTS
+                    y devuelve los artistas más escuchados.
+                    """)
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Top artistas obtenido"),
+            @ApiResponse(responseCode = "200", description = "Top artistas obtenido",
+                    links = {@Link(name = "topTracks", operationId = "getMyTopTracks", description = "Consultar top canciones"),
+                            @Link(name = "recentlyPlayed", operationId = "getMyRecentlyPlayed",
+                                    description = "Consultar actividad reciente")}
+            ),
             @ApiResponse(responseCode = "401", description = "No autenticado"),
             @ApiResponse(responseCode = "403", description = "Acceso denegado"),
             @ApiResponse(responseCode = "500", description = "Error consultando Spotify")

@@ -148,4 +148,18 @@ public class UserSpotifyController {
         System.out.println("isFollowing");
         return ResponseEntity.ok(spotifyService.isFollowingUser(id,currID));
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/do-follow/{spotyid}")
+    public ResponseEntity<Boolean> doFollow(@RequestParam String currID, @PathVariable String spotyid) throws Exception {
+        spotifyService.doFollow(spotyid,currID);
+        return ResponseEntity.ok(true);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/do-unfollow/{spotyid}")
+    public ResponseEntity<Boolean> doUnfollow(@RequestParam String currID, @PathVariable String spotyid) throws Exception {
+        spotifyService.doUnfollow(spotyid,currID);
+        return ResponseEntity.ok(true);
+    }
 }

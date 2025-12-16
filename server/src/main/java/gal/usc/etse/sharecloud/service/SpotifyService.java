@@ -368,4 +368,65 @@ public class SpotifyService {
         // Devolvemos el body tal cual: "[true]" o "[false]"
         return response.body();
     }
+
+    public void doFollow(String targetSpotifyID, String currID) throws Exception {
+        User user = userRepo.findById(currID)
+                .orElseThrow(() -> new UsernameNotFoundException(currID));
+
+        if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {
+            refreshSpotifyAccessToken(user);
+        }
+
+        String uri = SPOTIFY_API_URI
+                + "/me/following"
+                + "?type=user"
+                + "&ids=" + targetSpotifyID;
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Authorization", "Bearer " + user.getSpotifyAccessToken())
+                .POST(null)
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if(response.statusCode() == 204)System.out.println("Usuario seguido correctamente");
+        else
+            throw new RuntimeException(
+                    "Error checking Spotify following status: " + response.body()
+            );
+    }
+
+    public void doUnfollow(String targetSpotifyID, String currID) throws Exception {
+        User user = userRepo.findById(currID)
+                .orElseThrow(() -> new UsernameNotFoundException(currID));
+
+        if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {
+            refreshSpotifyAccessToken(user);
+        }
+
+
+        String uri = SPOTIFY_API_URI
+                + "/me/following"
+                + "?type=user"
+                + "&ids=" + targetSpotifyID;
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Authorization", "Bearer " + user.getSpotifyAccessToken())
+                .DELETE()
+                .build();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response =
+                client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if(response.statusCode() == 204)System.out.println("Usuario unfollowed correctamente");
+        else
+            throw new RuntimeException(
+                    "Error checking Spotify following status: " + response.body()
+            );
+    }
 }

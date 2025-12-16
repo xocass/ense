@@ -78,6 +78,17 @@ public class cProfile {
         topTracksBox.getChildren().add(template);
     }
 
+    @FXML
+    private void clickFollowUnfollow(){
+        if(seguido){
+            FachadaGUI.getInstance().doUnfollow(loggedUser.getSpotifyId());
+            setSeguido(false);
+        }else {
+            FachadaGUI.getInstance().doFollow(loggedUser.getSpotifyId());
+            setSeguido(true);
+        }
+    }
+
 
 
 

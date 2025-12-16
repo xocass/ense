@@ -1,7 +1,9 @@
 package gal.usc.etse.sharecloud;
 
 import gal.usc.etse.sharecloud.guiController.*;
+import gal.usc.etse.sharecloud.http.SpotifyApi;
 import gal.usc.etse.sharecloud.http.TokenManager;
+import gal.usc.etse.sharecloud.http.UserApi;
 import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyArtist;
 import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyTrack;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
@@ -16,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class FachadaGUI {
@@ -33,6 +36,7 @@ public class FachadaGUI {
     public static FachadaGUI getInstance() {return instance;}
     public Stage getEntrarStage() {return entrarStage;}
     public void setEntrarStage(Stage entrarStage) {this.entrarStage = entrarStage;}
+
 
 
 
@@ -274,42 +278,42 @@ public class FachadaGUI {
     private void _cargarRecentlyPlayed(cProfile controller, SpotifyRecentlyPlayedResponse response){
         controller.clearRecentlyPlayed();
         for (SpotifyRecentlyPlayedResponse.Item item : response.items()) {
-            //cargar el template
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/gal/usc/etse/sharecloud/layouts/vTemplateRecentTrack.fxml")
-            );
-            Parent template;
-            try {
-                template = loader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-                continue;
-            }
-            gal.usc.etse.sharecloud.guiController.cTemplateRecentTrack cTemplate = loader.getController();
+                //cargar el template
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/gal/usc/etse/sharecloud/layouts/vTemplateRecentTrack.fxml")
+                );
+                Parent template;
+                try {
+                    template = loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                gal.usc.etse.sharecloud.guiController.cTemplateRecentTrack cTemplate = loader.getController();
 
-            //recuperar datos del response
-            String trackName = item.track().name();
+                //recuperar datos del response
+                String trackName = item.track().name();
 
-            String artists = item.track().artists()
-                    .stream()
-                    .map(SpotifyArtist::name)
-                    .collect(Collectors.joining(", "));
+                String artists = item.track().artists()
+                        .stream()
+                        .map(SpotifyArtist::name)
+                        .collect(Collectors.joining(", "));
 
-            String imageUrl = null;
-            if (item.track().album() != null
-                    && item.track().album().images() != null
-                    && !item.track().album().images().isEmpty()) {
-                imageUrl = item.track().album().images().getFirst().url();
-            }
+                String imageUrl = null;
+                if (item.track().album() != null
+                        && item.track().album().images() != null
+                        && !item.track().album().images().isEmpty()) {
+                    imageUrl = item.track().album().images().getFirst().url();
+                }
 
-            Integer duration = item.track().duration_ms();
-            //settear datos del template y añadir al hbox
-            cTemplate.setName(trackName);
-            cTemplate.setArtist(artists);
-            if (imageUrl != null) cTemplate.setImage(new Image(imageUrl));
-            cTemplate.setDuration(duration);
+                Integer duration = item.track().duration_ms();
+                //settear datos del template y añadir al hbox
+                cTemplate.setName(trackName);
+                cTemplate.setArtist(artists);
+                if (imageUrl != null) cTemplate.setImage(new Image(imageUrl));
+                cTemplate.setDuration(duration);
 
-            controller.addRecentlyPlayed(template);
+                controller.addRecentlyPlayed(template);
         }
     }
     public void _cargarTopTracks(cProfile controller, SpotifyTopTracksResponse response) {
@@ -387,6 +391,22 @@ public class FachadaGUI {
                 cTemplate.setImage(new Image(imageUrl, true));
             }
             controller.addTopArtist(template);
+        }
+    }
+
+    public void doFollow(String otherSpotifyID){
+        try {
+            SpotifyApi.doFollow(otherSpotifyID,TokenManager.getUserID());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void doUnfollow(String otherSpotifyID){
+        try {
+            SpotifyApi.doUnfollow(otherSpotifyID,TokenManager.getUserID());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

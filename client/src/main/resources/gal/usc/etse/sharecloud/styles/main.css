@@ -145,6 +145,28 @@
     -fx-background-color: #168F3F;
 }
 
+/* ================= SPOTIFY FOLLOW BUTTON ================= */
+
+.spotify-follow-button {
+    -fx-background-color: #1ED761;
+    -fx-text-fill: #444444;          /* gris oscuro coherente */
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+
+    -fx-padding: 6 14;
+}
+
+.spotify-follow-button:hover {
+    -fx-background-color: #1ACF5A;   /* ligero hover */
+}
+
+.spotify-follow-button:pressed {
+    -fx-background-color: #17B94F;
+}
+
 /* ================= POPUP ================= */
 .popup-root {
     -fx-background-color: transparent;

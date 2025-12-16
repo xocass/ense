@@ -223,11 +223,11 @@ public class FachadaGUI extends Application {
             _cargarRecentlyPlayed(controller,recentlyPlayed);
 
             //CARGAR TOP TRACKS
-            SpotifyTopTracksResponse topTracks = SpotifyApi.getTopTracks(TokenManager.getUserID(),10);
+            SpotifyTopTracksResponse topTracks = SpotifyApi.getTopTracks(TokenManager.getUserID(),5);
             _cargarTopTracks(controller,topTracks);
 
             //CARGAR TOP ARTISTAS
-            SpotifyTopArtistsResponse topArtists = SpotifyApi.getTopArtists(TokenManager.getUserID(),10);
+            SpotifyTopArtistsResponse topArtists = SpotifyApi.getTopArtists(TokenManager.getUserID(),5);
             _cargarTopArtistas(controller,topArtists);
 
             entrarStage.setTitle(profileView.getDisplayName());
@@ -266,6 +266,9 @@ public class FachadaGUI extends Application {
             //CARGAR TOP ARTISTAS
             SpotifyTopArtistsResponse topArtists = UserApi.getOtherTopArtists(otherID);
             _cargarTopArtistas(controller,topArtists);
+
+            //COMPROBAR SI SIGUE
+            controller.setSeguido(SpotifyApi.isFollowing(TokenManager.getUserID(),otherID));
 
             entrarStage.setTitle(profileView.getDisplayName());
             entrarStage.setScene(scene);

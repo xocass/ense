@@ -100,4 +100,5 @@ public class UserApi {
 
         return mapper.readValue(res.body(), SpotifyTopArtistsResponse.class);
     }
+
 }

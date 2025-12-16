@@ -90,39 +90,4 @@ public class UserService implements UserDetailsService {
                 .toList();
     }
 
-    public List<UserSearchResult> getFriends(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(userId));
-
-        if (user.getFriendIds() == null || user.getFriendIds().isEmpty()) {
-            return List.of();
-        }
-
-        List<User> friends = userRepository.findAllById(user.getFriendIds());
-
-        return friends.stream()
-                .map(friend -> new UserSearchResult(
-                        friend.getId(),
-                        friend.getSpotifyProfile().getDisplayName(),
-                        friend.getSpotifyProfile().getImage(),
-                        friend.getSpotifyProfile().getCountry(),
-                        true
-                ))
-                .toList();
-
-    }
-
-    public SpotifyProfile returnSpotifyProfile(String id){
-        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new SpotifyProfile(
-                user.getSpotifyProfile().getSpotifyID(),
-                user.getSpotifyProfile().getDisplayName(),
-                user.getSpotifyProfile().getEmail(),
-                user.getSpotifyProfile().getCountry(),
-                user.getSpotifyProfile().getImage(),
-                user.getSpotifyProfile().getnFollowers(),
-                user.getSpotifyProfile().getProfileURL()
-        );
-    }
-
 }

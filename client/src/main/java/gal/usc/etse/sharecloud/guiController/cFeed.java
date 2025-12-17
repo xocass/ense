@@ -104,8 +104,7 @@ public class cFeed {
         btnLike.setVisible(false);
         btnComment.setVisible(false);
         artCover.setImage(new Image((ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/imgs/boladesierto.gif").toExternalForm())));
-        titleLabel.setText("Has llegado al final");
-        artistLabel.setText("Puede que tengas algo nuevo para ver --->");
+        titleLabel.setText("Nada que ver por aquí....");
     }
 
     @FXML

@@ -43,7 +43,8 @@ public class SecurityConfiguration {
                                         "/api/auth/reset-password",
                                         "/api/spotify/start-link",
                                         "/api/spotify/callback",
-                                        "/api/spotify/complete-link").permitAll()
+                                        "/api/spotify/complete-link",
+                                        "/api/user/me/notifications").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

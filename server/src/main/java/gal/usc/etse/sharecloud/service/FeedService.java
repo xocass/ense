@@ -98,19 +98,6 @@ public class FeedService {
     }
 
 
-    @Scheduled(fixedRate = 60_000) // 1 minuto
-    public void updateDailyFeed() {
-
-        List<User> users = userRepo.findBySpotifyLinkedTrue();
-
-        for (User user : users) {
-            try {
-                updatePlayedToday(user.getId(),user.getSpotifyProfile());
-            } catch (Exception e) {
-                throw new RuntimeException("Error actualizando automáticamente al usuario "+user.getEmail());
-            }
-        }
-    }
 
     /* ##################
      *      MAPPERS

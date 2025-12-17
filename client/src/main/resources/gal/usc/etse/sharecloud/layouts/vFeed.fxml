@@ -193,7 +193,7 @@
                     <!-- ACTION STRIP -->
                     <VBox alignment="CENTER" maxHeight="560" minWidth="64" prefHeight="560" prefWidth="64" spacing="24" styleClass="action-strip">
 
-                        <ImageView fx:id="btnLike" fitHeight="26" fitWidth="26" preserveRatio="true" styleClass="icon-clickable">
+                        <ImageView fx:id="btnLike" fitHeight="26" fitWidth="26" onMouseClicked="#like" preserveRatio="true" styleClass="icon-clickable">
                             <image><Image url="@../imgs/icon-heart-white.png" /></image>
                         </ImageView>
 

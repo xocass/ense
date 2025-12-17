@@ -28,7 +28,6 @@ public class cFeed {
     //Feed
     private List<FeedItem> feedItems= new ArrayList<>();
 
-
     @FXML private Label menuUsername;
     @FXML private ImageView menuUserPicture;
 
@@ -119,6 +118,11 @@ public class cFeed {
     public void previousItem() {
         FeedState.prev();
         renderCurrentItem();
+    }
+
+    @FXML
+    public void like(){
+        NotificationApi.likeTrack(FeedState.getCurrent().getId(),titleLabel.getText());
     }
 
     /*  ###################################################################  */

@@ -21,7 +21,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -167,58 +166,6 @@ public class cMenu {
             }
     }
 
-    //FEED
-    public static void renderFeed(boolean actualizar, List<FeedItem> feedItems, ImageView btnBack, ImageView btnNext, ImageView btnLike,
-                                  ImageView btnComment,  ImageView artCover, Label titleLabel,
-                                  Label artistLabel, Label labelFriendName, Label labelDate, ImageView friendProfilePic,
-                                  String userEmail) {
-
-        int feedCounter = cMenu.getFeedCounter();
-
-        //Visibilizar los items
-        friendProfilePic.setVisible(true);
-        labelFriendName.setVisible(true);
-        labelDate.setVisible(true);
-        btnBack.setVisible(true);
-        btnNext.setVisible(true);
-        btnLike.setVisible(true);
-        btnComment.setVisible(true);
-
-        //Si estamos en el primer item
-        if(feedCounter==0){
-            btnBack.setVisible(false);
-            /*if(actualizar)
-                viewFeed(userEmail);*/
-        }
-        if(!feedItems.isEmpty()) {
-            artCover.setImage(new Image(feedItems.get(feedCounter).getTrack().getImageUrl()));
-            titleLabel.setText(feedItems.get(feedCounter).getTrack().getTrackName());
-            String artistNames = String.join(
-                    ", ",
-                    feedItems.get(feedCounter)
-                            .getTrack()
-                            .getArtists()
-            );
-            artistLabel.setText(artistNames);
-
-            labelFriendName.setText(feedItems.get(feedCounter).getSpotifyProfile().getDisplayName());
-            labelDate.setText(formatPlayedAt(feedItems.get(feedCounter).getTrack().getPlayedAt()));
-            if (feedItems.get(feedCounter).getSpotifyProfile().getImage() != null)
-                friendProfilePic.setImage(new Image(feedItems.get(feedCounter).getSpotifyProfile().getImage()));
-        }
-        else{
-            friendProfilePic.setVisible(false);
-            labelFriendName.setVisible(false);
-            labelDate.setVisible(false);
-            btnBack.setVisible(false);
-            btnNext.setVisible(false);
-            btnLike.setVisible(false);
-            btnComment.setVisible(false);
-            artCover.setImage(new Image((ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/imgs/nothing2see.png").toExternalForm())));
-            titleLabel.setText("Parece que no hay nada que ver...");
-        }
-    }
-
     public static String formatPlayedAt(Instant playedAt) {
         if (playedAt == null) return "";
 
@@ -226,7 +173,6 @@ public class cMenu {
                 .withZone(ZoneId.systemDefault())
                 .format(playedAt);
     }
-
 
     public static void viewFeed(String userEmail) {
         FachadaGUI.getInstance().mostrarPantallaCarga();

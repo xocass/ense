@@ -164,8 +164,8 @@ public class FriendController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/remove")
-    public ResponseEntity<Void> removeFriend(@RequestParam String id, @RequestParam String targetId) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteFriend(@RequestParam String id, @RequestParam String targetId) {
 
         friendService.removeFriend(id, targetId);
         return ResponseEntity.noContent().build();

@@ -9,6 +9,8 @@ import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyTrack;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
+import gal.usc.etse.sharecloud.model.entity.FeedData;
+import gal.usc.etse.sharecloud.model.entity.FeedState;
 import gal.usc.etse.sharecloud.model.entity.SpotifyResponseCompact;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
@@ -47,7 +49,9 @@ public class FachadaGUI {
             );
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cLog controller = fxmlLoader.getController();
-            if(status != 200 && status != 0){
+            if(status == 400){
+                controller.updateStatus("Error al cargar tu feed. Pruebe a iniciar sesión más tarde.");
+            }else if(status != 200 && status != 0){
                 controller.updateStatus("Error "+ status +": El email o contraseña introducidos son incorrectos");
             }
 
@@ -181,7 +185,7 @@ public class FachadaGUI {
     }
 
 
-    public void irFeed(String email) {
+    public void irFeed(FeedData data, String email) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(
                     ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/vFeed.fxml")
@@ -194,6 +198,14 @@ public class FachadaGUI {
                 Image pic = new Image(TokenManager.getImage());
                 controller.getMenuUserPicture().setImage(pic);
             }
+
+            if (data != null) {
+                FeedState.setFeed(data.feedItems());
+                controller.initFeed(data.feedItems(), data.friends());
+            } else {
+                controller.initFeed(null, null);
+            }
+
 
             entrarStage.setTitle("Sesión: Feed");
             entrarStage.setScene(scene);
@@ -260,9 +272,9 @@ public class FachadaGUI {
                 Image pic = new Image(TokenManager.getImage());
                 controller.getMenuUserPicture().setImage(pic);
             }
+            controller.setIsPending(data.getUserBooleans().isPending());
             controller.setIsFriend(data.getUserBooleans().isFriend());
             controller.updateFriendButton();
-            System.out.println("prfId: "+ data.getUserBooleans().userId());
             controller.setProfileUserId(data.getUserBooleans().userId());
 
             if(data.getProfileView().getImage()!=null) {

@@ -2,13 +2,9 @@ package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.ShareCloudBoot;
-import gal.usc.etse.sharecloud.http.FriendApi;
-import gal.usc.etse.sharecloud.http.SpotifyApi;
-import gal.usc.etse.sharecloud.http.TokenManager;
-import gal.usc.etse.sharecloud.http.UserApi;
+import gal.usc.etse.sharecloud.http.*;
 import gal.usc.etse.sharecloud.model.dto.*;
-import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
-import gal.usc.etse.sharecloud.model.entity.SpotifyResponseCompact;
+import gal.usc.etse.sharecloud.model.entity.*;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -28,15 +24,17 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class cMenu {
-
     private static int feedCounter=0;
 
     public static int getFeedCounter(){return feedCounter;}
-
     public static void setFeedCounter(int valor){feedCounter=valor;}
+
 
     public static void activarAmigos(Button btnFriends, Button btnSearch, ScrollPane friendsPane,
                                      VBox searchPane) {
@@ -74,7 +72,7 @@ public class cMenu {
 
 
 
-    public static void cargarAmigos(VBox vboxFriends, String userEmail) {
+    public static void renderFriends(VBox vboxFriends, String userEmail) {
         try {
             vboxFriends.getChildren().clear();
 
@@ -157,9 +155,7 @@ public class cMenu {
                 cPopUpNotification controller = fxmlLoader.getController();
                 controller.setUserEmail(userEmail);
                 FachadaGUI fgui=  FachadaGUI.getInstance();
-                //controller.loadRequests();
 
-                // Hacerla modal
                 popup.initOwner(fgui.getEntrarStage());
                 popup.initModality(Modality.WINDOW_MODAL);
                 //popup.initStyle(StageStyle.TRANSPARENT);
@@ -171,14 +167,105 @@ public class cMenu {
             }
     }
 
+    //FEED
+    public static void renderFeed(boolean actualizar, List<FeedItem> feedItems, ImageView btnBack, ImageView btnNext, ImageView btnLike,
+                                  ImageView btnComment,  ImageView artCover, Label titleLabel,
+                                  Label artistLabel, Label labelFriendName, Label labelDate, ImageView friendProfilePic,
+                                  String userEmail) {
 
-    public static void clickViewFeed(String userEmail){
-        //Logica de obtener feed-cards de amigos
-        //
-         //
+        int feedCounter = cMenu.getFeedCounter();
 
-        FachadaGUI fgui = FachadaGUI.getInstance();
-        fgui.irFeed(userEmail);
+        //Visibilizar los items
+        friendProfilePic.setVisible(true);
+        labelFriendName.setVisible(true);
+        labelDate.setVisible(true);
+        btnBack.setVisible(true);
+        btnNext.setVisible(true);
+        btnLike.setVisible(true);
+        btnComment.setVisible(true);
+
+        //Si estamos en el primer item
+        if(feedCounter==0){
+            btnBack.setVisible(false);
+            /*if(actualizar)
+                viewFeed(userEmail);*/
+        }
+        if(!feedItems.isEmpty()) {
+            artCover.setImage(new Image(feedItems.get(feedCounter).getTrack().getImageUrl()));
+            titleLabel.setText(feedItems.get(feedCounter).getTrack().getTrackName());
+            String artistNames = String.join(
+                    ", ",
+                    feedItems.get(feedCounter)
+                            .getTrack()
+                            .getArtists()
+            );
+            artistLabel.setText(artistNames);
+
+            labelFriendName.setText(feedItems.get(feedCounter).getSpotifyProfile().getDisplayName());
+            labelDate.setText(formatPlayedAt(feedItems.get(feedCounter).getTrack().getPlayedAt()));
+            if (feedItems.get(feedCounter).getSpotifyProfile().getImage() != null)
+                friendProfilePic.setImage(new Image(feedItems.get(feedCounter).getSpotifyProfile().getImage()));
+        }
+        else{
+            friendProfilePic.setVisible(false);
+            labelFriendName.setVisible(false);
+            labelDate.setVisible(false);
+            btnBack.setVisible(false);
+            btnNext.setVisible(false);
+            btnLike.setVisible(false);
+            btnComment.setVisible(false);
+            artCover.setImage(new Image((ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/imgs/nothing2see.png").toExternalForm())));
+            titleLabel.setText("Parece que no hay nada que ver...");
+        }
+    }
+
+    public static String formatPlayedAt(Instant playedAt) {
+        if (playedAt == null) return "";
+
+        return DateTimeFormatter.ofPattern("HH:mm")
+                .withZone(ZoneId.systemDefault())
+                .format(playedAt);
+    }
+
+
+    public static void nextItem(ImageView btnLike, ImageView btnComment, ImageView artCover, Label titleLabel,
+                                Label artistLabel, Label labelFriendName, Label labelDate, ImageView friendProfilePic){
+
+        friendProfilePic.setVisible(false);
+        labelFriendName.setVisible(false);
+        labelDate.setVisible(false);
+        btnLike.setVisible(false);
+        btnComment.setVisible(false);
+        artCover.setImage(new Image((ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/imgs/boladesierto.gif").toExternalForm())));
+        titleLabel.setText("Has llegado al final");
+        artistLabel.setText("Puede que tengas algo nuevo para ver --->");
+    }
+
+
+
+    public static void viewFeed(String userEmail) {
+        FachadaGUI.getInstance().mostrarPantallaCarga();
+
+        Task<FeedData> feedTask = new Task<>() {
+            @Override
+            protected FeedData call() throws Exception {
+                List<FeedItem> feed = FeedApi.loadFeed();
+                List<UserSearchResult> friends = FriendApi.getFriends();
+                return new FeedData(feed, friends);
+            }
+        };
+
+        feedTask.setOnSucceeded(e -> {
+            FeedData data = feedTask.getValue();
+            FeedState.setFeed(data.feedItems());   // 🔹 estado global
+            FachadaGUI.getInstance().irFeed(data, userEmail);
+        });
+
+        feedTask.setOnFailed(e -> {
+            FachadaGUI.getInstance().iniciarSesion(400);
+        });
+
+        new Thread(feedTask).start();
     }
 
     public static void clickOnUserProfile(String email) {
@@ -200,9 +287,8 @@ public class cMenu {
             FachadaGUI.getInstance().verCurrPerfil(data, email);
         });
         profileTask.setOnFailed(e -> {
-            // openErrorPopUp()
-;
-            FachadaGUI.getInstance().irFeed(email);
+            // openErrorPopUp : no implementado
+
         });
             new Thread(profileTask).start();
     }
@@ -227,7 +313,7 @@ public class cMenu {
             FachadaGUI.getInstance().verOtroPerfil(data, userEmail);
         });
         profileTask.setOnFailed(e -> {
-            FachadaGUI.getInstance().irFeed(userEmail);
+            //openErrorPopUp: no implementado
         });
         new Thread(profileTask).start();
     }

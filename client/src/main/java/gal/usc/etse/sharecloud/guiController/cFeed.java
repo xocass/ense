@@ -5,7 +5,9 @@ import gal.usc.etse.sharecloud.ShareCloudBoot;
 import gal.usc.etse.sharecloud.http.*;
 
 import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyArtist;
+import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
 import gal.usc.etse.sharecloud.model.entity.FeedItem;
+import gal.usc.etse.sharecloud.model.entity.FeedState;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,11 +15,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +31,7 @@ public class cFeed {
     public void setEmail(String email) {this.userEmail = email;}
 
     //Feed
-    private List<FeedItem> feedItems;
+    private List<FeedItem> feedItems= new ArrayList<>();
 
 
     @FXML private Label menuUsername;
@@ -47,6 +51,7 @@ public class cFeed {
 
 
     //FEED
+    @FXML private HBox hboxFeedProfile;
     @FXML private ImageView artCover;
     @FXML private Label titleLabel;
     @FXML private Label artistLabel;
@@ -69,15 +74,53 @@ public class cFeed {
     @FXML
     public void initialize() {
         cMenu.activarAmigos(btnFriends, btnSearch, friendsPane, searchPane);
-        cMenu.cargarAmigos(vboxFriends, userEmail);
+        //cMenu.cargarAmigos(vboxFriends, userEmail);
         cMenu.configurarBusqueda(fieldSearch, vboxResults, userEmail);
         cMenu.configurarNotificaciones(btnNotification, userEmail);
-        cargarFeed(true);
+    }
+
+    public void initFeed(List<FeedItem> ignored, List<UserSearchResult> friends) {
+        renderCurrentItem();
+        cMenu.renderFriends(vboxFriends, userEmail);
+    }
+    private void renderCurrentItem() {
+        FeedItem item = FeedState.getCurrent();
+
+        if (item == null) {
+            showEmptyFeed();
+            return;
+        }
+
+        artCover.setImage(new Image(item.getTrack().getImageUrl()));
+        titleLabel.setText(item.getTrack().getTrackName());
+        artistLabel.setText(String.join(", ", item.getTrack().getArtists()));
+
+        labelFriendName.setText(item.getSpotifyProfile().getDisplayName());
+        labelDate.setText(cMenu.formatPlayedAt(item.getTrack().getPlayedAt()));
+
+        if (item.getSpotifyProfile().getImage() != null) {
+            friendProfilePic.setImage(new Image(item.getSpotifyProfile().getImage()));
+        }
+
+        btnBack.setDisable(!FeedState.hasPrev());
+        btnNext.setDisable(!FeedState.hasNext());
+    }
+
+    private void showEmptyFeed() {
+        friendProfilePic.setVisible(false);
+        labelFriendName.setVisible(false);
+        labelDate.setVisible(false);
+        btnLike.setVisible(false);
+        btnComment.setVisible(false);
+        artCover.setImage(new Image((ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/imgs/boladesierto.gif").toExternalForm())));
+        titleLabel.setText("Has llegado al final");
+        artistLabel.setText("Puede que tengas algo nuevo para ver --->");
     }
 
 
+
     //FEED
-    public void cargarFeed(boolean actualizar){
+    /*public void cargarFeed(boolean actualizar){
         int feedCounter = cMenu.getFeedCounter();
 
         //Visibilizar los items
@@ -129,39 +172,19 @@ public class cFeed {
         return DateTimeFormatter.ofPattern("HH:mm")
                 .withZone(ZoneId.systemDefault())
                 .format(playedAt);
+    }*/
+
+    @FXML
+    public void nextItem() {
+        FeedState.next();
+        renderCurrentItem();
     }
 
     @FXML
-    public void nextItem(){
-        cMenu.setFeedCounter(cMenu.getFeedCounter()+1);
-        if(cMenu.getFeedCounter()==feedItems.size()){
-            friendProfilePic.setVisible(false);
-            labelFriendName.setVisible(false);
-            labelDate.setVisible(false);
-            btnLike.setVisible(false);
-            btnComment.setVisible(false);
-            artCover.setImage(new Image((getClass().getResource("/gal/usc/etse/sharecloud/imgs/boladesierto.gif").toExternalForm())));
-            titleLabel.setText("Has llegado al final");
-            artistLabel.setText("Puede que tengas algo nuevo para ver --->");
-        }else if(cMenu.getFeedCounter()==feedItems.size()+1){
-            cMenu.setFeedCounter(0);
-            cargarFeed(true);
-        }else{
-            cargarFeed(true);
-        }
-
+    public void previousItem() {
+        FeedState.prev();
+        renderCurrentItem();
     }
-
-    @FXML
-    public void previousItem(){
-        if(cMenu.getFeedCounter()>0){
-            cMenu.setFeedCounter(cMenu.getFeedCounter()-1);
-            cargarFeed(false);
-        }else {
-            cMenu.setFeedCounter(cMenu.getFeedCounter()-1);
-        }
-    }
-
 
     /*  ###################################################################  */
     /*  ########  FUNCIONALIDADES E INTERACIONES CON MENU LATERAL  ########  */

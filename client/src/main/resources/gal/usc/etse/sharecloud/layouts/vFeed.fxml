@@ -162,7 +162,7 @@
                     <!-- MAIN  -->
                     <VBox spacing="14" styleClass="feed-card-main" HBox.hgrow="ALWAYS">
 
-                        <HBox alignment="CENTER_LEFT" spacing="12">
+                        <HBox fx:id="hboxFeedProfile" alignment="CENTER_LEFT" spacing="12">
                             <StackPane styleClass="avatar-wrap">
                                 <ImageView fx:id="friendProfilePic" fitHeight="34" fitWidth="34" preserveRatio="true">
                                     <image><Image url="@../imgs/default-pfp.png" /></image>

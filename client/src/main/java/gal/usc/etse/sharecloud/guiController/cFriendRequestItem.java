@@ -1,5 +1,6 @@
 package gal.usc.etse.sharecloud.guiController;
 
+import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.http.FriendApi;
 import gal.usc.etse.sharecloud.model.dto.FriendRequest;
 
@@ -21,25 +22,35 @@ public class cFriendRequestItem {
     @FXML private Button btnReject;
 
     private FriendRequest request;
+    private String senderId;
+    private String userEmail;
+
+    public void setEmail(String userEmail) {this.userEmail = userEmail;}
 
     public void setRequest(FriendRequest request) {
         this.request = request;
 
-        labelName.setText(request.senderName());
-        if(request.senderImage() != null){
-            Image pic = new Image(request.senderImage());
+        // Aqui los datos que queremos mostrar es de los senders de solicitudes.
+        // en FriendRequest no hay campos senderName y senderImage, por lo que reutilizamos el dto e invertimos los roles
+        this.senderId= request.receiverId();
+        labelName.setText(request.receiverName());
+        if(request.receiverImage() != null){
+            Image pic = new Image(request.receiverImage());
             imgAvatar.setImage(pic);
         }
     }
 
     @FXML
     private void clickOnProfilePic(){
-
+        FachadaGUI.getInstance().mostrarPantallaCarga();
+        cMenu.clickOnOtherProfile(senderId, userEmail);
     }
     @FXML
     private void clickOnUsername(){
-
+        FachadaGUI.getInstance().mostrarPantallaCarga();
+        cMenu.clickOnOtherProfile(senderId, userEmail);
     }
+
     @FXML
     private void clickOnAccept(){
         try{

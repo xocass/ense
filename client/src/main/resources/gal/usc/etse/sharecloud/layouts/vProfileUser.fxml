@@ -177,7 +177,7 @@
 
                     <!-- SOLO BOTÓN MENSAJE -->
                     <HBox>
-                        <Button fx:id="btnGoSpotify" styleClass="icon-circle-button-dark">
+                        <Button fx:id="btnGoSpotify" onAction="#clickOnGoSpotify" styleClass="icon-circle-button-dark">
                             <graphic>
                                 <ImageView fitHeight="20" preserveRatio="true">
                                     <image>

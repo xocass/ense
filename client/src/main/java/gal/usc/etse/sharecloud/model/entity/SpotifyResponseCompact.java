@@ -3,22 +3,23 @@ package gal.usc.etse.sharecloud.model.entity;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
+import gal.usc.etse.sharecloud.model.dto.UserBooleans;
 
 public class SpotifyResponseCompact {
     private SpotifyProfile profileView;
     private SpotifyRecentlyPlayedResponse recentlyPlayed;
     private SpotifyTopTracksResponse topTracks;
     private SpotifyTopArtistsResponse topArtists;
-    private Boolean isFollowing;
+    private UserBooleans booleans;
 
     public SpotifyResponseCompact(SpotifyProfile profileView, SpotifyRecentlyPlayedResponse recentlyPlayed,
                                   SpotifyTopTracksResponse topTracks, SpotifyTopArtistsResponse topArtists,
-                                  Boolean isFollowing) {
+                                  UserBooleans booleans) {
         this.profileView = profileView;
         this.recentlyPlayed = recentlyPlayed;
         this.topTracks = topTracks;
         this.topArtists = topArtists;
-        this.isFollowing = isFollowing;
+        this.booleans = booleans;
     }
 
     public SpotifyProfile getProfileView() {return profileView;}
@@ -29,6 +30,6 @@ public class SpotifyResponseCompact {
     public void setTopTracks(SpotifyTopTracksResponse topTracks) {this.topTracks = topTracks;}
     public SpotifyTopArtistsResponse getTopArtists() {return topArtists;}
     public void setTopArtists(SpotifyTopArtistsResponse topArtists) {this.topArtists = topArtists;}
-    public boolean isFollowing() {return isFollowing;}
-    public void setFollowing(boolean isFollowing) {this.isFollowing = isFollowing;}
+    public UserBooleans getUserBooleans() {return booleans;}
+    public void setUserBooleans(UserBooleans booleans) {this.booleans = booleans;}
 }

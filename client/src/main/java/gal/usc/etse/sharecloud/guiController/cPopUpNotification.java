@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -17,6 +18,11 @@ import java.util.List;
 public class cPopUpNotification {
     @FXML VBox vboxNotifications;
     @FXML Button btnClose;
+
+    private String userEmail;
+
+
+    public void setUserEmail(String userEmail){this.userEmail=userEmail;}
 
 
     @FXML
@@ -29,10 +35,21 @@ public class cPopUpNotification {
         new Thread(() -> {
             try {
                 List<FriendRequest> requests = FriendApi.getPendingRequests();
+                List<FriendRequest> notifications = FriendApi.getRequestVisibleNotifications();
 
                 Platform.runLater(() -> {
+                    if (notifications.isEmpty() && requests.isEmpty()) {
+                        Label empty = new Label("No tienes nuevas notificaciones");
+                        empty.getStyleClass().add("side-empty-text");
+                        vboxNotifications.getChildren().add(empty);
+                        return;
+                    }
+
                     for (FriendRequest req : requests) {
                         addRequestItem(req);
+                    }
+                    for (FriendRequest notif : notifications) {
+                        addInfoItem(notif);
                     }
                 });
 
@@ -49,7 +66,25 @@ public class cPopUpNotification {
             item.setMaxWidth(Double.MAX_VALUE);
 
             cFriendRequestItem controller = loader.getController();
+            controller.setEmail(userEmail);
             controller.setRequest(request);
+
+            vboxNotifications.getChildren().add(item);
+
+        } catch (IOException e) {e.printStackTrace();}
+    }
+
+    private void addInfoItem(FriendRequest notification) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/templateFriendInfo.fxml")
+            );
+            HBox item = loader.load();
+            item.setMaxWidth(Double.MAX_VALUE);
+
+            cFriendInfoItem controller = loader.getController();
+            controller.setEmail(userEmail);
+            controller.setNotification(notification, vboxNotifications, item);
 
             vboxNotifications.getChildren().add(item);
 

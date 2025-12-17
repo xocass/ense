@@ -1,9 +1,6 @@
 package gal.usc.etse.sharecloud.controller;
 
-import gal.usc.etse.sharecloud.model.dto.SpotifyProfile;
-import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
-import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
-import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
+import gal.usc.etse.sharecloud.model.dto.*;
 import gal.usc.etse.sharecloud.service.SpotifyActivityService;
 import gal.usc.etse.sharecloud.service.SpotifyService;
 
@@ -17,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
 @RestController
@@ -142,11 +138,10 @@ public class UserSpotifyController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/following/{id}")
-    public ResponseEntity<String> isFollowing(@RequestParam String currID, @PathVariable String id)
+    @GetMapping("/check-boolean")
+    public ResponseEntity<UserBooleans> getBooleans(@RequestParam String id, @RequestParam String targetId)
             throws Exception {
-        System.out.println("isFollowing");
-        return ResponseEntity.ok(spotifyService.isFollowingUser(id,currID));
+        return ResponseEntity.ok(spotifyService.getBooleansUser(id, targetId));
     }
 
     @PreAuthorize("isAuthenticated()")

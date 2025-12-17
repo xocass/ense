@@ -14,7 +14,8 @@ public class FriendRequest {
     private String receiverId;
 
     private FriendRequestStatus status;
-
+    private boolean visibleForSender;
+    private boolean visibleForReceiver;
 
     public String getId() {return id;}
     public void setId(String id) {this.id = id;}
@@ -24,5 +25,9 @@ public class FriendRequest {
     public void setReceiverId(String receiverId) {this.receiverId = receiverId;}
     public FriendRequestStatus getStatus() {return status;}
     public void setStatus(FriendRequestStatus status) {this.status = status;}
+    public boolean isVisibleForSender() {return visibleForSender;}
+    public void setVisibleForSender(boolean visibleForSender) {this.visibleForSender = visibleForSender;}
+    public boolean isVisibleForReceiver() {return visibleForReceiver;}
+    public void setVisibleForReceiver(boolean visibleForReceiver) {this.visibleForReceiver = visibleForReceiver;}
 
 }

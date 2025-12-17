@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+
+<HBox alignment="CENTER_LEFT" spacing="12" styleClass="notification-item" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gal.usc.etse.sharecloud.guiController.cFriendInfoItem">
+
+    <ImageView fx:id="imgAvatar" onMouseClicked="#clickOnProfilePic" fitHeight="36" fitWidth="36" preserveRatio="true">
+      <image>
+         <Image url="@../imgs/default-pfp.png" />
+      </image></ImageView>
+
+    <Label fx:id="labelMessage" onMouseClicked="#clickOnUsername" styleClass="notification-text" text="Acción que ha realizado el 'Username'" />
+
+    <Region HBox.hgrow="ALWAYS" />
+
+    <Label onMouseClicked="#clickDismiss" styleClass="notification-close" text="✖" />
+
+</HBox>

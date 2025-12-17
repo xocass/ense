@@ -36,7 +36,24 @@ public class FriendApi {
 
     public static List<FriendRequest> getPendingRequests() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/request/list?id=" + TokenManager.getUserID()))
+                .uri(URI.create(BASE_URL + "/request/list/pending?id=" + TokenManager.getUserID()))
+                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
+                .GET()
+                .build();
+        HttpResponse<String> response = ApiClient.getClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error obteniendo solicitudes");
+        }
+
+        return Arrays.asList(
+                mapper.readValue(response.body(), FriendRequest[].class)
+        );
+    }
+
+    public static List<FriendRequest> getRequestVisibleNotifications() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/request/list/visible?id=" + TokenManager.getUserID()))
                 .header("Authorization", "Bearer " + TokenManager.getAccessToken())
                 .GET()
                 .build();
@@ -85,4 +102,30 @@ public class FriendApi {
             throw new RuntimeException("Error procesando solicitud");
         }
     }
+
+    public static void sawFriendRequest(String requestId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/request/check?requestId=" + requestId))
+                .method("PATCH", HttpRequest.BodyPublishers.noBody())
+                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
+                .build();
+        HttpResponse<Void> response = ApiClient.getClient().send(request, HttpResponse.BodyHandlers.discarding());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Error procesando solicitud");
+        }
+    }
+
+    public static void deleteFriend(String friendId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/delete?id=" + TokenManager.getUserID() +"&targetId="+ friendId))
+                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
+                .DELETE().build();
+        HttpResponse<String> response = ApiClient.getClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 204) {
+            throw new RuntimeException("Error eliminando amistad");
+        }
+    }
+
 }

@@ -50,7 +50,7 @@ public class cFeed {
         cMenu.activarAmigos(btnFriends, btnSearch, friendsPane, searchPane);
         cMenu.cargarAmigos(vboxFriends, userEmail);
         cMenu.configurarBusqueda(fieldSearch, vboxResults, userEmail);
-        cMenu.configurarNotificaciones(btnNotification);
+        cMenu.configurarNotificaciones(btnNotification, userEmail);
     }
     @FXML
     private void clickViewProfile(){
@@ -59,8 +59,7 @@ public class cFeed {
     }
     @FXML
     private void clickOnNotification(){
-        System.out.println("CLICK NOTIFICATION");
-        cMenu.abrirNotificaciones();
+        cMenu.abrirNotificaciones(userEmail);
     }
     @FXML
     private void clickOnLogout(){

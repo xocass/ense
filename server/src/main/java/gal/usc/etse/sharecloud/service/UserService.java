@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
 
     public SpotifyProfile returnSpotifyProfile(String id){
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        System.out.println("ID: "+user.getSpotifyProfile().getSpotifyID());
+
         return new SpotifyProfile(
                 user.getSpotifyProfile().getSpotifyID(),
                 user.getSpotifyProfile().getDisplayName(),

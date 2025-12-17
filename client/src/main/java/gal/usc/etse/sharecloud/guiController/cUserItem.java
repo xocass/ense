@@ -45,18 +45,22 @@ public class cUserItem {
     private void showContextMenu() {
         ContextMenu menu = new ContextMenu();
 
-        MenuItem viewProfile = new MenuItem("Ver perfil");
-        MenuItem addFriend = new MenuItem("Solicitar amistad");
 
+        MenuItem viewProfile = new MenuItem("Ver perfil");
         viewProfile.setOnAction(e1 -> clickOnOtherProfile());
-        addFriend.setOnAction(e2 -> {
+
+        if(!isFriend){
+            MenuItem addFriend = new MenuItem("Solicitar amistad");
+            addFriend.setOnAction(e2 -> {
                 try{
                     FriendApi.sendRequest(otherId);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }});
-
-        menu.getItems().addAll(viewProfile, addFriend);
+            menu.getItems().addAll(viewProfile, addFriend);
+        }else{
+            menu.getItems().addAll(viewProfile);
+        }
 
         // Mostrar a la derecha del item
         Bounds bounds = hboxItem.localToScreen(hboxItem.getBoundsInLocal());

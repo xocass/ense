@@ -179,9 +179,9 @@
       
                           <!-- ICON BUTTONS -->
                           <HBox prefHeight="60.0" prefWidth="162.0" spacing="12">
-                              <Button fx:id="btnAskFriendship" styleClass="icon-circle-button-dark">
+                              <Button fx:id="btnFriendRequest" onAction="#clickOnFriendRequest" styleClass="icon-circle-button-dark">
                                   <graphic>
-                                      <ImageView fitHeight="20" preserveRatio="true">
+                                      <ImageView fitHeight="20" fx:id="imgFriendAction" preserveRatio="true">
                                           <image>
                                     <Image url="@../imgs/icon-friendAdd.png" />
                                  </image>
@@ -199,7 +199,7 @@
                                   </graphic>
                               </Button>
       
-                              <Button fx:id="btnOpenSpotify" styleClass="icon-circle-button-dark">
+                              <Button fx:id="btnGoSpotify" onAction="#clickOnGoSpotify" styleClass="icon-circle-button-dark">
                                   <graphic>
                                       <ImageView fitHeight="20" preserveRatio="true">
                                           <image>

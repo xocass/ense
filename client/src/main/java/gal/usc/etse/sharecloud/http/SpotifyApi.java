@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
 import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
+import gal.usc.etse.sharecloud.model.dto.UserBooleans;
 import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 
 
@@ -109,9 +110,9 @@ public class SpotifyApi {
         return mapper.readValue(res.body(), SpotifyTopArtistsResponse.class);
     }
 
-    public static boolean isFollowing(String id, String currID) throws Exception {
+    public static UserBooleans getBooleans(String currID, String targetId) throws Exception {
         HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/following/"+id+"?currID="+currID))
+                .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/check-boolean?id="+currID+"&targetId="+targetId))
                 .header("Authorization","Bearer "+TokenManager.getAccessToken())
                 .GET()
                 .build();
@@ -122,7 +123,7 @@ public class SpotifyApi {
             throw new Exception("Error verificando si sigue a usuario: HTTP " + res.statusCode());
         }
         System.out.println(res.body().trim());
-        return (res.body().trim().equals("[true]"));
+        return mapper.readValue(res.body(), UserBooleans.class);
     }
 
     public static void doFollow(String targetSpotifyID, String currID) throws Exception {

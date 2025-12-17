@@ -61,9 +61,9 @@ public class FriendController {
                                     description = "Rechazar una solicitud pendiente")}),
             @ApiResponse(responseCode = "401", description = "No autenticado")
     })
-    @GetMapping("/request/list")
+    @GetMapping("/request/list/pending")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<FriendRequest>> getRequests(@RequestParam String id) {
+    public ResponseEntity<List<FriendRequest>> getPendingRequests(@RequestParam String id) {
         return ResponseEntity.ok(friendService.getPendingRequests(id));
     }
 
@@ -123,5 +123,42 @@ public class FriendController {
     @GetMapping("/list")
     public ResponseEntity<List<UserSearchResult>> getFriends(@RequestParam String id) {
         return ResponseEntity.ok(friendService.getFriends(id));
+    }
+
+
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/request/check")
+    public ResponseEntity<Void> senderSawFriendRequest(String requestId) {
+        friendService.senderSawFriendRequest(requestId);
+        return  ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/request/list/visible")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<FriendRequest>> getAllRequestsVisible(@RequestParam String id) {
+        return ResponseEntity.ok(friendService.getAllRequestsVisible(id));
+    }
+
+    @Operation(operationId = "removeFriend", summary = "Eliminar amistad",
+            description = """
+                Elimina la relación de amistad entre dos usuarios.
+                
+                - Borra ambos IDs de las listas de amigos
+                - Elimina cualquier solicitud de amistad existente entre ellos
+                """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Amistad eliminada correctamente"),
+            @ApiResponse(responseCode = "401", description = "No autenticado"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    })
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/remove")
+    public ResponseEntity<Void> removeFriend(@RequestParam String id, @RequestParam String targetId) {
+
+        friendService.removeFriend(id, targetId);
+        return ResponseEntity.noContent().build();
     }
 }

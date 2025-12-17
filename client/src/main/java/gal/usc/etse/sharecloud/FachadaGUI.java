@@ -189,7 +189,6 @@ public class FachadaGUI {
             Scene scene = new Scene(fxmlLoader.load(), 1200, 760);
             cFeed controller = fxmlLoader.getController();
             controller.setEmail(email);
-            //controller.setFachadas(this);
             controller.setMenuUsername(TokenManager.getUsername());
             if(TokenManager.getImage() != null){
                 Image pic = new Image(TokenManager.getImage());
@@ -213,6 +212,12 @@ public class FachadaGUI {
             controller.setUserEmail(userEmail);
             controller.setMenuUsername(TokenManager.getUsername());
             controller.setLoggedUser(data.getProfileView());
+            if(data.getProfileView().getProfileURL() == null){
+                controller.getBtnGoSpotify().setDisable(true);
+            }else{
+                controller.getBtnGoSpotify().setDisable(false);
+                controller.setSpotifyURL(data.getProfileView().getProfileURL());
+            }
             if(TokenManager.getImage() != null){
                 Image pic = new Image(TokenManager.getImage());
                 controller.getMenuUserPicture().setImage(pic);
@@ -246,13 +251,19 @@ public class FachadaGUI {
             );
             Scene scene = new Scene(fxmlLoader.load(),1200,760);
             cProfile controller = fxmlLoader.getController();
+            System.out.println("pre menu pic");
             controller.setUserEmail(userEmail);
             controller.setMenuUsername(TokenManager.getUsername());
             controller.setLoggedUser(data.getProfileView());
+            controller.setSpotifyURL(data.getProfileView().getProfileURL());
             if(TokenManager.getImage() != null){
                 Image pic = new Image(TokenManager.getImage());
                 controller.getMenuUserPicture().setImage(pic);
             }
+            controller.setIsFriend(data.getUserBooleans().isFriend());
+            controller.updateFriendButton();
+            System.out.println("prfId: "+ data.getUserBooleans().userId());
+            controller.setProfileUserId(data.getUserBooleans().userId());
 
             if(data.getProfileView().getImage()!=null) {
                 Image pfp = new Image(data.getProfileView().getImage());
@@ -261,7 +272,7 @@ public class FachadaGUI {
             controller.setUsername(data.getProfileView().getDisplayName());
             controller.setCountry(data.getProfileView().getCountry());
             controller.setFollowers(data.getProfileView().getNFollowers());
-            controller.setSeguido(data.isFollowing());
+            controller.setSeguido(data.getUserBooleans().isFollowing());
 
             _cargarRecentlyPlayed(controller, data.getRecentlyPlayed());
             _cargarTopTracks(controller, data.getTopTracks());

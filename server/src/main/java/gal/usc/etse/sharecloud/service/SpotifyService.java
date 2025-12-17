@@ -38,13 +38,19 @@ public class SpotifyService {
     private String scope;
 
     public final static String SPOTIFY_API_URI = "https://api.spotify.com/v1";
-
     private final UserRepository userRepo;
+    private final FriendService friendService;
+
+
 
     @Autowired
-    public SpotifyService(UserRepository userRepo) {
+    public SpotifyService(UserRepository userRepo, FriendService friendService) {
         this.userRepo = userRepo;
+        this.friendService = friendService;
     }
+
+
+
 
     public String generateLinkUrl(String email) {
         String encodedRedirect = URLEncoder.encode(redirectUri, StandardCharsets.UTF_8);
@@ -131,33 +137,7 @@ public class SpotifyService {
     }
 
 
-    /*public void fetchSpotifyId(User user) throws Exception{
-        String spotifyAccessToken = user.getSpotifyAccessToken();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(SPOTIFY_API_URI + "/me"))
-                .header("Authorization", "Bearer " + spotifyAccessToken)
-                .GET()
-                .build();
-        HttpClient client = HttpClient.newHttpClient();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 401) {
-            String URI = SPOTIFY_API_URI + "/me";
-            response = retryGETRequest(user, URI);
-        }
-
-        if (response.statusCode() != 200) {
-            throw new RuntimeException("Error retrieving Spotify profile: " + response.body());
-        }
-
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode json = mapper.readTree(response.body());
-
-        String id = json.get("id").asText();
-
-        user.getSpotifyProfile().setSpotifyID(id);
-        userRepo.save(user);
-    }*/
     public SpotifyProfile getSpotifyUserProfile(String userId) throws Exception {
         User user = userRepo.findById(userId).orElseThrow(() -> new UsernameNotFoundException(userId));
         if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {
@@ -265,78 +245,15 @@ public class SpotifyService {
         return mapper.readValue(response.body(), SpotifyRecentlyPlayedResponse.class);
     }
 
-
-
-    private HttpResponse<String> retryGETRequest(User user, String redirectUri) throws Exception {
-        refreshSpotifyAccessToken(user);
-        String spotifyAccessToken = user.getSpotifyAccessToken();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(redirectUri))
-                .header("Authorization", "Bearer " + spotifyAccessToken)
-                .GET()
-                .build();
-        HttpClient client = HttpClient.newHttpClient();
-        return client.send(request, HttpResponse.BodyHandlers.ofString());
-    }
-    private SpotifyProfile mapJsonToSpotifyProfile(HttpResponse<String> response) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode json = mapper.readTree(response.body());
-
-        String id = json.get("id").asText();
-        String displayName = json.path("display_name").asText(null);
-        String emailResp = json.path("email").asText(null);
-        String country = json.path("country").asText(null);
-        String profileURL=null;
-        JsonNode externalURLs = json.path("external_urls");
-        if(!externalURLs.isMissingNode()){
-            profileURL=externalURLs.get("spotify").asText(null);
-        }
-
-        System.out.println("user {");
-        System.out.println(id);
-        System.out.println(displayName);
-        System.out.println(emailResp);
-        System.out.println(country);
-        System.out.println(profileURL);
-        System.out.println("}");
-        // primera imagen (si existe)
-        String image = null;
-        JsonNode images = json.get("images");
-        if (images != null && images.isArray() && images.size() > 0) {
-            image = images.get(0).get("url").asText();
-        }
-
-        //recuperar número de seguidores
-        Integer nFollowers = null;
-
-        JsonNode followersNode = json.path("followers");
-        if (!followersNode.isMissingNode()) {
-            nFollowers = followersNode.path("total").isInt()
-                    ? followersNode.get("total").asInt()
-                    : null;
-        }
-
-        return new SpotifyProfile(
-                id,
-                displayName,
-                emailResp,
-                country,
-                image,
-                nFollowers,
-                profileURL
-        );
-    }
-
-    public String isFollowingUser(String targetSpotifyUserId, String currentUserId) throws Exception {
-
-        User user = userRepo.findById(currentUserId)
-                .orElseThrow(() -> new UsernameNotFoundException(currentUserId));
+    public UserBooleans getBooleansUser(String currentUserId, String targetId) throws Exception {
+        System.out.println("targetId: " + targetId + ", currid: "+ currentUserId);
+        User user = userRepo.findById(currentUserId).orElseThrow(() -> new UsernameNotFoundException(currentUserId));
 
         if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {
             refreshSpotifyAccessToken(user);
         }
-        User target = userRepo.findById(targetSpotifyUserId).orElseThrow(() -> new UsernameNotFoundException(targetSpotifyUserId));
+        // IS-FOLLOWING
+        User target = userRepo.findById(targetId).orElseThrow(() -> new UsernameNotFoundException(targetId));
         String spotifyID=target.getSpotifyProfile().getSpotifyID();;
 
         String uri = SPOTIFY_API_URI
@@ -349,24 +266,26 @@ public class SpotifyService {
                 .header("Authorization", "Bearer " + user.getSpotifyAccessToken())
                 .GET()
                 .build();
-
         HttpClient client = HttpClient.newHttpClient();
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Retry en 401 (igual que el resto del servicio)
         if (response.statusCode() == 401) {
             response = retryGETRequest(user, uri);
         }
-
         if (response.statusCode() != 200) {
             throw new RuntimeException(
                     "Error checking Spotify following status: " + response.body()
             );
         }
+        Boolean isFollowing = response.body().contains("true");
 
-        // Devolvemos el body tal cual: "[true]" o "[false]"
-        return response.body();
+        // IS-FRIEND
+        List<UserSearchResult> friends = friendService.getFriends(user.getId());
+        boolean isFriend = friends.stream()
+                .anyMatch(friend -> friend.id().equals(targetId));
+
+        return new UserBooleans(targetId, isFriend, isFollowing);
     }
 
     public void doFollow(String targetSpotifyID, String currID) throws Exception {
@@ -434,4 +353,60 @@ public class SpotifyService {
                     "Error unfollowing response: " + response.body()
             );
     }
+
+
+    private HttpResponse<String> retryGETRequest(User user, String redirectUri) throws Exception {
+        refreshSpotifyAccessToken(user);
+        String spotifyAccessToken = user.getSpotifyAccessToken();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(redirectUri))
+                .header("Authorization", "Bearer " + spotifyAccessToken)
+                .GET()
+                .build();
+        HttpClient client = HttpClient.newHttpClient();
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+    private SpotifyProfile mapJsonToSpotifyProfile(HttpResponse<String> response) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode json = mapper.readTree(response.body());
+
+        String id = json.get("id").asText();
+        String displayName = json.path("display_name").asText(null);
+        String emailResp = json.path("email").asText(null);
+        String country = json.path("country").asText(null);
+        String profileURL=null;
+        JsonNode externalURLs = json.path("external_urls");
+        if(!externalURLs.isMissingNode()){
+            profileURL=externalURLs.get("spotify").asText(null);
+        }
+
+        // primera imagen (si existe)
+        String image = null;
+        JsonNode images = json.get("images");
+        if (images != null && images.isArray() && images.size() > 0) {
+            image = images.get(0).get("url").asText();
+        }
+
+        //recuperar número de seguidores
+        Integer nFollowers = null;
+
+        JsonNode followersNode = json.path("followers");
+        if (!followersNode.isMissingNode()) {
+            nFollowers = followersNode.path("total").isInt()
+                    ? followersNode.get("total").asInt()
+                    : null;
+        }
+
+        return new SpotifyProfile(
+                id,
+                displayName,
+                emailResp,
+                country,
+                image,
+                nFollowers,
+                profileURL
+        );
+    }
+
 }

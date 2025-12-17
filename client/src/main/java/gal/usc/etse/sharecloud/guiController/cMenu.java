@@ -6,10 +6,7 @@ import gal.usc.etse.sharecloud.http.FriendApi;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 import gal.usc.etse.sharecloud.http.TokenManager;
 import gal.usc.etse.sharecloud.http.UserApi;
-import gal.usc.etse.sharecloud.model.dto.SpotifyRecentlyPlayedResponse;
-import gal.usc.etse.sharecloud.model.dto.SpotifyTopArtistsResponse;
-import gal.usc.etse.sharecloud.model.dto.SpotifyTopTracksResponse;
-import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
+import gal.usc.etse.sharecloud.model.dto.*;
 import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 import gal.usc.etse.sharecloud.model.entity.SpotifyResponseCompact;
 
@@ -60,11 +57,13 @@ public class cMenu {
     }
 
     public static void configurarBusqueda(TextField fieldSearch, VBox vboxResults, String userEmail){
+        fieldSearch.clear();
+        vboxResults.getChildren().clear();
         fieldSearch.setOnAction(e -> buscarUsuarios(vboxResults, fieldSearch, userEmail));
     }
 
-    public static void configurarNotificaciones(ImageView btnNotification) {
-        btnNotification.setOnMouseClicked(e -> abrirNotificaciones());
+    public static void configurarNotificaciones(ImageView btnNotification, String userEmail) {
+        btnNotification.setOnMouseClicked(e -> abrirNotificaciones(userEmail));
     }
 
 
@@ -137,7 +136,7 @@ public class cMenu {
         } catch (IOException e) {e.printStackTrace();}
     }
 
-    public static void abrirNotificaciones() {
+    public static void abrirNotificaciones(String userEmail) {
         try {
                 FXMLLoader fxmlLoader = new FXMLLoader(
                         ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/popUpNotification.fxml")
@@ -150,6 +149,7 @@ public class cMenu {
                 popup.setResizable(false);
 
                 cPopUpNotification controller = fxmlLoader.getController();
+                controller.setUserEmail(userEmail);
                 FachadaGUI fgui=  FachadaGUI.getInstance();
                 //controller.loadRequests();
 
@@ -167,7 +167,7 @@ public class cMenu {
 
 
     public static void clickViewFeed(String userEmail){
-        //Logica de obtener actividades de amigos
+        //Logica de obtener feed-cards de amigos
         //
          //
 
@@ -191,14 +191,12 @@ public class cMenu {
         };
         profileTask.setOnSucceeded(e -> {
             SpotifyResponseCompact data = profileTask.getValue();
-            FachadaGUI fgui = FachadaGUI.getInstance();
-            fgui.verCurrPerfil(data, email);
+            FachadaGUI.getInstance().verCurrPerfil(data, email);
         });
         profileTask.setOnFailed(e -> {
             // openErrorPopUp()
 ;
-            FachadaGUI fgui = FachadaGUI.getInstance();
-            fgui.irFeed(email);
+            FachadaGUI.getInstance().irFeed(email);
         });
             new Thread(profileTask).start();
     }
@@ -211,23 +209,19 @@ public class cMenu {
                 SpotifyRecentlyPlayedResponse recentlyPlayed = UserApi.getOtherRecentlyPlayed(otherID);
                 SpotifyTopTracksResponse topTracks = UserApi.getOtherTopTracks(otherID);
                 SpotifyTopArtistsResponse topArtists = UserApi.getOtherTopArtists(otherID);
-                boolean isFollowing = SpotifyApi.isFollowing(TokenManager.getUserID(),otherID);
+                gal.usc.etse.sharecloud.model.dto.UserBooleans bool = SpotifyApi.getBooleans(TokenManager.getUserID(), otherID);
 
                 SpotifyResponseCompact data = new SpotifyResponseCompact(profileView, recentlyPlayed, topTracks,
-                        topArtists, isFollowing);
+                        topArtists, bool);
                 return data;
             }
         };
         profileTask.setOnSucceeded(e -> {
             SpotifyResponseCompact data = profileTask.getValue();
-            FachadaGUI fgui = FachadaGUI.getInstance();
-            fgui.verOtroPerfil(data, userEmail);
+            FachadaGUI.getInstance().verOtroPerfil(data, userEmail);
         });
         profileTask.setOnFailed(e -> {
-            // openErrorPopUp()
-
-            FachadaGUI fgui = FachadaGUI.getInstance();
-            fgui.irFeed(userEmail);
+            FachadaGUI.getInstance().irFeed(userEmail);
         });
         new Thread(profileTask).start();
     }

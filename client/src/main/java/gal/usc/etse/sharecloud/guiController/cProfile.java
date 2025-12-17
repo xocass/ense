@@ -1,10 +1,13 @@
 package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
+import gal.usc.etse.sharecloud.ShareCloudBoot;
 import gal.usc.etse.sharecloud.http.AuthApi;
+import gal.usc.etse.sharecloud.http.FriendApi;
 import gal.usc.etse.sharecloud.model.entity.SpotifyProfile;
 import gal.usc.etse.sharecloud.http.SpotifyApi;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -16,6 +19,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.awt.*;
+import java.net.URI;
 
 
 public class cProfile {
@@ -24,28 +29,32 @@ public class cProfile {
 
     private SpotifyApi spotifyApi;
 
+    private String profileUserId;
+    private Boolean isFriend;
     @FXML private ImageView pfp;
     @FXML private Label username;
     @FXML private Label country;
     @FXML private Label followers;
-    //@FXML private Label currUsername;
-    //@FXML private ImageView currPfp;
     @FXML private VBox recentlyPlayedBox;
     @FXML private HBox topArtistBox;
     @FXML private HBox topTracksBox;
     @FXML private Button followSpoty;
+
+    @FXML private Button btnFriendRequest;
+    @FXML private ImageView imgFriendAction;
+    @FXML private Button btnGoSpotify;
 
     private Boolean seguido;
     public String spotifyURL;
 
     public void setLoggedUser(SpotifyProfile loggedUser){this.loggedUser=loggedUser;}
     public void setUserEmail(String userEmail){this.userEmail=userEmail;}
+    public void setProfileUserId(String profileUserId){this.profileUserId=profileUserId;}
+    public void setIsFriend(Boolean isFriend){this.isFriend=isFriend;}
     public void setPfp(Image pfp){this.pfp.setImage(pfp);}
     public void setUsername(String username){this.username.setText(username);}
     public void setCountry(String country){this.country.setText(country);}
     public void setFollowers(Integer followers){this.followers.setText(followers.toString()+" followers");}
-    //public void setCurrUsername(String currUsername){this.currUsername.setText(currUsername);}
-    //public void setCurrPfp(Image currPfp){this.currPfp.setImage(currPfp);}
     public void setSeguido(Boolean seguido){
         this.seguido=seguido;
         if(this.seguido)
@@ -53,8 +62,13 @@ public class cProfile {
         else
             followSpoty.setText("Seguir en spotify");
     }
+    public void setSpotifyURL(String spotifyURL){this.spotifyURL=spotifyURL;}
 
     public Boolean getSeguido(){return seguido;}
+    public Boolean getIsFriend(){return isFriend;}
+    public Button getBtnGoSpotify(){return btnGoSpotify;}
+    public Button getBtnFriendRequest(){return btnFriendRequest;}
+    public ImageView getImgFriendAction(){return imgFriendAction;}
 
     //Vaciar boxes
     public void clearRecentlyPlayed(){
@@ -78,6 +92,52 @@ public class cProfile {
         topTracksBox.getChildren().add(template);
     }
 
+
+
+    @FXML
+    public void clickOnFriendRequest(){
+        btnFriendRequest.setDisable(true);
+
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                if (isFriend) {
+                    FriendApi.deleteFriend(profileUserId);
+                    isFriend = false;
+                    btnFriendRequest.setDisable(false);
+                } else {
+                    FriendApi.sendRequest(profileUserId);
+                    btnFriendRequest.setDisable(true);
+                    isFriend = false;
+                }
+                return null;
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            updateFriendButton();
+        });
+
+        task.setOnFailed(e -> {
+            task.getException().printStackTrace();
+        });
+        new Thread(task).start();
+    }
+
+    @FXML
+    public void clickOnGoSpotify(){
+        if (spotifyURL == null || spotifyURL.isBlank()) {
+            return;
+        }
+
+        try {
+            Desktop.getDesktop().browse(new URI(spotifyURL));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     public void clickFollowUnfollow(){
         if(seguido){
@@ -87,6 +147,13 @@ public class cProfile {
             FachadaGUI.getInstance().doFollow(loggedUser.getSpotifyId());
             setSeguido(true);
         }
+    }
+    public void updateFriendButton() {
+        String iconPath = isFriend
+                ? "/gal/usc/etse/sharecloud/imgs/icon-friendCancel.png"
+                : "/gal/usc/etse/sharecloud/imgs/icon-friendAdd.png";
+
+        imgFriendAction.setImage(new Image(ShareCloudBoot.class.getResourceAsStream(iconPath)));
     }
 
 
@@ -118,11 +185,11 @@ public class cProfile {
         cMenu.activarAmigos(btnFriends, btnSearch, friendsPane, searchPane);
         cMenu.cargarAmigos(vboxFriends, userEmail);
         cMenu.configurarBusqueda(fieldSearch, vboxResults, userEmail);
-        cMenu.configurarNotificaciones(btnNotification);
+        cMenu.configurarNotificaciones(btnNotification, userEmail);
     }
     @FXML
     private void clickOnNotification(){
-        cMenu.abrirNotificaciones();
+        cMenu.abrirNotificaciones(userEmail);
     }
     @FXML
     private void clickViewProfile(){

@@ -4,7 +4,6 @@ import gal.usc.etse.sharecloud.FachadaGUI;
 import gal.usc.etse.sharecloud.ShareCloudBoot;
 import gal.usc.etse.sharecloud.http.*;
 
-import gal.usc.etse.sharecloud.model.dto.SpotifyItems.SpotifyArtist;
 import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
 import gal.usc.etse.sharecloud.model.entity.FeedItem;
 import gal.usc.etse.sharecloud.model.entity.FeedState;
@@ -18,12 +17,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class cFeed {
     private String userEmail;
@@ -66,9 +61,6 @@ public class cFeed {
     public void setArtCover(Image artCover) {this.artCover.setImage(artCover);}
     public void setTitleLabel(String title) {this.titleLabel.setText(title);}
     public void setArtistLabel(String artists){this.artistLabel.setText(artists);}
-
-
-
 
 
     @FXML
@@ -116,63 +108,6 @@ public class cFeed {
         titleLabel.setText("Has llegado al final");
         artistLabel.setText("Puede que tengas algo nuevo para ver --->");
     }
-
-
-
-    //FEED
-    /*public void cargarFeed(boolean actualizar){
-        int feedCounter = cMenu.getFeedCounter();
-
-        //Visibilizar los items
-        friendProfilePic.setVisible(true);
-        labelFriendName.setVisible(true);
-        labelDate.setVisible(true);
-        btnBack.setVisible(true);
-        btnNext.setVisible(true);
-        btnLike.setVisible(true);
-        btnComment.setVisible(true);
-
-        //Si estamos en el primer item
-        if(feedCounter==0){
-            btnBack.setVisible(false);
-            if(actualizar)feedItems=FeedApi.loadFeed();
-        }
-        if(!feedItems.isEmpty()) {
-            artCover.setImage(new Image(feedItems.get(feedCounter).getTrack().getImageUrl()));
-            titleLabel.setText(feedItems.get(feedCounter).getTrack().getTrackName());
-            String artistNames = String.join(
-                    ", ",
-                    feedItems.get(feedCounter)
-                            .getTrack()
-                            .getArtists()
-            );
-            artistLabel.setText(artistNames);
-
-            labelFriendName.setText(feedItems.get(feedCounter).getSpotifyProfile().getDisplayName());
-            labelDate.setText(formatPlayedAt(feedItems.get(feedCounter).getTrack().getPlayedAt()));
-            if (feedItems.get(feedCounter).getSpotifyProfile().getImage() != null)
-                friendProfilePic.setImage(new Image(feedItems.get(feedCounter).getSpotifyProfile().getImage()));
-        }
-        else{
-            friendProfilePic.setVisible(false);
-            labelFriendName.setVisible(false);
-            labelDate.setVisible(false);
-            btnBack.setVisible(false);
-            btnNext.setVisible(false);
-            btnLike.setVisible(false);
-            btnComment.setVisible(false);
-            artCover.setImage(new Image((getClass().getResource("/gal/usc/etse/sharecloud/imgs/nothing2see.png").toExternalForm())));
-            titleLabel.setText("Parece que no hay nada que ver...");
-        }
-    }
-
-    public static String formatPlayedAt(Instant playedAt) {
-        if (playedAt == null) return "";
-
-        return DateTimeFormatter.ofPattern("HH:mm")
-                .withZone(ZoneId.systemDefault())
-                .format(playedAt);
-    }*/
 
     @FXML
     public void nextItem() {

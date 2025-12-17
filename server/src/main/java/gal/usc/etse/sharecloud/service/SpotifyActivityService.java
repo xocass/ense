@@ -38,17 +38,7 @@ public class SpotifyActivityService {
     // Se llama a obtener las $limit últimas canciones, se encapsulan, y se llama a guardar en la BD
     public void updateRecentlyPlayedTracks(String userId, int limit) throws Exception {
         SpotifyRecentlyPlayedResponse response = spotifyService.getRecentlyPlayed(userId, limit);
-        /*List<TrackInfo> tracks = new ArrayList<>();
-        for (SpotifyRecentlyPlayedResponse.Item item : response.items()) {
-            TrackInfo track = new TrackInfo();
-            track.setTrackId(item.track().id());
-            track.setTrackName(item.track().name());
-            track.setArtistName(item.track().artists().get(0).name());
-            track.setImageUrl(item.track().album().images().get(0).url());
-            track.setPlayedAt(item.playedAt());
 
-            tracks.add(track);
-        }*/
         List<TrackInfo> tracks = response.items().stream()
                 .map(this::mapRecentlyPlayedItemToTrackInfo)
                 .toList();
@@ -137,29 +127,17 @@ public class SpotifyActivityService {
 
     public SpotifyRecentlyPlayedResponse returnListenedTrackState(String userId, int limitSave, int limitReturn) throws Exception {
         SpotifyRecentlyPlayedResponse response = spotifyService.getRecentlyPlayed(userId, limitReturn);
-        /*List<TrackInfo> tracks = new ArrayList<>();
 
-        for (SpotifyRecentlyPlayedResponse.Item item : response.items()) {
-            TrackInfo track = new TrackInfo();
-            track.setTrackId(item.track().id());
-            track.setTrackName(item.track().name());
-            track.setArtistName(item.track().artists().get(0).name());
-            track.setImageUrl(item.track().album().images().get(0).url());
-            track.setPlayedAt(item.playedAt());
+        List<TrackInfo> tracksReturned = response.items().stream()
+                .map(this::mapRecentlyPlayedItemToTrackInfo)
+                .toList();
+        List<TrackInfo> tracksSaved = tracksReturned.stream()
+                .limit(limitSave)
+                .toList();
+        ListenedTrackPayload payload = new ListenedTrackPayload();
+        payload.setTracks(tracksSaved);
+        updateActivity(userId, LISTENED_TRACKS, payload);
 
-            tracks.add(track);
-        }*/
-        if(limitSave>0){
-            List<TrackInfo> tracksReturned = response.items().stream()
-                    .map(this::mapRecentlyPlayedItemToTrackInfo)
-                    .toList();
-            List<TrackInfo> tracksSaved = tracksReturned.stream()
-                    .limit(limitSave)
-                    .toList();
-            ListenedTrackPayload payload = new ListenedTrackPayload();
-            payload.setTracks(tracksSaved);
-            updateActivity(userId, LISTENED_TRACKS, payload);
-        }
         return response;
     }
 

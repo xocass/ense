@@ -20,6 +20,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.List;
 
@@ -293,13 +295,7 @@ public class SpotifyService {
             profileURL=externalURLs.get("spotify").asText(null);
         }
 
-        System.out.println("user {");
-        System.out.println(id);
-        System.out.println(displayName);
-        System.out.println(emailResp);
-        System.out.println(country);
-        System.out.println(profileURL);
-        System.out.println("}");
+
         // primera imagen (si existe)
         String image = null;
         JsonNode images = json.get("images");
@@ -428,10 +424,48 @@ public class SpotifyService {
         HttpResponse<String> response =
                 client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if(response.statusCode() == 204)System.out.println("Usuario unfollowed correctamente");
-        else
-            throw new RuntimeException(
-                    "Error unfollowing response: " + response.body()
-            );
+        if(response.statusCode() != 204)throw new RuntimeException(
+                "Error unfollowing response: " + response.body()
+        );
+    }
+
+    public SpotifyRecentlyPlayedResponse getPlayedToday(String userId) throws Exception {
+        long after = midnightEpochMillis();
+        User user = userRepo.findById(userId).orElseThrow(() -> new UsernameNotFoundException(userId));
+
+        if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {
+            refreshSpotifyAccessToken(user);
+        }
+        String spotifyAccessToken = user.getSpotifyAccessToken();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(SPOTIFY_API_URI + "/me/player/recently-played?after=" + after))
+                .header("Authorization", "Bearer " + spotifyAccessToken)
+                .GET()
+                .build();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 401) {
+            String URI = SPOTIFY_API_URI + "/me/player/recently-played?after=" + after;
+            response= retryGETRequest(user, URI);
+        }
+        if (response.statusCode() != 200) {throw new RuntimeException(
+                "Spotify error fetching recently played: HTTP "
+                        + response.statusCode() + " - " + response.body()
+        );}
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        return mapper.readValue(response.body(), SpotifyRecentlyPlayedResponse.class);
+    }
+
+    public long midnightEpochMillis() {
+        return LocalDate.now(ZoneId.systemDefault())
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
     }
 }

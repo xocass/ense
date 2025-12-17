@@ -145,12 +145,11 @@ public class UserSpotifyController {
     @GetMapping("/following/{id}")
     public ResponseEntity<String> isFollowing(@RequestParam String currID, @PathVariable String id)
             throws Exception {
-        System.out.println("isFollowing");
         return ResponseEntity.ok(spotifyService.isFollowingUser(id,currID));
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/do-follow/{spotyid}")
+    @PutMapping("/do-follow/{spotyid}")
     public ResponseEntity<Boolean> doFollow(@RequestParam String currID, @PathVariable String spotyid) throws Exception {
         spotifyService.doFollow(spotyid,currID);
         return ResponseEntity.noContent().build();

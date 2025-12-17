@@ -18,11 +18,12 @@ public class FeedState {
 
     public static FeedItem getCurrent() {
         if (feedItems.isEmpty()) return null;
+        if(index==feedItems.size()) return null;
         return feedItems.get(index);
     }
 
     public static boolean hasNext() {
-        return index < feedItems.size() - 1;
+        return index < feedItems.size();
     }
 
     public static boolean hasPrev() {
@@ -31,6 +32,7 @@ public class FeedState {
 
     public static void next() {
         if (hasNext()) index++;
+        else index = 0;
     }
 
     public static void prev() {

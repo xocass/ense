@@ -126,7 +126,16 @@ public class FriendController {
     }
 
 
-
+    @Operation(
+            operationId = "senderSawFriendRequest",
+            summary = "Marcar solicitud de amistad como vista por el emisor",
+            description = "Marca una solicitud de amistad como vista por el usuario que la envió."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Solicitud marcada como vista correctamente"),
+            @ApiResponse(responseCode = "401", description = "Usuario no autenticado"),
+            @ApiResponse(responseCode = "404", description = "Solicitud no encontrada")
+    })
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/request/check")
     public ResponseEntity<Void> senderSawFriendRequest(String requestId) {

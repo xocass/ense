@@ -55,7 +55,7 @@ public class cLog {
             int status = loginTask.getValue();
 
             if (status == 200) {
-                FachadaGUI.getInstance().irFeed(email);
+                cMenu.viewFeed(email);
             } else {
                 FachadaGUI.getInstance().iniciarSesion(status);
             }

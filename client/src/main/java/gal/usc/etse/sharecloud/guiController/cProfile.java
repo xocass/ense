@@ -31,6 +31,7 @@ public class cProfile {
 
     private String profileUserId;
     private Boolean isFriend;
+    private Boolean isPending;
     @FXML private ImageView pfp;
     @FXML private Label username;
     @FXML private Label country;
@@ -63,6 +64,7 @@ public class cProfile {
             followSpoty.setText("Seguir en spotify");
     }
     public void setSpotifyURL(String spotifyURL){this.spotifyURL=spotifyURL;}
+    public void setIsPending(Boolean isPending){this.isPending=isPending;}
 
     public Boolean getSeguido(){return seguido;}
     public Boolean getIsFriend(){return isFriend;}
@@ -96,18 +98,14 @@ public class cProfile {
 
     @FXML
     public void clickOnFriendRequest(){
-        btnFriendRequest.setDisable(true);
-
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
                 if (isFriend) {
                     FriendApi.deleteFriend(profileUserId);
                     isFriend = false;
-                    btnFriendRequest.setDisable(false);
                 } else {
                     FriendApi.sendRequest(profileUserId);
-                    btnFriendRequest.setDisable(true);
                     isFriend = false;
                 }
                 return null;
@@ -154,6 +152,13 @@ public class cProfile {
                 : "/gal/usc/etse/sharecloud/imgs/icon-friendAdd.png";
 
         imgFriendAction.setImage(new Image(ShareCloudBoot.class.getResourceAsStream(iconPath)));
+
+        if(isPending){
+            btnFriendRequest.setDisable(true);
+        }else{
+            btnFriendRequest.setDisable(false);
+        }
+
     }
 
 
@@ -183,7 +188,7 @@ public class cProfile {
     @FXML
     public void initialize() {
         cMenu.activarAmigos(btnFriends, btnSearch, friendsPane, searchPane);
-        cMenu.cargarAmigos(vboxFriends, userEmail);
+        cMenu.renderFriends(vboxFriends, userEmail);
         cMenu.configurarBusqueda(fieldSearch, vboxResults, userEmail);
         cMenu.configurarNotificaciones(btnNotification, userEmail);
     }
@@ -197,9 +202,8 @@ public class cProfile {
         cMenu.clickOnUserProfile(userEmail);
     }
     @FXML
-    private void clickViewFeed(){
-        FachadaGUI.getInstance().mostrarPantallaCarga();
-        cMenu.clickViewFeed(userEmail);
+    private void clickViewFeed() {
+        FachadaGUI.getInstance().irFeed(null, userEmail);
     }
     @FXML
     private void clickOnLogout(){

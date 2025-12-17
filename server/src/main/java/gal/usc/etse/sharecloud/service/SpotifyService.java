@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gal.usc.etse.sharecloud.model.dto.*;
+import gal.usc.etse.sharecloud.model.entity.FriendRequestStatus;
 import gal.usc.etse.sharecloud.model.entity.User;
+import gal.usc.etse.sharecloud.repository.FriendRequestRepository;
 import gal.usc.etse.sharecloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,13 +44,15 @@ public class SpotifyService {
     public final static String SPOTIFY_API_URI = "https://api.spotify.com/v1";
     private final UserRepository userRepo;
     private final FriendService friendService;
+    private final FriendRequestRepository friendRequestRepository;
 
 
 
     @Autowired
-    public SpotifyService(UserRepository userRepo, FriendService friendService) {
+    public SpotifyService(UserRepository userRepo, FriendService friendService,  FriendRequestRepository friendRequestRepository) {
         this.userRepo = userRepo;
         this.friendService = friendService;
+        this.friendRequestRepository = friendRequestRepository;
     }
 
 
@@ -287,7 +291,12 @@ public class SpotifyService {
         boolean isFriend = friends.stream()
                 .anyMatch(friend -> friend.id().equals(targetId));
 
-        return new UserBooleans(targetId, isFriend, isFollowing);
+        // IS-PENDING
+        boolean isPending= friendRequestRepository
+                .existsBySenderIdAndReceiverIdAndStatusOrSenderIdAndReceiverIdAndStatus(currentUserId, targetId, FriendRequestStatus.PENDING,
+                        targetId, currentUserId, FriendRequestStatus.PENDING);
+
+        return new UserBooleans(targetId, isFriend, isFollowing, isPending);
     }
 
     public void doFollow(String targetSpotifyID, String currID) throws Exception {

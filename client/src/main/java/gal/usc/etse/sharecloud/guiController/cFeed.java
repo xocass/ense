@@ -55,7 +55,7 @@ public class cFeed {
     @FXML private ImageView btnBack;
     @FXML private ImageView btnNext;
     @FXML private ImageView btnLike;
-    @FXML private ImageView btnComment;
+
 
     public void setArtCover(Image artCover) {this.artCover.setImage(artCover);}
     public void setTitleLabel(String title) {this.titleLabel.setText(title);}
@@ -65,7 +65,6 @@ public class cFeed {
     @FXML
     public void initialize() {
         cMenu.activarAmigos(btnFriends, btnSearch, friendsPane, searchPane);
-        //cMenu.cargarAmigos(vboxFriends, userEmail);
         cMenu.configurarBusqueda(fieldSearch, vboxResults, userEmail);
         cMenu.configurarNotificaciones(btnNotification, userEmail);
     }
@@ -102,7 +101,6 @@ public class cFeed {
         labelFriendName.setVisible(false);
         labelDate.setVisible(false);
         btnLike.setVisible(false);
-        btnComment.setVisible(false);
         artCover.setImage(new Image((ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/imgs/boladesierto.gif").toExternalForm())));
         titleLabel.setText("Has llegado al final");
         artistLabel.setText("Puede que tengas algo nuevo para ver --->");
@@ -121,8 +119,10 @@ public class cFeed {
     }
 
     @FXML
-    public void like(){
-        NotificationApi.likeTrack(FeedState.getCurrent().getId(),titleLabel.getText());
+    public void giveLike(){
+        try {
+            FeedApi.giveLike(FeedState.getCurrent().getId(), titleLabel.getText());
+        }catch (Exception e){e.printStackTrace();}
     }
 
     /*  ###################################################################  */

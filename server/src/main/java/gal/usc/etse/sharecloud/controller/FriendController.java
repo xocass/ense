@@ -141,24 +141,5 @@ public class FriendController {
         return ResponseEntity.ok(friendService.getAllRequestsVisible(id));
     }
 
-    @Operation(operationId = "removeFriend", summary = "Eliminar amistad",
-            description = """
-                Elimina la relación de amistad entre dos usuarios.
-                
-                - Borra ambos IDs de las listas de amigos
-                - Elimina cualquier solicitud de amistad existente entre ellos
-                """
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Amistad eliminada correctamente"),
-            @ApiResponse(responseCode = "401", description = "No autenticado"),
-            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
-    @PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteFriend(@RequestParam String id, @RequestParam String targetId) {
 
-        friendService.removeFriend(id, targetId);
-        return ResponseEntity.noContent().build();
-    }
 }

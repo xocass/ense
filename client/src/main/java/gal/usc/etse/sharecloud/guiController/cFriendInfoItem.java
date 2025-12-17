@@ -1,8 +1,10 @@
 package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.FachadaGUI;
+import gal.usc.etse.sharecloud.http.FeedApi;
 import gal.usc.etse.sharecloud.http.FriendApi;
 import gal.usc.etse.sharecloud.model.dto.FriendRequest;
+import gal.usc.etse.sharecloud.model.dto.Like;
 import gal.usc.etse.sharecloud.model.entity.FriendRequestStatus;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,6 +19,8 @@ public class cFriendInfoItem {
     @FXML private Label labelMessage;
 
     private FriendRequest notification;
+    private Like like;
+    private String senderId;
     private VBox parent;
     private Node root;
     private String userEmail;
@@ -38,15 +42,38 @@ public class cFriendInfoItem {
         }
     }
 
+    public void setNotification(Like like, VBox parent, Node root) {
+        this.like = like;
+        this.parent = parent;
+        this.root = root;
+        this.senderId= like.senderId();
+
+        labelMessage.setText(buildMessage(like));
+
+        if (like.senderImage() != null) {
+            imgAvatar.setImage(new Image(like.senderImage()));
+        }
+    }
+
+
     @FXML
     private void clickOnProfilePic(){
         FachadaGUI.getInstance().mostrarPantallaCarga();
-        cMenu.clickOnOtherProfile(receiverId, userEmail);
+        if(like==null){
+            cMenu.clickOnOtherProfile(receiverId, userEmail);
+        }else{
+            cMenu.clickOnOtherProfile(senderId, userEmail);
+        }
+
     }
     @FXML
     private void clickOnUsername(){
         FachadaGUI.getInstance().mostrarPantallaCarga();
-        cMenu.clickOnOtherProfile(receiverId, userEmail);
+        if(like==null){
+            cMenu.clickOnOtherProfile(receiverId, userEmail);
+        }else{
+            cMenu.clickOnOtherProfile(senderId, userEmail);
+        }
     }
 
     private String buildMessage(FriendRequest notif) {
@@ -61,11 +88,19 @@ public class cFriendInfoItem {
         };
     }
 
+    private String buildMessage(Like like) {
+        return like.senderName() + " le gustó " + like.trackName();
+    }
+
     @FXML
     private void clickDismiss() {
         new Thread(() -> {
             try {
-                FriendApi.sawFriendRequest(notification.id());
+                if(like==null){
+                    FriendApi.sawFriendRequest(notification.id());
+                }else{
+                    FeedApi.deleteLike(like.id());
+                }
                 Platform.runLater(() -> parent.getChildren().remove(root));
 
             } catch (Exception e) {e.printStackTrace();}

@@ -1,8 +1,10 @@
 package gal.usc.etse.sharecloud.guiController;
 
 import gal.usc.etse.sharecloud.ShareCloudBoot;
+import gal.usc.etse.sharecloud.http.FeedApi;
 import gal.usc.etse.sharecloud.http.FriendApi;
 import gal.usc.etse.sharecloud.model.dto.FriendRequest;
+import gal.usc.etse.sharecloud.model.dto.Like;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,9 +38,10 @@ public class cPopUpNotification {
             try {
                 List<FriendRequest> requests = FriendApi.getPendingRequests();
                 List<FriendRequest> notifications = FriendApi.getRequestVisibleNotifications();
+                List<Like> likes = FeedApi.getLikes();
 
                 Platform.runLater(() -> {
-                    if (notifications.isEmpty() && requests.isEmpty()) {
+                    if (notifications.isEmpty() && requests.isEmpty() && likes.isEmpty()) {
                         Label empty = new Label("No tienes nuevas notificaciones");
                         empty.getStyleClass().add("side-empty-text");
                         vboxNotifications.getChildren().add(empty);
@@ -50,6 +53,9 @@ public class cPopUpNotification {
                     }
                     for (FriendRequest notif : notifications) {
                         addInfoItem(notif);
+                    }
+                    for (Like like : likes) {
+                        addInfoItem(like);
                     }
                 });
 
@@ -85,6 +91,23 @@ public class cPopUpNotification {
             cFriendInfoItem controller = loader.getController();
             controller.setEmail(userEmail);
             controller.setNotification(notification, vboxNotifications, item);
+
+            vboxNotifications.getChildren().add(item);
+
+        } catch (IOException e) {e.printStackTrace();}
+    }
+
+    private void addInfoItem(Like like) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/layouts/templateFriendInfo.fxml")
+            );
+            HBox item = loader.load();
+            item.setMaxWidth(Double.MAX_VALUE);
+
+            cFriendInfoItem controller = loader.getController();
+            controller.setEmail(userEmail);
+            controller.setNotification(like, vboxNotifications, item);
 
             vboxNotifications.getChildren().add(item);
 

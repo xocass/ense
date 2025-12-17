@@ -188,17 +188,7 @@
                                       </ImageView>
                                   </graphic>
                               </Button>
-      
-                              <Button fx:id="btnMessage" styleClass="icon-circle-button-dark">
-                                  <graphic>
-                                      <ImageView fitHeight="20" preserveRatio="true">
-                                          <image>
-                                    <Image url="@../imgs/icon-messageSend.png" />
-                                 </image>
-                                      </ImageView>
-                                  </graphic>
-                              </Button>
-      
+
                               <Button fx:id="btnGoSpotify" onAction="#clickOnGoSpotify" styleClass="icon-circle-button-dark">
                                   <graphic>
                                       <ImageView fitHeight="20" preserveRatio="true">

@@ -2,6 +2,7 @@ package gal.usc.etse.sharecloud.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gal.usc.etse.sharecloud.model.dto.FriendRequest;
+import gal.usc.etse.sharecloud.model.dto.Like;
 import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
 
 import java.net.URI;
@@ -115,17 +116,4 @@ public class FriendApi {
             throw new RuntimeException("Error procesando solicitud");
         }
     }
-
-    public static void deleteFriend(String friendId) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/delete?id=" + TokenManager.getUserID() +"&targetId="+ friendId))
-                .header("Authorization", "Bearer " + TokenManager.getAccessToken())
-                .DELETE().build();
-        HttpResponse<String> response = ApiClient.getClient().send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 204) {
-            throw new RuntimeException("Error eliminando amistad");
-        }
-    }
-
 }

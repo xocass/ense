@@ -101,12 +101,10 @@ public class cProfile {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                if (isFriend) {
-                    FriendApi.deleteFriend(profileUserId);
-                    isFriend = false;
-                } else {
+                if (!isFriend) {
                     FriendApi.sendRequest(profileUserId);
                     isFriend = false;
+                    isPending= true;
                 }
                 return null;
             }
@@ -147,19 +145,12 @@ public class cProfile {
         }
     }
     public void updateFriendButton() {
-        if(isFriend != null) {
-            String iconPath = isFriend
-                    ? "/gal/usc/etse/sharecloud/imgs/icon-friendCancel.png"
-                    : "/gal/usc/etse/sharecloud/imgs/icon-friendAdd.png";
+        String iconPath =  "/gal/usc/etse/sharecloud/imgs/icon-friendAdd.png";
 
-            imgFriendAction.setImage(new Image(ShareCloudBoot.class.getResourceAsStream(iconPath)));
-        }
-        if(isPending != null){
-            if(isPending){
-                btnFriendRequest.setDisable(true);
-            }else{
-                btnFriendRequest.setDisable(false);
-            }
+        imgFriendAction.setImage(new Image(ShareCloudBoot.class.getResourceAsStream(iconPath)));
+
+        if(isPending || isFriend){
+            btnFriendRequest.setDisable(true);
         }
     }
 

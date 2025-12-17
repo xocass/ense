@@ -6,10 +6,13 @@ import gal.usc.etse.sharecloud.service.SpotifyService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.links.Link;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -137,6 +140,56 @@ public class UserSpotifyController {
         return ResponseEntity.ok(spotifyActivityService.returnTopArtists(id, limit));
     }
 
+
+    @Operation(
+            operationId = "checkUserRelationship",
+            summary = "Comprobar relación entre el usuario autenticado y otro usuario",
+            description = """
+                Devuelve el estado de relación entre el usuario autenticado y un usuario objetivo.
+                
+                Incluye tanto la comprobación de si son amigos en la aplicación como de si el usuario
+                actual sigue al objetivo.
+                """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Estado de relación obtenido correctamente",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UserBooleans.class)
+                    ),
+                    links = {
+                            @Link(
+                                    name = "followSpotifyUser",
+                                    operationId = "doFollow",
+                                    description = "Seguir al usuario en Spotify si no se está siguiendo"
+                            ),
+                            @Link(
+                                    name = "unfollowSpotifyUser",
+                                    operationId = "doUnfollow",
+                                    description = "Dejar de seguir al usuario en Spotify si ya se está siguiendo"
+                            ),
+                            @Link(
+                                    name = "sendFriendRequest",
+                                    operationId = "sendFriendRequest",
+                                    description = "Enviar solicitud de amistad al usuario objetivo"
+                            )
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Usuario no autenticado"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuario actual o usuario objetivo no encontrado"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Error interno al comprobar la relación"
+            )
+    })
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/check-boolean")
     public ResponseEntity<UserBooleans> getBooleans(@RequestParam String id, @RequestParam String targetId)
@@ -144,6 +197,42 @@ public class UserSpotifyController {
         return ResponseEntity.ok(spotifyService.getBooleansUser(id, targetId));
     }
 
+    @Operation(
+            operationId = "doFollow",
+            summary = "Seguir a un usuario en Spotify",
+            description = """
+                Hace que el usuario autenticado siga en Spotify al usuario objetivo.
+                """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Usuario seguido correctamente en Spotify",
+                    links = {
+                            @Link(
+                                    name = "unfollowSpotifyUser",
+                                    operationId = "doUnfollow",
+                                    description = "Dejar de seguir al usuario en Spotify"
+                            ),
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Usuario no autenticado"
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "Spotify no vinculado o permisos insuficientes"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Usuario objetivo no encontrado"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Error interno al comunicarse con Spotify"
+            )
+    })
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/do-follow/{spotyid}")
     public ResponseEntity<Boolean> doFollow(@RequestParam String currID, @PathVariable String spotyid) throws Exception {
@@ -151,6 +240,39 @@ public class UserSpotifyController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @Operation(
+            operationId = "doUnfollow",
+            summary = "Dejar de seguir a un usuario en Spotify",
+            description = """
+                Hace que el usuario autenticado deje de seguir en Spotify al usuario objetivo.
+                """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Usuario dejado de seguir correctamente en Spotify",
+                    links = {
+                            @Link(
+                                    name = "followSpotifyUser",
+                                    operationId = "doFollow",
+                                    description = "Volver a seguir al usuario en Spotify"
+                            ),
+                    }
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "Usuario no autenticado"
+            ),
+            @ApiResponse(
+                    responseCode = "403", description = "Spotify no vinculado o permisos insuficientes"
+            ),
+            @ApiResponse(
+                    responseCode = "404", description = "Usuario objetivo no encontrado"
+            ),
+            @ApiResponse(
+                    responseCode = "500", description = "Error interno al comunicarse con Spotify"
+            )
+    })
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/do-unfollow/{spotyid}")
     public ResponseEntity<Boolean> doUnfollow(@RequestParam String currID, @PathVariable String spotyid) throws Exception {

@@ -263,7 +263,6 @@ public class FachadaGUI {
             );
             Scene scene = new Scene(fxmlLoader.load(),1200,760);
             cProfile controller = fxmlLoader.getController();
-            System.out.println("pre menu pic");
             controller.setUserEmail(userEmail);
             controller.setMenuUsername(TokenManager.getUsername());
             controller.setLoggedUser(data.getProfileView());

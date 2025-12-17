@@ -252,7 +252,6 @@ public class SpotifyService {
     }
 
     public UserBooleans getBooleansUser(String currentUserId, String targetId) throws Exception {
-        System.out.println("targetId: " + targetId + ", currid: "+ currentUserId);
         User user = userRepo.findById(currentUserId).orElseThrow(() -> new UsernameNotFoundException(currentUserId));
 
         if (user.getSpotifyAccessTokenExpiresAt().isBefore(Instant.now())) {

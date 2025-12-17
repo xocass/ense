@@ -147,18 +147,20 @@ public class cProfile {
         }
     }
     public void updateFriendButton() {
-        String iconPath = isFriend
-                ? "/gal/usc/etse/sharecloud/imgs/icon-friendCancel.png"
-                : "/gal/usc/etse/sharecloud/imgs/icon-friendAdd.png";
+        if(isFriend != null) {
+            String iconPath = isFriend
+                    ? "/gal/usc/etse/sharecloud/imgs/icon-friendCancel.png"
+                    : "/gal/usc/etse/sharecloud/imgs/icon-friendAdd.png";
 
-        imgFriendAction.setImage(new Image(ShareCloudBoot.class.getResourceAsStream(iconPath)));
-
-        if(isPending){
-            btnFriendRequest.setDisable(true);
-        }else{
-            btnFriendRequest.setDisable(false);
+            imgFriendAction.setImage(new Image(ShareCloudBoot.class.getResourceAsStream(iconPath)));
         }
-
+        if(isPending != null){
+            if(isPending){
+                btnFriendRequest.setDisable(true);
+            }else{
+                btnFriendRequest.setDisable(false);
+            }
+        }
     }
 
 

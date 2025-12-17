@@ -16,4 +16,5 @@ public interface UserRepository extends MongoRepository<User, String> {
     boolean existsByEmail(String email);
     SpotifyProfile findProfileByEmail(String email);
     List<User> findTop10BySpotifyProfile_DisplayNameContainingIgnoreCase(String username);
+    List<User> findBySpotifyLinkedTrue();
 }

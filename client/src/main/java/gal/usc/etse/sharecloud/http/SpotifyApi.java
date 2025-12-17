@@ -122,7 +122,7 @@ public class SpotifyApi {
         if (res.statusCode() != 200) {
             throw new Exception("Error verificando si sigue a usuario: HTTP " + res.statusCode());
         }
-        System.out.println(res.body().trim());
+
         return mapper.readValue(res.body(), UserBooleans.class);
     }
 
@@ -130,7 +130,7 @@ public class SpotifyApi {
         HttpRequest req = HttpRequest.newBuilder()
                 .uri(URI.create("http://127.0.0.1:8080/api/user/me/spotify/do-follow/"+targetSpotifyID+"?currID="+currID))
                 .header("Authorization","Bearer "+TokenManager.getAccessToken())
-                .POST(HttpRequest.BodyPublishers.noBody())
+                .PUT(HttpRequest.BodyPublishers.noBody())
                 .build();
         HttpResponse<String> res = ApiClient.getClient().send(req, HttpResponse.BodyHandlers.ofString());
 

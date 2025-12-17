@@ -322,6 +322,20 @@
     -fx-spacing: 14;
 }
 
+/* ================= FEED TRACK ================= */
+
+.feed-track-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #111111;
+}
+
+.feed-track-artist {
+    -fx-font-size: 15px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #666666;
+}
+
 .activity-box {
     -fx-background-color: #ececf1;
     -fx-background-radius: 14;

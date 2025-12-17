@@ -32,6 +32,12 @@ import java.util.List;
 
 public class cMenu {
 
+    private static int feedCounter=0;
+
+    public static int getFeedCounter(){return feedCounter;}
+
+    public static void setFeedCounter(int valor){feedCounter=valor;}
+
     public static void activarAmigos(Button btnFriends, Button btnSearch, ScrollPane friendsPane,
                                      VBox searchPane) {
         btnFriends.getStyleClass().setAll("pill-button-active");

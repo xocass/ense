@@ -1,9 +1,13 @@
 package gal.usc.etse.sharecloud.model.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Document(collection = "user_activities")
 public class UserActivity {
@@ -27,5 +31,9 @@ public class UserActivity {
     public void setType(ActivityType type) {this.type = type;}
     public void setUpdatedAt(Instant createdAt) {this.updatedAt = createdAt;}
     public void setPayload(ActivityPayload payload) {this.payload = payload;}
+
+
+
+
 }
 

@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user/me/spotify")
@@ -145,7 +145,7 @@ public class UserSpotifyController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/do-follow/{spotyid}")
+    @PutMapping("/do-follow/{spotyid}")
     public ResponseEntity<Boolean> doFollow(@RequestParam String currID, @PathVariable String spotyid) throws Exception {
         spotifyService.doFollow(spotyid,currID);
         return ResponseEntity.noContent().build();

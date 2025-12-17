@@ -4,13 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SpotifyProfile {
 
+    @JsonProperty("spotifyID")
     private String spotifyId;
+
     private String displayName;
     private String email;
     private String country;
     private String profileURL;
+
     @JsonProperty("nFollowers")
     private Integer nFollowers;
+
     private String image;
 
     //getters

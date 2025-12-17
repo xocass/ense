@@ -196,7 +196,7 @@ public class cProfile {
     }
     @FXML
     private void clickViewFeed() {
-        FachadaGUI.getInstance().irFeed(null, userEmail);
+        cMenu.viewFeed(userEmail);
     }
     @FXML
     private void clickOnLogout(){

@@ -9,6 +9,7 @@ import gal.usc.etse.sharecloud.repository.FeedRepository;
 import gal.usc.etse.sharecloud.repository.UserActivityRepository;
 import gal.usc.etse.sharecloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -96,6 +97,20 @@ public class FeedService {
         return feed;
     }
 
+
+    @Scheduled(fixedRate = 60_000) // 1 minuto
+    public void updateDailyFeed() {
+
+        List<User> users = userRepo.findBySpotifyLinkedTrue();
+
+        for (User user : users) {
+            try {
+                updatePlayedToday(user.getId(),user.getSpotifyProfile());
+            } catch (Exception e) {
+                throw new RuntimeException("Error actualizando automáticamente al usuario "+user.getEmail());
+            }
+        }
+    }
 
     /* ##################
      *      MAPPERS

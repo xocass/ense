@@ -3,24 +3,31 @@ package gal.usc.etse.sharecloud.service;
 import gal.usc.etse.sharecloud.model.dto.UserSearchResult;
 import gal.usc.etse.sharecloud.model.entity.FriendRequest;
 import gal.usc.etse.sharecloud.model.entity.FriendRequestStatus;
+import gal.usc.etse.sharecloud.model.entity.Like;
 import gal.usc.etse.sharecloud.model.entity.User;
 import gal.usc.etse.sharecloud.repository.FriendRequestRepository;
+import gal.usc.etse.sharecloud.repository.LikeRepository;
 import gal.usc.etse.sharecloud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static gal.usc.etse.sharecloud.service.FeedService.nextMidnight;
 
 @Service
 public class FriendService {
     private final UserRepository userRepository;
     private final FriendRequestRepository friendRequestRepository;
+    private final LikeRepository likeRepository;
 
     @Autowired
-    public FriendService(UserRepository userRepository, FriendRequestRepository friendRequestRepository) {
+    public FriendService(UserRepository userRepository, FriendRequestRepository friendRequestRepository, LikeRepository likeRepository) {
         this.userRepository = userRepository;
         this.friendRequestRepository = friendRequestRepository;
+        this.likeRepository = likeRepository;
     }
 
 
@@ -159,25 +166,26 @@ public class FriendService {
 
     }
 
-    public void removeFriend(String currentUserId, String targetUserId) {
-        if (currentUserId.equals(targetUserId)) {
-            throw new IllegalArgumentException("No puedes eliminarte a ti mismo");
-        }
+    public void giveLike(String id, String friendId, String trackName) {
+        User sender = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Sender not found"));
+        User receiver = userRepository.findById(friendId).orElseThrow(() -> new RuntimeException("Receiver not found"));
 
-        User current = userRepository.findById(currentUserId).orElseThrow(() -> new IllegalStateException("User not found"));
-        User target = userRepository.findById(targetUserId).orElseThrow(() -> new IllegalStateException("Target user not found"));
+        Like like = new Like();
+        like.setSenderId(sender.getId());
+        like.setReceiverId(receiver.getId());
+        like.setTrackName(trackName);
+        like.setSenderName(sender.getSpotifyProfile().getDisplayName());
+        like.setSenderImage(sender.getSpotifyProfile().getImage());
 
-        current.getFriendIds().remove(targetUserId);
-        target.getFriendIds().remove(currentUserId);
-        userRepository.save(current);
-        userRepository.save(target);
+        likeRepository.save(like);
+    }
 
-        List<FriendRequest> requests = friendRequestRepository.findBySenderIdAndReceiverIdOrSenderIdAndReceiverId(
-                currentUserId, targetUserId,
-                targetUserId, currentUserId);
+    public List<Like> receiveLikes(String id) {
+        return likeRepository.findAllByReceiverId(id);
+    }
 
-        if (!requests.isEmpty()) {
-            friendRequestRepository.deleteAll(requests);
-        }
+    public void deleteLike(String likeId) {
+        Like like= likeRepository.findById(likeId).orElseThrow(() -> new RuntimeException("Like not found"));
+        likeRepository.delete(like);
     }
 }

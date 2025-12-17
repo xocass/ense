@@ -26,7 +26,7 @@ public class SpotifyProfile {
     }
 
     public static SpotifyProfile from(gal.usc.etse.sharecloud.model.dto.SpotifyProfile spotifyProfile) {
-        return new SpotifyProfile(spotifyProfile.spotifyId(), spotifyProfile.displayName(), spotifyProfile.email(),
+        return new SpotifyProfile(spotifyProfile.spotifyID(), spotifyProfile.displayName(), spotifyProfile.email(),
                 spotifyProfile.country(), spotifyProfile.image(), spotifyProfile.nFollowers(), spotifyProfile.profileURL());
     }
 

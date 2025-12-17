@@ -228,21 +228,6 @@ public class cMenu {
     }
 
 
-    public static void nextItem(ImageView btnLike, ImageView btnComment, ImageView artCover, Label titleLabel,
-                                Label artistLabel, Label labelFriendName, Label labelDate, ImageView friendProfilePic){
-
-        friendProfilePic.setVisible(false);
-        labelFriendName.setVisible(false);
-        labelDate.setVisible(false);
-        btnLike.setVisible(false);
-        btnComment.setVisible(false);
-        artCover.setImage(new Image((ShareCloudBoot.class.getResource("/gal/usc/etse/sharecloud/imgs/boladesierto.gif").toExternalForm())));
-        titleLabel.setText("Has llegado al final");
-        artistLabel.setText("Puede que tengas algo nuevo para ver --->");
-    }
-
-
-
     public static void viewFeed(String userEmail) {
         FachadaGUI.getInstance().mostrarPantallaCarga();
 
@@ -276,7 +261,6 @@ public class cMenu {
                 SpotifyRecentlyPlayedResponse recentlyPlayed = SpotifyApi.getRecentlyPlayed(TokenManager.getUserID(), 20, 10);
                 SpotifyTopTracksResponse topTracks = SpotifyApi.getTopTracks(TokenManager.getUserID(), 5);
                 SpotifyTopArtistsResponse topArtists = SpotifyApi.getTopArtists(TokenManager.getUserID(), 5);
-
                 SpotifyResponseCompact data = new SpotifyResponseCompact(profileView, recentlyPlayed, topTracks,
                         topArtists, null);
                 return data;
@@ -288,6 +272,8 @@ public class cMenu {
         });
         profileTask.setOnFailed(e -> {
             // openErrorPopUp : no implementado
+            Throwable ex = profileTask.getException();
+            ex.printStackTrace();
 
         });
             new Thread(profileTask).start();
@@ -314,6 +300,8 @@ public class cMenu {
         });
         profileTask.setOnFailed(e -> {
             //openErrorPopUp: no implementado
+            Throwable ex = profileTask.getException();
+            ex.printStackTrace();
         });
         new Thread(profileTask).start();
     }
